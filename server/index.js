@@ -1,5 +1,6 @@
 'use strict'
 const express = require('express')
+require('dotenv').config() // Setup dotenv
 
 // Create the express app
 const app = express()
@@ -18,6 +19,7 @@ app.use(function fiveHundredHandler (err, req, res, next) {
 })
 
 // Start server
+const port = process.env.SERVER_PORT || 3000 // Default to 3000
 app.listen(process.env.SERVER_PORT, function (err) {
   if (err) {
     return console.error(err)
