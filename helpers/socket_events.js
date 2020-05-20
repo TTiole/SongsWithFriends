@@ -6,9 +6,12 @@ const PAUSE = "pause";
 const SKIP = "skip";
 const DISCONNECT = "disconnect";
 const CONNECT = "connect";
+const JOIN = "";
+const LEAVE = "";
 
 module.exports = {
   QUEUE_ADD, QUEUE_REMOVE, QUEUE_REORDER,
   PLAY, PAUSE, SKIP,
-  DISCONNECT, CONNECT
+  DISCONNECT, CONNECT,
+  JOIN, LEAVE
 }
