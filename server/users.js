@@ -26,7 +26,8 @@ class User {
 };
 
 const getUser = id => users.find(user => user.getId() === id);
-const authUser = (id, token, token_type) => getUser(id).auth(token, token_type);
+// This returns the user as well
+const authUser = (id, token, token_type) => getUser(id).auth(token, token_type)
 const addUser = id => users.push(new User(id))
 const removeUser = id => {
   users = users.filter(user => user.id !== id);

@@ -1,10 +1,18 @@
-require("../users");
+const {authUser} = require('../users')
+const {getUserInfo, getToken} = require('../requests')
 
-module.exports = function (app, fetch, user) {
+module.exports = function (app) {
   // Request authroization from user to access data
   // Current scopes: user-modify-playback-state, playlist-modify-public, user-library-read
   app.get("/login", function (req, res) {
-    var scopes =
+    // Make sure the userID gets passed
+    if(!req.query.userID) {
+      res.status(400).end("Bad login")
+      return;
+    }
+
+    const userID = req.query.userID;
+    const scopes =
       "user-modify-playback-state playlist-modify-public user-library-read";
 
     res.redirect(
@@ -14,42 +22,30 @@ module.exports = function (app, fetch, user) {
         process.env.SPOTIFY_CLIENT_ID +
         (scopes ? "&scope=" + encodeURIComponent(scopes) : "") +
         "&redirect_uri=" +
-        encodeURIComponent(process.env.REDIRECT_URI)
+        encodeURIComponent(process.env.REDIRECT_URI) +
+        "&state="+userID
     );
   });
 
   app.get("/authSuccess", function (req, res) {
     let authCode = req.query.code;
+    let userID = req.query.state;
 
-    fetch("https://accounts.spotify.com/api/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization:
-          "Basic " +
-          Buffer.from(
-            process.env.SPOTIFY_CLIENT_ID +
-              ":" +
-              process.env.SPOTIFY_CLIENT_SECRET
-          ).toString("base64"),
-      },
-      body: `grant_type=authorization_code&code=${authCode}&redirect_uri=${encodeURIComponent(
-        process.env.REDIRECT_URI
-      )}`,
-    })
-      .then((response) => response.text())
-      .then((data) => {
-        let retStr = JSON.parse(data);
+    console.log(req.query);
 
-        user.token = retStr.access_token;
-        user.token_type = retStr.token_type;
-
-        console.log(user);
-        res.redirect("http://localhost:8000/API_request");
+    
+    getToken(authCode).then((data) => {
+      const user = authUser(userID,data.access_token, data.token_type)
+      // Get user personal information for client state
+      
+      getUserInfo(user).then((data) => {
+        user.setName(data.display_name);
+        res.json(user.clientInfo())
       })
-      .catch((err) => {
-        console.log(err);
-        res.end("Some Errors Occured");
-      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send("Some Errors Occured");
+    });
   });
 };

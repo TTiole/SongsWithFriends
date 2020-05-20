@@ -2,21 +2,21 @@
 const express = require("express");
 const http = require("http");
 const socketio = require("socket.io");
-const fetch = require("node-fetch");
+const cors = require('cors');
+const corsOptions = {
+  origin: "http://localhost:3000"
+}
+const {addUser, removeUser} = require("./users")
 
 require("dotenv").config(); // Setup dotenv
-let User = require("./users");
-
-var tmpUser = new User(5, "David", "ECS162", "someType");
 // Create the express app
 const app = express();
 
-require("./Routes/auth")(app, fetch, tmpUser);
-require("./Routes/API_request")(app, fetch, tmpUser);
+require("./Routes/auth")(app);
 
 const server = http.createServer(app);
 const io = socketio(server);
-
+const events = require('../helpers/socket_events') 
 // Routes and middleware
 // app.use(/* ... */)
 // app.get(/* ... */)
@@ -30,13 +30,24 @@ const io = socketio(server);
 //   res.status(500).send();
 // });
 
+app.options('*', cors(corsOptions))
+
+app.use(cors(corsOptions))
+
 app.get("/", function (res) {
   console.log("Server is up");
 });
 
-app.get("/getPlaylist", function (req, res) {});
+io.on(events.CONNECT, (socket) => {
+  // User has entered the website
+  // Add it to the list of users
+  addUser(socket.id)
 
-io.on("connect", (socket) => {});
+  // On disconnect remove the user
+  socket.on(events.DISCONNECT, () => {
+    removeUser(socket.id)
+  })
+});
 
 // Start server
 const port = process.env.SERVER_PORT || 8000; // Default to 8000
