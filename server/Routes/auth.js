@@ -11,7 +11,6 @@ module.exports = function (app) {
       return;
     }
 
-    const userID = req.query.userID;
     const scopes =
       "user-modify-playback-state playlist-modify-public user-library-read";
 
@@ -22,17 +21,13 @@ module.exports = function (app) {
         process.env.SPOTIFY_CLIENT_ID +
         (scopes ? "&scope=" + encodeURIComponent(scopes) : "") +
         "&redirect_uri=" +
-        encodeURIComponent(process.env.REDIRECT_URI) +
-        "&state="+userID
+        encodeURIComponent(process.env.REDIRECT_URI)
     );
   });
 
   app.get("/authSuccess", function (req, res) {
     let authCode = req.query.code;
-    let userID = req.query.state;
-
-    console.log(req.query);
-
+    let userID = req.query.userID;
     
     getToken(authCode).then((data) => {
       const user = authUser(userID,data.access_token, data.token_type)

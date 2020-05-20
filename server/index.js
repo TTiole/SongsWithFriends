@@ -12,6 +12,10 @@ require("dotenv").config(); // Setup dotenv
 // Create the express app
 const app = express();
 
+app.options('*', cors(corsOptions))
+
+app.use(cors(corsOptions))
+
 require("./Routes/auth")(app);
 
 const server = http.createServer(app);
@@ -29,10 +33,6 @@ const events = require('../helpers/socket_events')
 //   console.error(err);
 //   res.status(500).send();
 // });
-
-app.options('*', cors(corsOptions))
-
-app.use(cors(corsOptions))
 
 app.get("/", function (res) {
   console.log("Server is up");

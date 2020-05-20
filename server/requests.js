@@ -1,5 +1,6 @@
 const fetch = require("node-fetch");
 
+// Use authorization code in order to get a user token
 const getToken = (authCode) => fetch("https://accounts.spotify.com/api/token", {
   method: "POST",
   headers: {
@@ -18,6 +19,7 @@ const getToken = (authCode) => fetch("https://accounts.spotify.com/api/token", {
 })
 .then((response) => response.json());
 
+// Get user information
 const getUserInfo = (user) => fetch("https://api.spotify.com/v1/me", {
   method: "GET",
   headers: {
