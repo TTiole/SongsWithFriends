@@ -5,10 +5,15 @@ const socketio = require("socket.io");
 const fetch = require("node-fetch");
 
 require("dotenv").config(); // Setup dotenv
+let User = require("./users");
 
+var tmpUser = new User(5, "David", "ECS162", "someType");
 // Create the express app
 const app = express();
-require("./Routes/auth")(app);
+
+require("./Routes/auth")(app, fetch, tmpUser);
+require("./Routes/API_request")(app, fetch, tmpUser);
+
 const server = http.createServer(app);
 const io = socketio(server);
 
@@ -26,7 +31,6 @@ const io = socketio(server);
 // });
 
 app.get("/", function (res) {
-  // res.end("Server is up");
   console.log("Server is up");
 });
 

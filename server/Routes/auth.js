@@ -1,4 +1,6 @@
-module.exports = function (app) {
+require("../users");
+
+module.exports = function (app, fetch, user) {
   // Request authroization from user to access data
   // Current scopes: user-modify-playback-state, playlist-modify-public, user-library-read
   app.get("/login", function (req, res) {
@@ -17,10 +19,8 @@ module.exports = function (app) {
   });
 
   app.get("/authSuccess", function (req, res) {
-    reqAccessToken(req.query.code, res);
-  });
+    let authCode = req.query.code;
 
-  function reqAccessToken(authCode, res) {
     fetch("https://accounts.spotify.com/api/token", {
       method: "POST",
       headers: {
@@ -37,11 +37,19 @@ module.exports = function (app) {
         process.env.REDIRECT_URI
       )}`,
     })
-      .then((response) => response.json())
-      .then((data) => res.end(data))
+      .then((response) => response.text())
+      .then((data) => {
+        let retStr = JSON.parse(data);
+
+        user.token = retStr.access_token;
+        user.token_type = retStr.token_type;
+
+        console.log(user);
+        res.redirect("http://localhost:8000/API_request");
+      })
       .catch((err) => {
         console.log(err);
         res.end("Some Errors Occured");
       });
-  }
+  });
 };
