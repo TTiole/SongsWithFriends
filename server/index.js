@@ -27,7 +27,7 @@ io.on('connect', socket => {
 })
 
 // Start server
-const port = process.env.SERVER_PORT || 3000 // Default to 3000
+const port = process.env.SERVER_PORT || 8000 // Default to 8000
 server.listen(process.env.SERVER_PORT, function (err) {
   if (err) {
     return console.error(err)
