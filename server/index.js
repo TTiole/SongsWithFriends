@@ -2,6 +2,7 @@
 const express = require('express')
 const http = require('http')
 const socketio = require('socket.io')
+const events = require('../helpers/socket_events')
 require('dotenv').config() // Setup dotenv
 
 // Create the express app
@@ -13,17 +14,12 @@ const io = socketio(server);
 // app.use(/* ... */)
 // app.get(/* ... */)
 
-// Error handlers
-app.use(function fourOhFourHandler (req, res) {
-  res.status(404).send()
-})
-app.use(function fiveHundredHandler (err, req, res, next) {
-  console.error(err)
-  res.status(500).send()
+app.get("/", (req,res) => {
+  res.end("Testing")
 })
 
-io.on('connect', socket => {
-  
+io.on('connection', socket => {
+  console.log("Socket connection established")
 })
 
 // Start server
