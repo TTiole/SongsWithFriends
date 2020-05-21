@@ -6,12 +6,13 @@ const PAUSE = "pause";
 const SKIP = "skip";
 const DISCONNECT = "disconnect";
 const CONNECT = "connect";
-const JOIN = "";
-const LEAVE = "";
+const JOIN = "join";
+const LEAVE = "leave";
+const CREATE = "create";
 
 module.exports = {
   QUEUE_ADD, QUEUE_REMOVE, QUEUE_REORDER,
   PLAY, PAUSE, SKIP,
   DISCONNECT, CONNECT,
-  JOIN, LEAVE
+  JOIN, LEAVE, CREATE
 }

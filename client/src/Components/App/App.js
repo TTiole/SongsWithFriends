@@ -2,7 +2,7 @@ import React from "react";
 import socketIOClient from "socket.io-client";
 import "./App.css";
 
-import { CONNECT } from "helpers/socket_events.js";
+import { CONNECT, CREATE } from "helpers/socket_events.js";
 
 class App extends React.Component {
   constructor(props) {
@@ -16,9 +16,9 @@ class App extends React.Component {
 
   componentDidMount() {
     const queryString = window.location.search;
-    if (queryString !== "") {
+    if (queryString !== "") { 
       const urlParams = new URLSearchParams(queryString);
-      if (urlParams.has("code")) {
+      if (urlParams.has("code")) { // User is coming back from a successful login
         this.setState(
           { socket: socketIOClient("http://localhost:8000") },
           () => {
@@ -32,15 +32,18 @@ class App extends React.Component {
     }
   }
 
+  createRoom = () => this.state.socket.emit(CREATE)
+  
+
   socketEstablished = (code) => () => {
     const userID = this.state.socket.id;
-    this.setState({ userID: userID });
+    this.setState({ userID: userID, loggedIn: true });
     fetch(`http://localhost:8000/authSuccess?userID=${userID}&code=${code}`)
       .then((resp) => resp.json())
       .then((data) => console.log(data))
       .catch((err) => console.error(err));
     // Get rid of the query parameters since we're done with them, but don't refresh page
-    window.history.pushState(null, "", window.location.href.split("?")[0]);
+    window.history.replaceState(null, "", window.location.href.split("?")[0]);
   };
 
   render() {
@@ -53,6 +56,9 @@ class App extends React.Component {
         <a href={`http://localhost:8000/playlists?userID=${this.state.userID}`}>
           Try getting playlists
         </a>
+        <button onClick={this.createRoom}>
+          Create room
+        </button>
       </div>
     );
   }
