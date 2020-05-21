@@ -7,6 +7,7 @@ class User {
     this.token_type = "";
     this.playback_device = "";
     this.room = "";
+    this.host = false;
   }
 
   auth = (token, token_type) => {

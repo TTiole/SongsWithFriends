@@ -1,7 +1,9 @@
+const {makeid} = require('../helpers/string_utils');
+const {getUser} = require('./users')
 let rooms = [];
 class Room {
-  constructor(id, members, host) {
-    this.id = id; this.members = members; this.host = host;
+  constructor(id, host) {
+    this.id = id; this.members = [host]; this.host = host;
   }
 
   addMember = user => {
@@ -13,13 +15,29 @@ class Room {
   }
 }
 
-const addRoom = (id, members, host) => rooms.push(new Room(id, members, host))
+const addRoom = (host) => {
+  const id = makeid(8);
+  host.room = id;
+  host.host = true;
+  rooms.push(new Room(id, host))
+  console.log("Rooms:",rooms)
+}
 const closeRoom = id => {
+  const room = getRoom(id);
+  // Go through each member and remove them from the room
+  room.members.forEach(member => {
+    // Get the reference from the users array
+    let user = getUser(member.id);
+    user.host = false;
+    user.room = "";
+  })
   rooms = rooms.filter(room => room.id !== id)
 } 
+
+const getHost = id => getRoom(id).host
+
 const getRoom = id => rooms.find(room => room.id === id)
-const getRoomByMember = uid => rooms.find(room => room.getMembers().find(user => user.id === uid) !== undefined)
 
 module.exports = {
-  addRoom, closeRoom, getRoom, getRoomByMember
+  addRoom, closeRoom, getRoom, getHost
 }

@@ -9,5 +9,5 @@ const makeid = (length) => {
 }
 
 module.exports = {
-  madeid
+  makeid
 }
