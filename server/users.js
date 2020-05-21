@@ -6,15 +6,8 @@ class User {
     this.token = "";
     this.token_type = "";
     this.playback_device = "";
+    this.room = "";
   }
-
-  getId = () => this.id;
-  getName = () => this.name;
-  getToken = () => this.token;
-  getTokenType = () => this.token_type;
-  getPlaybackDevice = () => this.playback_device;
-
-  setName = (name) => { this.name = name; }
 
   auth = (token, token_type) => {
     this.token = token;
@@ -25,7 +18,7 @@ class User {
   clientInfo = () => ({name: this.name, id: this.id, playbackDevice: this.playback_device})
 };
 
-const getUser = id => users.find(user => user.getId() === id);
+const getUser = id => users.find(user => user.id === id);
 // This returns the user as well
 const authUser = (id, token, token_type) => getUser(id).auth(token, token_type)
 const addUser = id => users.push(new User(id))

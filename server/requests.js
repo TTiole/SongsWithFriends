@@ -6,14 +6,14 @@ const getSpotify = (path, user) => {
     throw new Error("Path is invalid")
   if(user == null)
     throw new Error("User is undefined or has not been passed")
-  if(user.getTokenType() === "" || user.getToken() === "")
+  if(user.token_type === "" || user.token === "")
     throw new Error("User is not authorized");
   try {
     // send the request
     return fetch(`https://api.spotify.com/v1${path}`, {
       method: "GET",
       headers: {
-        Authorization: `${user.getTokenType()} ${user.getToken()}`
+        Authorization: `${user.token_type} ${user.token}`
       }
     }).then(resp => resp.json())
   } catch(err) {
@@ -45,7 +45,7 @@ const getToken = (authCode) =>
 const getUserInfo = (user) => getSpotify("/me", user)
 
 // Get user playlists
-const getUserPlaylists = (user) => getSpotify(`/users/${user.getName()}/playlists`, user)
+const getUserPlaylists = (user) => getSpotify(`/users/${user.name}/playlists`, user)
 
 // Get single playlist
 const getSinglePlaylist = (user, playlistID) => getSpotify(`/playlists/${playlistID}`, user)

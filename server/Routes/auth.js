@@ -35,8 +35,7 @@ module.exports = function (app) {
         // Get user personal information for client state
 
         getUserInfo(user).then((data) => {
-          console.log(data);
-          user.setName(data.display_name);
+          user.name = data.display_name;
           res.json(user.clientInfo()); // WHERE IS THIS GOING TO? //WHAT DOES .JSON DO AGAIN?
         });
       })
