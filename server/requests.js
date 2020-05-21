@@ -1,6 +1,26 @@
 const fetch = require("node-fetch");
 
-const { getUser } = require("./users");
+const getSpotify = (path, user) => {
+  // Input validation
+  if(path == null || path === "" || !path.includes("/"))
+    throw new Error("Path is invalid")
+  if(user == null)
+    throw new Error("User is undefined or has not been passed")
+  if(user.getTokenType() === "" || user.getToken() === "")
+    throw new Error("User is not authorized");
+  try {
+    // send the request
+    return fetch(`https://api.spotify.com/v1${path}`, {
+      method: "GET",
+      headers: {
+        Authorization: `${user.getTokenType()} ${user.getToken()}`
+      }
+    }).then(resp => resp.json())
+  } catch(err) {
+    console.error(err);
+    throw new Error("Error calling spotify API. See above");
+  }
+}
 
 // Use authorization code in order to get a user token
 const getToken = (authCode) =>
@@ -22,31 +42,13 @@ const getToken = (authCode) =>
   }).then((response) => response.json());
 
 // Get user information
-const getUserInfo = (user) =>
-  fetch("https://api.spotify.com/v1/me", {
-    method: "GET",
-    headers: {
-      Authorization: user.getTokenType() + " " + user.getToken(),
-    },
-  }).then((response) => response.json());
+const getUserInfo = (user) => getSpotify("/me", user)
 
-const getUserPlaylists = (user) => {
-  return fetch(`https://api.spotify.com/v1/users/${user.name}/playlists`, {
-    method: "GET",
-    headers: {
-      Authorization: user.getTokenType() + " " + user.getToken(),
-    },
-  }).then((response) => response.json());
-};
+// Get user playlists
+const getUserPlaylists = (user) => getSpotify(`/users/${user.getName()}/playlists`, user)
 
-const getSinglePlaylist = (user, playlistID) => {
-  fetch(`https://api.spotify.com/v1/playlists/${playlist_id}`, {
-    method: "GET",
-    headers: {
-      Authorization: user.getTokenType() + " " + user.getToken(),
-    },
-  }).then((response) => response.json());
-};
+// Get single playlist
+const getSinglePlaylist = (user, playlistID) => getSpotify(`/playlists/${playlistID}`, user)
 
 module.exports = {
   getUserInfo,
