@@ -6,7 +6,6 @@ const cors = require("cors");
 const corsOptions = {
   origin: "http://localhost:3000",
 };
-const { addUser, removeUser } = require("./users");
 
 require("dotenv").config(); // Setup dotenv
 // Create the express app
@@ -21,7 +20,7 @@ require("./Routes/music")(app);
 
 const server = http.createServer(app);
 const io = socketio(server);
-const events = require("../helpers/socket_events");
+const {CONNECT} = require("../helpers/socket_events");
 // Routes and middleware
 // app.use(/* ... */)
 // app.get(/* ... */)
@@ -39,16 +38,8 @@ app.get("/", function (res) {
   console.log("Server is up");
 });
 
-io.on(events.CONNECT, (socket) => {
-  // User has entered the website
-  // Add it to the list of users
-  addUser(socket.id);
-
-  // On disconnect remove the user
-  socket.on(events.DISCONNECT, () => {
-    removeUser(socket.id);
-  });
-});
+// Handle socket.io stuff in socket.js
+io.on(CONNECT, require('./socket'));
 
 // Start server
 const port = process.env.SERVER_PORT || 8000; // Default to 8000
