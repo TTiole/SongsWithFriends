@@ -6,13 +6,15 @@ const PAUSE = "pause";
 const SKIP = "skip";
 const DISCONNECT = "disconnect";
 const CONNECT = "connect";
-const JOIN = "join";
+const JOIN = "swf-join";
 const LEAVE = "leave";
 const CREATE = "create";
+const ERROR = "swf-error";
 
 module.exports = {
   QUEUE_ADD, QUEUE_REMOVE, QUEUE_REORDER,
   PLAY, PAUSE, SKIP,
   DISCONNECT, CONNECT,
-  JOIN, LEAVE, CREATE
+  JOIN, LEAVE, CREATE,
+  ERROR
 }

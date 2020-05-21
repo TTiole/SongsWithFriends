@@ -2,7 +2,7 @@ import React from "react";
 import socketIOClient from "socket.io-client";
 import "./App.css";
 
-import { CONNECT, CREATE } from "helpers/socket_events.js";
+import { CONNECT, CREATE, ERROR, JOIN } from "helpers/socket_events.js";
 
 class App extends React.Component {
   constructor(props) {
@@ -12,6 +12,7 @@ class App extends React.Component {
       userID: null,
       loggedIn: false,
     };
+    this.joinRef = React.createRef();
   }
 
   componentDidMount() {
@@ -34,6 +35,7 @@ class App extends React.Component {
 
   createRoom = () => this.state.socket.emit(CREATE)
   
+  joinRoom = () => this.state.socket.emit(JOIN, this.joinRef.current.value)
 
   socketEstablished = (code) => () => {
     const userID = this.state.socket.id;
@@ -44,21 +46,33 @@ class App extends React.Component {
       .catch((err) => console.error(err));
     // Get rid of the query parameters since we're done with them, but don't refresh page
     window.history.replaceState(null, "", window.location.href.split("?")[0]);
+    this.setupSocketListeners();
   };
 
-  render() {
-    return (
-      <div>
-        <a href={`http://localhost:8000/login?userID=${this.state.userID}`}>
-          Try sign in
-        </a>
+  setupSocketListeners = () => {
+    this.state.socket.on(ERROR, msg => console.error(msg));
+    this.state.socket.on(CREATE, id => console.log(`Successfully created room ${id}`))
+    this.state.socket.on(JOIN, () => console.log(`Successfully joined room`) )
+  }
 
+  render() {
+    if(!this.state.loggedIn)
+      return (
+        <div>
+          <a href={`http://localhost:8000/login?userID=${this.state.userID}`}>
+            Try sign in
+          </a>
+        </div>);
+    return (
+    <div>
         <a href={`http://localhost:8000/playlists?userID=${this.state.userID}`}>
           Try getting playlists
         </a>
         <button onClick={this.createRoom}>
           Create room
         </button>
+        <input type='text' ref={this.joinRef} />
+        <button onClick={this.joinRoom}> Join room</button>
       </div>
     );
   }

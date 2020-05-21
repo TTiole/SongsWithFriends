@@ -19,8 +19,9 @@ const addRoom = (host) => {
   const id = makeid(8);
   host.room = id;
   host.host = true;
-  rooms.push(new Room(id, host))
-  console.log("Rooms:",rooms)
+  const room = new Room(id, host)
+  rooms.push(room);
+  return room;
 }
 const closeRoom = id => {
   const room = getRoom(id);
