@@ -11,34 +11,25 @@ require("dotenv").config(); // Setup dotenv
 // Create the express app
 const app = express();
 
+// Set up CORS. Necessary for localhost
 app.options("*", cors(corsOptions));
-
 app.use(cors(corsOptions));
 
+// Import all the routes
 require("./Routes/auth")(app);
 require("./Routes/music")(app);
 
+// Create the server. Allow it to listen to websockets
 const server = http.createServer(app);
 const io = socketio(server);
-const {CONNECT} = require("../helpers/socket_events");
-// Routes and middleware
-// app.use(/* ... */)
-// app.get(/* ... */)
 
-// Error handlers
-// app.use(function fourOhFourHandler(req, res) {
-//   res.status(404).send();
-// });
-// app.use(function fiveHundredHandler(err, req, res, next) {
-//   console.error(err);
-//   res.status(500).send();
-// });
-
+// Root route, for testing to ensure server is working
 app.get("/", function (res) {
   console.log("Server is up");
 });
 
 // Handle socket.io stuff in socket.js
+const {CONNECT} = require("../helpers/socket_events");
 io.on(CONNECT, require('./socket'));
 
 // Start server
