@@ -2,25 +2,26 @@
 const express = require("express");
 const http = require("http");
 const socketio = require("socket.io");
-const cors = require('cors');
+const cors = require("cors");
 const corsOptions = {
-  origin: "http://localhost:3000"
-}
-const {addUser, removeUser} = require("./users")
+  origin: "http://localhost:3000",
+};
+const { addUser, removeUser } = require("./users");
 
 require("dotenv").config(); // Setup dotenv
 // Create the express app
 const app = express();
 
-app.options('*', cors(corsOptions))
+app.options("*", cors(corsOptions));
 
-app.use(cors(corsOptions))
+app.use(cors(corsOptions));
 
 require("./Routes/auth")(app);
+require("./Routes/music")(app);
 
 const server = http.createServer(app);
 const io = socketio(server);
-const events = require('../helpers/socket_events') 
+const events = require("../helpers/socket_events");
 // Routes and middleware
 // app.use(/* ... */)
 // app.get(/* ... */)
@@ -41,12 +42,12 @@ app.get("/", function (res) {
 io.on(events.CONNECT, (socket) => {
   // User has entered the website
   // Add it to the list of users
-  addUser(socket.id)
+  addUser(socket.id);
 
   // On disconnect remove the user
   socket.on(events.DISCONNECT, () => {
-    removeUser(socket.id)
-  })
+    removeUser(socket.id);
+  });
 });
 
 // Start server
