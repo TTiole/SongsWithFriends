@@ -17,8 +17,6 @@ class Room {
 
 const addRoom = (host) => {
   const id = makeid(8);
-  host.room = id;
-  host.host = true;
   const room = new Room(id, host)
   rooms.push(room);
   return room;

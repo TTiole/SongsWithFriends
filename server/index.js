@@ -30,7 +30,7 @@ app.get("/", function (res) {
 
 // Handle socket.io stuff in socket.js
 const {CONNECT} = require("../helpers/socket_events");
-io.on(CONNECT, require('./socket'));
+io.on(CONNECT, require('./socket')(io));
 
 // Start server
 const port = process.env.SERVER_PORT || 8000; // Default to 8000

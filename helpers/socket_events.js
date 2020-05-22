@@ -9,12 +9,14 @@ const CONNECT = "connect";
 const JOIN = "swf-join";
 const LEAVE = "leave";
 const CREATE = "create";
+const DESTROY = "destroy";
 const ERROR = "swf-error";
+const DESTROYED = "destroyed"
 
 module.exports = {
   QUEUE_ADD, QUEUE_REMOVE, QUEUE_REORDER,
   PLAY, PAUSE, SKIP,
   DISCONNECT, CONNECT,
-  JOIN, LEAVE, CREATE,
+  JOIN, LEAVE, CREATE, DESTROY, DESTROYED,
   ERROR
 }

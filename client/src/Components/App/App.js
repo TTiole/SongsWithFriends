@@ -2,7 +2,7 @@ import React from "react";
 import socketIOClient from "socket.io-client";
 import "./App.css";
 
-import { CONNECT, CREATE, ERROR, JOIN } from "helpers/socket_events.js";
+import { CONNECT, CREATE, ERROR, JOIN, LEAVE, DESTROY, DESTROYED } from "helpers/socket_events.js";
 
 class App extends React.Component {
   constructor(props) {
@@ -11,6 +11,8 @@ class App extends React.Component {
       socket: null,
       userID: null,
       loggedIn: false,
+      member: false,
+      host: false,
     };
     this.joinRef = React.createRef();
   }
@@ -37,12 +39,19 @@ class App extends React.Component {
   
   joinRoom = () => this.state.socket.emit(JOIN, this.joinRef.current.value)
 
+  leaveRoom = () => this.state.socket.emit(LEAVE)
+
+  destroyRoom = () => this.state.socket.emit(DESTROY)
+
   socketEstablished = (code) => () => {
     const userID = this.state.socket.id;
-    this.setState({ userID: userID, loggedIn: true });
+    this.setState({ userID: userID});
     fetch(`http://localhost:8000/authSuccess?userID=${userID}&code=${code}`)
       .then((resp) => resp.json())
-      .then((data) => console.log(data))
+      .then((data) => {
+        console.log(data)
+        this.setState({ loggedIn: true });
+      })
       .catch((err) => console.error(err));
     // Get rid of the query parameters since we're done with them, but don't refresh page
     window.history.replaceState(null, "", window.location.href.split("?")[0]);
@@ -51,8 +60,26 @@ class App extends React.Component {
 
   setupSocketListeners = () => {
     this.state.socket.on(ERROR, msg => console.error(msg));
-    this.state.socket.on(CREATE, id => console.log(`Successfully created room ${id}`))
-    this.state.socket.on(JOIN, () => console.log(`Successfully joined room`) )
+    this.state.socket.on(CREATE, id => {
+      this.setState({ host: true });
+      console.log(`Successfully created room ${id}`)
+    })
+    this.state.socket.on(JOIN, () => {
+      this.setState({ member: true });
+      console.log(`Successfully joined room`)
+    })
+    this.state.socket.on(LEAVE, id => {
+      this.setState({ member: false });
+      console.log(`Successfully left ${id}`)
+    })
+    this.state.socket.on(DESTROY, id => {
+      this.setState({ host: false });
+      console.log(`Successfully destroyed ${id}`)
+    })
+    this.state.socket.on(DESTROYED, id => {
+      this.setState({member: false})
+      console.log(`Room ${id} has been destroyed`)
+    })
   }
 
   render() {
@@ -68,11 +95,15 @@ class App extends React.Component {
         <a href={`http://localhost:8000/playlists?userID=${this.state.userID}`}>
           Try getting playlists
         </a>
-        <button onClick={this.createRoom}>
-          Create room
-        </button>
-        <input type='text' ref={this.joinRef} />
-        <button onClick={this.joinRoom}> Join room</button>
+        {!this.state.host && !this.state.member ? <React.Fragment>
+          <button onClick={this.createRoom}>
+            Create room
+          </button>
+          <input type='text' ref={this.joinRef} />
+          <button onClick={this.joinRoom}> Join room</button>
+        </React.Fragment>:null}
+        {this.state.host ? <button onClick={this.destroyRoom}>Destroy room</button>:null}
+        {this.state.member ? <button onClick={this.leaveRoom}>Leave room</button>:null}
       </div>
     );
   }
