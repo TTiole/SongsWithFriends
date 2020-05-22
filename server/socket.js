@@ -64,14 +64,17 @@ module.exports = io => socket => {
     } else if (!user.host) {
       socket.emit(events.ERROR, "You are not a host")
     } else {
-      closeRoom(roomID); // Close the room, updating everyone's objects
+      closeRoom(roomID); // Close the room, updating everyone's user objects and removing the room
+      // Go through all the clients in the room
       io.of('/').in(roomID).clients((error, socketIDs) => {
         if(error) {
           socket.emit(events.ERROR, `Error getting room clients: ${error}`)
         } else {
-          // Make all clients leave socket room
+          // Let all the members know the room has been destroyed
           socket.to(roomID).emit(events.DESTROYED, roomID);
+          // Let the host know the room has been destroyed successfully
           socket.emit(events.DESTROY, roomID)
+          // Make all clients leave socket room
           socketIDs.forEach(socketID => io.sockets.sockets[socketID].leave(roomID))
           
         }

@@ -1,5 +1,11 @@
 const fetch = require("node-fetch");
 
+/**
+ * Takes a path and automatically sends a request to it, using the passed user's token
+ * @param {String} path Path to Spotify endpoint
+ * @param {User} user User authorizing the request
+ * @returns {Promise} Returns a promise containing the parsed json data
+ */
 const getSpotify = (path, user) => {
   // Input validation
   if(path == null || path === "" || !path.includes("/"))
