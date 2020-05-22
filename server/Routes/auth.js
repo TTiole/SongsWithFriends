@@ -14,6 +14,7 @@ module.exports = function (app) {
     const scopes =
       "user-modify-playback-state playlist-modify-public user-library-read playlist-read-private";
 
+    // Redirects user to Spotify page, prompting if they want to allow our access to their account
     res.redirect(
       "https://accounts.spotify.com/authorize" +
         "?response_type=code" +
@@ -25,18 +26,22 @@ module.exports = function (app) {
     );
   });
 
+  // Called when the client receives a successful authorization code from spotify
+  // Turns the authorization code into a token which we can use in order to send requests in behalf of the user
   app.get("/authSuccess", function (req, res) {
     let authCode = req.query.code;
     let userID = req.query.userID;
 
+    // Request to get the token
     requestToken(authCode)
       .then((data) => {
         const user = authUser(userID, data.access_token, data.token_type);
-        // Get user personal information for client state
 
+        // Get user personal information for client state
         requestUserInfo(user).then((data) => {
           user.name = data.display_name;
-          res.json(user.clientInfo()); // WHERE IS THIS GOING TO? //WHAT DOES .JSON DO AGAIN?
+          // Send the information to the client
+          res.json(user.clientInfo());
         });
       })
       .catch((err) => {
