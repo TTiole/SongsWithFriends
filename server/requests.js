@@ -1,29 +1,28 @@
 const fetch = require("node-fetch");
 
-const getSpotify = (path, user) => {
+const requestSpotify = (path, user) => {
   // Input validation
-  if(path == null || path === "" || !path.includes("/"))
-    throw new Error("Path is invalid")
-  if(user == null)
-    throw new Error("User is undefined or has not been passed")
-  if(user.token_type === "" || user.token === "")
+  if (path == null || path === "" || !path.includes("/"))
+    throw new Error("Path is invalid");
+  if (user == null) throw new Error("User is undefined or has not been passed");
+  if (user.token_type === "" || user.token === "")
     throw new Error("User is not authorized");
   try {
     // send the request
     return fetch(`https://api.spotify.com/v1${path}`, {
       method: "GET",
       headers: {
-        Authorization: `${user.token_type} ${user.token}`
-      }
-    }).then(resp => resp.json())
-  } catch(err) {
+        Authorization: `${user.token_type} ${user.token}`,
+      },
+    }).then((resp) => resp.json());
+  } catch (err) {
     console.error(err);
     throw new Error("Error calling spotify API. See above");
   }
-}
+};
 
 // Use authorization code in order to get a user token
-const getToken = (authCode) =>
+const requestToken = (authCode) =>
   fetch("https://accounts.spotify.com/api/token", {
     method: "POST",
     headers: {
@@ -42,17 +41,19 @@ const getToken = (authCode) =>
   }).then((response) => response.json());
 
 // Get user information
-const getUserInfo = (user) => getSpotify("/me", user)
+const requestUserInfo = (user) => requestSpotify("/me", user);
 
 // Get user playlists
-const getUserPlaylists = (user) => getSpotify(`/users/${user.name}/playlists`, user)
+const requestPlaylists = (user) =>
+  requestSpotify(`/users/${user.name}/playlists`, user);
 
-// Get single playlist
-const getSinglePlaylist = (user, playlistID) => getSpotify(`/playlists/${playlistID}`, user)
+// Get all the tracks within the specified playlist
+const requestTracks = (user, trackID) =>
+  requestSpotify(`/playlists/${trackID}/tracks`, user);
 
 module.exports = {
-  getUserInfo,
-  getToken,
-  getUserPlaylists,
-  getSinglePlaylist,
+  requestUserInfo,
+  requestToken,
+  requestPlaylists,
+  requestTracks,
 };

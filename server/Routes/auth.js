@@ -1,5 +1,5 @@
 const { authUser } = require("../users");
-const { getUserInfo, getToken } = require("../requests");
+const { requestUserInfo, requestToken } = require("../requests");
 
 module.exports = function (app) {
   // Request authroization from user to access data
@@ -29,12 +29,12 @@ module.exports = function (app) {
     let authCode = req.query.code;
     let userID = req.query.userID;
 
-    getToken(authCode)
+    requestToken(authCode)
       .then((data) => {
         const user = authUser(userID, data.access_token, data.token_type);
         // Get user personal information for client state
 
-        getUserInfo(user).then((data) => {
+        requestUserInfo(user).then((data) => {
           user.name = data.display_name;
           res.json(user.clientInfo()); // WHERE IS THIS GOING TO? //WHAT DOES .JSON DO AGAIN?
         });
