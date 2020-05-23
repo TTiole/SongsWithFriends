@@ -1,7 +1,7 @@
 // Import any spotify requests we write
 const {
   getUser,
-  addPlaylists,
+  addSinglePlaylist,
   getSinglePlaylist,
   getAllPlaylists,
 } = require("../users");
@@ -27,7 +27,7 @@ module.exports = (app) => {
             numTracks: playlist.tracks.total,
             tracks: null,
           };
-          addPlaylists(userID, simplafiedPlaylist);
+          addSinglePlaylist(userID, simplafiedPlaylist);
         });
         console.log(getAllPlaylists(userID));
       })

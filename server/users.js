@@ -51,11 +51,35 @@ const authUser = (id, token, token_type) => getUser(id).auth(token, token_type);
 const addUser = (id) => users.push(new User(id));
 
 /**
- * Removes a new user to the global users array
+ * Removes a existing user from the global users array
  * @param {String} id User ID (given by the socket)
  */
 const removeUser = (id) => {
   users = users.filter((user) => user.id !== id);
+};
+
+/**
+ * Add a single playlist object to a specific user's playlist list
+ * @param {String} id User ID
+ * @param {Object} playlist playlist object that contains playlist name, id, owner, numTracks, tracks
+ */
+const addSinglePlaylist = (id, playlist) =>
+  getUser(id).playlists.push(playlist);
+
+/**
+ * Get a single playlist object from a specific user's playlist list
+ * @param {String} id User ID
+ * @param {String} playlist playlist name
+ */
+const getSinglePlaylist = (id, playlistName) =>
+  getUser(id).playlists.find((playlist) => playlist.name === playlistName);
+
+/**
+ * Add all the playlist objects from a specific user's playlist list
+ * @param {String} id User ID
+ */
+const getAllPlaylists = (id) => {
+  return getUser(id).playlists;
 };
 
 module.exports = {
@@ -64,7 +88,7 @@ module.exports = {
   addUser,
   removeUser,
 
-  addPlaylists,
+  addSinglePlaylist,
   getSinglePlaylist,
   getAllPlaylists,
 };
