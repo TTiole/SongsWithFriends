@@ -20,7 +20,7 @@ class User {
     return this; // return the user object for chaining
   };
 
-<<<<<<< HEAD
+  // Returns all the information that is OK for the client to have
   clientInfo = () => ({
     name: this.name,
     id: this.id,
@@ -28,33 +28,12 @@ class User {
   });
 }
 
-const getUser = (id) => users.find((user) => user.id === id);
-// This returns the user as well
-const authUser = (id, token, token_type) => getUser(id).auth(token, token_type);
-const addUser = (id) => users.push(new User(id));
-const removeUser = (id) => {
-  users = users.filter((user) => user.id !== id);
-};
-
-const addPlaylists = (id, playlist) => getUser(id).playlists.push(playlist);
-
-const getSinglePlaylist = (id, playlistName) =>
-  getUser(id).playlists.find((playlist) => playlist.name === playlistName);
-
-const getAllPlaylists = (id) => {
-  return getUser(id).playlists;
-};
-=======
-  // Returns all the information that is OK for the client to have
-  clientInfo = () => ({name: this.name, id: this.id, playbackDevice: this.playback_device})
-};
-
 /**
  * Returns the user object given an ID
  * @param {String} id user ID (given by the socket)
  * @returns {User}
  */
-const getUser = id => users.find(user => user.id === id);
+const getUser = (id) => users.find((user) => user.id === id);
 
 /**
  * Takes the user ID and token information to authenticate the user with Spotify
@@ -63,22 +42,21 @@ const getUser = id => users.find(user => user.id === id);
  * @param {String} token_type The spotify token type
  * @returns {User} returns the user object which was authenticated
  */
-const authUser = (id, token, token_type) => getUser(id).auth(token, token_type)
+const authUser = (id, token, token_type) => getUser(id).auth(token, token_type);
 
 /**
  * Adds a new user to the global users array
  * @param {String} id User ID (given by the socket)
  */
-const addUser = id => users.push(new User(id))
+const addUser = (id) => users.push(new User(id));
 
 /**
  * Removes a new user to the global users array
  * @param {String} id User ID (given by the socket)
  */
-const removeUser = id => {
-  users = users.filter(user => user.id !== id);
-}
->>>>>>> 9e70c9641d58183d3e24fc65b66cc32f2b0d3174
+const removeUser = (id) => {
+  users = users.filter((user) => user.id !== id);
+};
 
 module.exports = {
   getUser,
