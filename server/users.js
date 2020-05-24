@@ -5,7 +5,8 @@ class User {
     this.name = "";
     this.token = "";
     this.token_type = "";
-    this.playback_device = "";
+    this.playback_device = null;
+    this.playback_devices = [];
     this.room = "";
     this.host = false;
 
@@ -20,11 +21,18 @@ class User {
     return this; // return the user object for chaining
   };
 
+  setDevices = (devices) => {
+    this.playback_devices = devices;
+    // Get the device that is active
+    this.playback_device = devices.find(device => device.is_active);
+  }
+
   // Returns all the information that is OK for the client to have
   clientInfo = () => ({
     name: this.name,
     id: this.id,
     playbackDevice: this.playback_device,
+    playbackDevices: this.playback_devices
   });
 }
 

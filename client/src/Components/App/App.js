@@ -21,6 +21,7 @@ class App extends React.Component {
       loggedIn: false,
       member: false,
       host: false,
+      user: null,
     };
     this.joinRef = React.createRef();
   }
@@ -34,7 +35,7 @@ class App extends React.Component {
         //! If this code is running, the user has logged in through spotify and authorized us to use their information
         // If that's the case, we'll set up a socket connection. Upon success, we will call socketEstablished
         this.setState(
-          { socket: socketIOClient("http://localhost:8000") },
+          { socket: socketIOClient("http://localhost:8000", {reconnection: false}) },
           () => {
             this.state.socket.on(
               CONNECT,
@@ -58,6 +59,26 @@ class App extends React.Component {
   // Sends DESTROY event
   destroyRoom = () => this.state.socket.emit(DESTROY);
 
+  // Sets the user's playback device
+  setPlaybackDevice = (deviceID) => e => fetch(`http://localhost:8000/setDevice?userID=${this.state.userID}`, {
+    method: "POST",
+    headers: {
+      'Content-Type':"application/json"
+    },
+    body: JSON.stringify({
+      device_id: deviceID
+    })
+  }).then(resp => resp.json()).then(data => {
+    this.setState({ user: data });
+    console.log("Successfully set playback device")
+  }).catch(err => console.error(err))
+
+  refreshDevices = e => fetch(`http://localhost:8000/refreshDevices?userID=${this.state.userID}`)
+  .then(resp => resp.json()).then(data => {
+    this.setState({ user: data });
+    console.log("Successfully refreshed playback devices")
+  }).catch(err => console.error(err))
+
   // Socket connection has been established
   socketEstablished = (code) => () => {
     // Get the user id from the socket
@@ -68,9 +89,8 @@ class App extends React.Component {
     fetch(`http://localhost:8000/authSuccess?userID=${userID}&code=${code}`)
       .then((resp) => resp.json())
       .then((data) => {
-        console.log(data);
         // At this point, login stuff is finished and the user is fully logged in
-        this.setState({ loggedIn: true });
+        this.setState({ loggedIn: true, user: data });
       })
       .catch((err) => console.error(err));
     // Get rid of the query parameters since we're done with them, but don't refresh page
@@ -153,6 +173,11 @@ class App extends React.Component {
         {this.state.member ? (
           <button onClick={this.leaveRoom}>Leave room</button>
         ) : null}
+        {/* List the playback devices and onclick, set them */}
+        <div style={{display: "flex", flexDirection:"column", alignItems:"flex-start"}}>
+          {this.state.user.playbackDevices.map(device => <button key={device.id} onClick={this.setPlaybackDevice(device.id)}>{device.name} {device.is_active ? "(Active)":""}</button>)}
+        </div>
+        <button onClick={this.refreshDevices}>Refresh Devices</button>
       </div>
     );
   }

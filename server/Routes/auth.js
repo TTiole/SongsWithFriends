@@ -1,5 +1,5 @@
 const { authUser } = require("../users");
-const { requestUserInfo, requestToken } = require("../requests");
+const { requestUserInfo, requestToken, requestDevices } = require("../requests");
 
 module.exports = function (app) {
   // Request authroization from user to access data
@@ -12,7 +12,7 @@ module.exports = function (app) {
     }
 
     const scopes =
-      "user-modify-playback-state playlist-modify-public user-library-read playlist-read-private";
+      "user-modify-playback-state playlist-modify-public user-library-read playlist-read-private user-read-playback-state";
 
     // Redirects user to Spotify page, prompting if they want to allow our access to their account
     res.redirect(
@@ -32,17 +32,23 @@ module.exports = function (app) {
     let authCode = req.query.code;
     let userID = req.query.userID;
 
+    let user; // Declare the variable in a scope outside the promise resolutions for modification and access
+
     // Request to get the token
     requestToken(authCode)
       .then((data) => {
-        const user = authUser(userID, data.access_token, data.token_type);
-
+        user = authUser(userID, data.access_token, data.token_type); // Assign the user's reference to the user object
+        // Get the user's devices
+        return requestDevices(user)
+      }).then(data => {
+        user.setDevices(data.devices)
         // Get user personal information for client state
-        requestUserInfo(user).then((data) => {
-          user.name = data.display_name;
-          // Send the information to the client
-          res.json(user.clientInfo());
-        });
+        return requestUserInfo(user)
+      })
+      .then((data) => {
+        user.name = data.display_name;
+        // Send the information to the client
+        res.json(user.clientInfo());
       })
       .catch((err) => {
         console.log(err);
