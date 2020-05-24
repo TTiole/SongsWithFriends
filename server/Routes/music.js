@@ -72,6 +72,8 @@ module.exports = (app) => {
   app.get("/search", function (req, res) {
     let userID = req.query.userID;
     let itemName = "Attention";
+    let searchType = "track"; //  Options: album,artist,playlist,show,episode
+
     requestSearch(getUser(userID), encodeURIComponent(itemName), searchType)
       .then((pages) => getNextPage(getUser(userID), pages))
       .catch((err) => {
