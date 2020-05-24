@@ -57,9 +57,15 @@ const requestPlaylists = (user) =>
 const requestTracks = (user, trackID) =>
   requestSpotify(`/playlists/${trackID}/tracks`, user);
 
+const requestSearch = (user, itemName, searchType) => {
+  // console.log(`searching: /search?q=name:${itemName}&type=${searchType}`);
+  return requestSpotify(`/search?q=${itemName}&type=${searchType}`, user);
+};
+
 module.exports = {
   requestUserInfo,
   requestToken,
   requestPlaylists,
   requestTracks,
+  requestSearch,
 };

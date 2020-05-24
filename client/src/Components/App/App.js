@@ -128,6 +128,15 @@ class App extends React.Component {
         <a href={`http://localhost:8000/playlists?userID=${this.state.userID}`}>
           Try getting playlists
         </a>
+        <br />
+        <a href={`http://localhost:8000/allTracks?userID=${this.state.userID}`}>
+          Try getting all the tracks in that playlist
+        </a>
+        <br />
+        <a href={`http://localhost:8000/search?userID=${this.state.userID}`}>
+          Try search with hardcoded search keyword
+        </a>
+
         {/* Displays if neither host or member */}
         {!this.state.host && !this.state.member ? (
           <React.Fragment>
