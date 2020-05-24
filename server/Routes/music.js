@@ -73,9 +73,10 @@ module.exports = (app) => {
     let userID = req.query.userID;
     let itemName = "Attention";
     let searchType = "track"; //  Options: album,artist,playlist,show,episode
+    let pageLimit = 5;
 
     requestSearch(getUser(userID), encodeURIComponent(itemName), searchType)
-      .then((pages) => getNextPage(getUser(userID), pages))
+      .then((pages) => getNextPage(getUser(userID), pages, pageLimit))
       .catch((err) => {
         console.log(err);
         res.status(500).send("Some Errors Occured");
@@ -83,21 +84,27 @@ module.exports = (app) => {
   });
 };
 
-const getNextPage = (user, pages) => {
+const getNextPage = (user, pages, pageLimit) => {
   //  Possible Keys: track, album, artist, playlist, show, episode
   //  Value will always be a page object
+  if (pages.error != undefined) {
+    throw pages.error.status;
+  }
   Object.entries(pages).forEach(([key, value]) => {
     value.items.forEach((trackObj) => {
       track = simplifyTrack(trackObj);
       console.log(track);
     });
-    // Recursively invoke getNextPage to get all the search results
-    if (value.next) {
-      console.log(value.next);
+    //  Recursively invoke getNextPage to get all the search results
+    if (value.next != null && pageLimit > 0) {
+      console.log(pageLimit);
+      pageLimit--;
+      console.log(value.total);
+      //  Parsed next page's url and call getNextPage recursively
       let nextItemName = value.next.split("query=")[1].split("&")[0];
       let nextItemType = value.next.split("type=")[1];
       requestSearch(user, nextItemName, nextItemType).then((pages) =>
-        getNextPage(user, pages)
+        getNextPage(user, pages, pageLimit)
       );
     }
   });
