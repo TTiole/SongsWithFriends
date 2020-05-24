@@ -86,12 +86,39 @@ const requestDevices = (user) =>
 
 // Set the user's playback device
 const assignDevice = (user, device_id) =>
-  requestSpotify(`/me/player`, user, "PUT", {device_ids: [device_id], play: true})
+  requestSpotify(`/me/player`, user, "PUT", {device_ids: [device_id], play: false})
 
 // Pause the user's device
 // If device_id not passed, it'll pause the current device
-const pauseDevice = (user, device_id = null) =>
-  requestSpotify(`/me/player/pause`, user, "PUT", device_id !== null ? {device_id}:null);
+const pauseDevice = (user) =>
+  requestSpotify(`/me/player/pause`, user, "PUT");
+
+// Go to previous song
+const previousSong = (user) =>
+  requestSpotify(`/me/player/previous`, user, "POST")
+
+// Go to next song
+const nextSong = (user) =>
+  requestSpotify(`/me/player/next`, user, "POST")
+
+// Set the position of a song. pos is the time from the start in ms
+// Optionally takes in device_id
+const setSongPosition = (user, position_ms) =>
+  requestSpotify(`/me/player/seek?position_ms=${position_ms}`, user, "PUT")
+
+// Resume song
+const resumeSong = (user) =>
+  requestSpotify(`/me/player/play`, user, "PUT")
+
+// Get information on what's currently playing
+const requestContext = (user) => 
+  requestSpotify(`/me/player`, user)
+
+// Play music based off a context at a specific song and position
+const playContext = (user, context_uri, offset, position_ms) =>
+  requestSpotify(`/me/player/play`, user, "PUT", {
+    context_uri, offset: {uri: offset}, position_ms
+  })
 
 module.exports = {
   requestUserInfo,
@@ -101,5 +128,11 @@ module.exports = {
   requestSearch,
   requestDevices,
   assignDevice,
-  pauseDevice
+  pauseDevice,
+  previousSong,
+  nextSong,
+  setSongPosition,
+  resumeSong,
+  playContext,
+  requestContext
 };

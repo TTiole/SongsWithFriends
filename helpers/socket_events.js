@@ -10,6 +10,10 @@ const PLAY = "play";
 const PAUSE = "pause";
 // Skip a song
 const SKIP = "skip";
+// Previous song
+const PREVIOUS = "previous"
+// Jump to song position
+const JUMP = "jump"
 // Disconnect from the server
 const DISCONNECT = "disconnect";
 // Connect to the server
@@ -29,7 +33,7 @@ const ERROR = "swf-error";
 
 module.exports = {
   QUEUE_ADD, QUEUE_REMOVE, QUEUE_REORDER,
-  PLAY, PAUSE, SKIP,
+  PLAY, PAUSE, SKIP, PREVIOUS, JUMP,
   DISCONNECT, CONNECT,
   JOIN, LEAVE, CREATE, DESTROY, DESTROYED,
   ERROR

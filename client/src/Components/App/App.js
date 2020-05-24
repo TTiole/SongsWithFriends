@@ -1,5 +1,5 @@
 import React from "react";
-import socketIOClient from "socket.io-client";
+import io from "socket.io-client";
 import "./App.css";
 
 import {
@@ -10,6 +10,10 @@ import {
   LEAVE,
   DESTROY,
   DESTROYED,
+  PLAY,
+  SKIP,
+  PAUSE,
+  PREVIOUS
 } from "helpers/socket_events.js";
 
 class App extends React.Component {
@@ -22,6 +26,8 @@ class App extends React.Component {
       member: false,
       host: false,
       user: null,
+      playback: null,
+      roomID: ""
     };
     this.joinRef = React.createRef();
   }
@@ -35,7 +41,7 @@ class App extends React.Component {
         //! If this code is running, the user has logged in through spotify and authorized us to use their information
         // If that's the case, we'll set up a socket connection. Upon success, we will call socketEstablished
         this.setState(
-          { socket: socketIOClient("http://localhost:8000", {reconnection: false}) },
+          { socket: io("http://localhost:8000", {reconnection: false}) },
           () => {
             this.state.socket.on(
               CONNECT,
@@ -58,6 +64,18 @@ class App extends React.Component {
 
   // Sends DESTROY event
   destroyRoom = () => this.state.socket.emit(DESTROY);
+
+  // Sends play event
+  resume = () => this.state.socket.emit(PLAY);
+
+  // Sends pause event
+  pause = () => this.state.socket.emit(PAUSE);
+
+  // Sends skip event
+  skip = () => this.state.socket.emit(SKIP);
+
+  // Sends previous event
+  previous = () => this.state.socket.emit(PREVIOUS);
 
   // Sets the user's playback device
   setPlaybackDevice = (deviceID) => e => fetch(`http://localhost:8000/setDevice?userID=${this.state.userID}`, {
@@ -103,13 +121,13 @@ class App extends React.Component {
     // On error, console.error the msg
     this.state.socket.on(ERROR, (msg) => console.error(msg));
     // On create, let the client know that the user is a host
-    this.state.socket.on(CREATE, (id) => {
-      this.setState({ host: true });
-      console.log(`Successfully created room ${id}`);
+    this.state.socket.on(CREATE, (playback, roomID) => {
+      this.setState({ host: true, playback, roomID});
+      console.log(`Successfully created room ${roomID}`);
     });
     // On join, let the client know that the user is a member
-    this.state.socket.on(JOIN, () => {
-      this.setState({ member: true });
+    this.state.socket.on(JOIN, (playback) => {
+      this.setState({ member: true, playback});
       console.log(`Successfully joined room`);
     });
 
@@ -130,6 +148,14 @@ class App extends React.Component {
       this.setState({ member: false });
       console.log(`Room ${id} has been destroyed`);
     });
+
+    this.state.socket.on(PLAY, (playback) => {
+      this.setState({ playback  });
+    })
+
+    this.state.socket.on(PAUSE, (playback) => {
+      this.setState({ playback  });
+    })
   };
 
   render() {
@@ -177,7 +203,17 @@ class App extends React.Component {
         <div style={{display: "flex", flexDirection:"column", alignItems:"flex-start"}}>
           {this.state.user.playbackDevices.map(device => <button key={device.id} onClick={this.setPlaybackDevice(device.id)}>{device.name} {device.is_active ? "(Active)":""}</button>)}
         </div>
-        <button onClick={this.refreshDevices}>Refresh Devices</button>
+        {/* Displays when either member or host */}
+        {this.state.member || this.state.host ? (
+          <React.Fragment>
+            <button onClick={this.refreshDevices}>Refresh Devices</button>
+            {this.state.playback.playing ? <button onClick={this.pause}>Pause</button>:<button onClick={this.resume}>Resume</button>}
+            
+            <button onClick={this.skip}>Skip</button>
+            <button onClick={this.previous}>Previous</button>
+
+          </React.Fragment>
+        ):null}
       </div>
     );
   }

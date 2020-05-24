@@ -93,7 +93,7 @@ module.exports = (app) => {
     const user = getUser(req.query.userID);
     const {device_id} = req.body;
     // Pause the device we're going to play music off of
-    pauseDevice(user, device_id)
+    pauseDevice(user)
     .then(data => assignDevice(user, device_id)) // Set the device
     .then(data => {
       // Update the user's device information without doing another request
