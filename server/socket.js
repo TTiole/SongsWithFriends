@@ -1,5 +1,6 @@
 const { addUser, removeUser, getUser } = require("./users");
 const { addRoom, getRoom, closeRoom } = require('./rooms')
+const { setSongPosition, nextSong, previousSong, resumeSong, pauseDevice, requestContext, playContext } = require('./requests')
 const events = require("../helpers/socket_events");
 
 
@@ -19,7 +20,14 @@ module.exports = io => socket => {
       socket.join(room.id) // Join the socket room
       user.room = room.id; // Update the room property of user
       user.host = true;  // Set the user as host
-      socket.emit(events.CREATE, room.id) // Emit the event back if success
+      requestContext(user).then(playback => {
+        room.position = playback.progress_ms;
+        room.currentSong = playback.item.name;
+        room.currentSongUri = playback.item.uri;
+        room.contextUri = playback.context.uri;
+        room.playing = playback.is_playing;
+        socket.emit(events.CREATE, room.getPlayback(), room.id) // Emit the event back if success
+      })
     }
   })
 
@@ -36,7 +44,13 @@ module.exports = io => socket => {
         socket.join(id); // Join the socket room
         room.addMember(user); // Add the member to the rooms object
         user.room = id // Update the room property of user
-        socket.emit(events.JOIN);
+
+        // Get the currently playing information from host
+        requestContext(room.host).then(playback => {
+          playContext(user, playback.context.uri, playback.item.uri, playback.progress_ms).then(() => {
+            socket.emit(events.JOIN, room.getPlayback()); // Success
+          })
+        })
       }
     }
   })
@@ -52,6 +66,7 @@ module.exports = io => socket => {
       socket.leave(user.room); // Leave the socket room
       user.room = ""; // Update the user object
       socket.emit(events.LEAVE, room.id)
+      pauseDevice(user); // Pause the user's playback
     }
   })
 
@@ -77,10 +92,51 @@ module.exports = io => socket => {
           // Make all clients leave socket room
           socketIDs.forEach(socketID => io.sockets.sockets[socketID].leave(roomID))
           
+          // TODO: Destroy temporary playlist
         }
       })
     }
   })
+
+  // When receiving the play event, resume the song
+  socket.on(events.PLAY, () => {
+    const user = getUser(socket.id);
+    let room = getRoom(user.room);
+    room.playing = true;
+    room.members.forEach(user => resumeSong(user))
+    io.to(room.id).emit(events.PLAY, room.getPlayback())
+  })
+
+  // When receiving the pause event, resume the song
+  socket.on(events.PAUSE, () => {
+    const user = getUser(socket.id);
+    let room = getRoom(user.room);
+    room.playing = false;
+    room.members.forEach(user => pauseDevice(user))
+    io.to(room.id).emit(events.PAUSE, room.getPlayback())
+  })
+
+  // When receiving the jump event, make the song jump to a position
+  socket.on(events.JUMP, (pos) => {
+    const user = getUser(socket.id);
+    let room = getRoom(user.room);
+    room.members.forEach(user => setSongPosition(user, pos))
+  })
+
+  // When receiving the skip event, skip the song
+  socket.on(events.SKIP, () => {
+    const user = getUser(socket.id);
+    let room = getRoom(user.room);
+    room.members.forEach(user => nextSong(user))
+  })
+
+  // When receiving the previous event, go to the previous song
+  socket.on(events.PREVIOUS, () => {
+    const user = getUser(socket.id);
+    let room = getRoom(user.room);
+    room.members.forEach(user => previousSong(user))
+  })
+
   // On disconnect remove the user
   socket.on(events.DISCONNECT, () => {
     removeUser(socket.id);

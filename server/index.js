@@ -15,6 +15,9 @@ const app = express();
 app.options("*", cors(corsOptions));
 app.use(cors(corsOptions));
 
+// Set up json parsing
+app.use(express.json())
+
 // Import all the routes
 require("./Routes/auth")(app);
 require("./Routes/music")(app);

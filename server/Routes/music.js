@@ -9,6 +9,9 @@ const {
   requestPlaylists,
   requestTracks,
   requestSearch,
+  pauseDevice,
+  assignDevice,
+  requestDevices
 } = require("../requests");
 
 module.exports = (app) => {
@@ -69,12 +72,14 @@ module.exports = (app) => {
       });
   });
 
+  //! This should be a post in the future
   app.get("/search", function (req, res) {
     let userID = req.query.userID;
     let itemName = "Attention";
     let searchType = "track"; //  Options: album,artist,playlist,show,episode
     let pageLimit = 5;
 
+    //! Also, where does the response end other than error?
     requestSearch(getUser(userID), encodeURIComponent(itemName), searchType)
       .then((pages) => getNextPage(getUser(userID), pages, pageLimit))
       .catch((err) => {
@@ -82,8 +87,43 @@ module.exports = (app) => {
         res.status(500).send("Some Errors Occured");
       });
   });
+
+  // Sets the user's playback device
+  app.post("/setDevice", (req,res) => {
+    const user = getUser(req.query.userID);
+    const {device_id} = req.body;
+    // Pause the device we're going to play music off of
+    pauseDevice(user)
+    .then(data => assignDevice(user, device_id)) // Set the device
+    .then(data => {
+      // Update the user's device information without doing another request
+      let devices = user.playback_devices;
+      devices.find(device => device.is_active).is_active = false;
+      devices.find(device => device.id === device_id).is_active = true;
+      user.setDevices(devices);
+      // Send the client info
+      res.json(user.clientInfo())
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send("Some errors occurred")
+    })
+  })
+
+  // Refreshes the user's playback devices
+  app.get('/refreshDevices', (req, res) => {
+    let user = getUser(req.query.userID);
+    requestDevices(user).then(data => {
+      user.setDevices(data.devices)
+      res.json(user.clientInfo()); // Send the updated user back
+    }).catch(err => {
+      console.error(err);
+      res.status(500).send("Some errors occurred")
+    })
+  })
 };
 
+//? You'll have to walk me through what this does
 const getNextPage = (user, pages, pageLimit) => {
   //  Possible Keys: track, album, artist, playlist, show, episode
   //  Value will always be a page object
@@ -110,21 +150,13 @@ const getNextPage = (user, pages, pageLimit) => {
   });
 };
 
-const simplifyTrack = (rawTrack) => {
-  //  If there's multiple artists, put them in an array beforehand
-  let artistsList = [];
-  rawTrack.artists.forEach((artist) => {
-    artistsList.push(artist.name);
-  });
-
-  let track = {
+const simplifyTrack = (rawTrack) => ({
     albumName: rawTrack.album.name,
-    artists: artistsList,
+    // Map the artist names
+    artists: rawTrack.artists.map(artist => artist.name),
     explicit: rawTrack.explicit,
     id: rawTrack.id,
     name: rawTrack.name,
-  };
-  return track;
-};
+  });
 
 // 4xMXgzU2ZyZJ92iCH5HCJg
