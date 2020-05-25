@@ -2,6 +2,9 @@ import React from "react";
 import socketIOClient from "socket.io-client";
 import "./App.css";
 
+import Playlist from "../Playlist.jsx";
+import TrackCell from "../TrackCell.jsx";
+
 import {
   CONNECT,
   CREATE,
@@ -120,6 +123,7 @@ class App extends React.Component {
           <a href={`http://localhost:8000/login?userID=${this.state.userID}`}>
             Try sign in
           </a>
+          <Playlist />
         </div>
       );
     // Display if you are logged in
