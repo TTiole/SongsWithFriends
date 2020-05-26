@@ -35,13 +35,15 @@ const Styles = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    margin: 5,
     width: "55%",
-    backgroundColor: "black",
+    backgroundColor: "pink",
   },
 
   playlistName: {
     display: "flex",
     fontFamily: "OpenSans",
+    margin: 5,
     fontSize: 25,
     fontWeight: 700,
     color: "white",

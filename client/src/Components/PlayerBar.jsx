@@ -1,34 +1,40 @@
 import React, { useState } from "react";
 
-const TrackCell = (props) => {
+const PlayerBar = (props) => {
+  let curTrack = "Attention";
   return (
-    <div style={Styles.trackContainer}>
-      <div style={Styles.infoWrapper}>
+    <div style={Styles.playerContainer}>
+      <div style={Styles.curTrackInfo}>
+        <div>Currently Playing:</div>
         <div style={Styles.name}>{props.track}</div>
         <div style={Styles.artistAlbum}>{props.artist}</div>
       </div>
-      <div style={Styles.duration}>{props.duration}</div>
+      <div style={Styles.ctrlStatus}>
+        {" "}
+        x x 1:05 ------------------------- 3:37
+      </div>
     </div>
   );
 };
 
 const Styles = {
-  trackContainer: {
-    display: "flex",
-    justifyContent: "space-between",
-    width: "90%",
-    backgroundColor: "blue",
-  },
-
-  infoWrapper: {
+  playerContainer: {
     display: "flex",
     flexDirection: "column",
     margin: 5,
-    backgroundColor: "green",
+
+    backgroundColor: "gray",
+  },
+
+  curTrackInfo: {
+    display: "flex",
+    margin: 5,
   },
 
   name: {
     display: "flex",
+    marginRight: 15,
+    marginLeft: 15,
     fontFamily: "OpenSans",
     fontWeight: 700,
   },
@@ -46,6 +52,12 @@ const Styles = {
     fontWeight: 400,
     backgroundColor: "green",
   },
+
+  ctrlStatus: {
+    display: "flex",
+    margin: 5,
+    backgroundColor: "red",
+  },
 };
 
-export default TrackCell;
+export default PlayerBar;
