@@ -2,7 +2,7 @@ import React from "react";
 import io from "socket.io-client";
 import "./App.css";
 
-import UI from "../UI";
+import Main from "../Layout/Main/Main";
 
 import {
   CONNECT,
@@ -175,7 +175,7 @@ class App extends React.Component {
           <a href={`http://localhost:8000/login?userID=${this.state.userID}`}>
             Try sign in
           </a>
-          <UI />
+          <Main />
         </div>
       );
     // Display if you are logged in

@@ -11,3 +11,20 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+* {
+  font-family: "Open Sans";
+}
+
+button {
+  border-radius: 6px;
+  background-color: "#1db945";
+  justify-content: "center";
+  align-content: "center";
+  margin: 5px;
+  height: 30px;
+  max-height: 30px;
+  width: 60px;
+  /* max-width: 60px;  */
+  /* Doesn't make sense to set both to the same value */
+}

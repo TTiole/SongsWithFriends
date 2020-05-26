@@ -1,0 +1,13 @@
+.trackContainer {
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    background-color: blue;
+}
+
+.infoWrapper {
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+    background-color: green;
+}

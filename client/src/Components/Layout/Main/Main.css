@@ -1,0 +1,10 @@
+#main-container {
+    display: flex;
+    flex-direction: column;
+    background-color: black
+}
+
+.container-top {
+    display: flex;
+    justify-content: space-between
+}

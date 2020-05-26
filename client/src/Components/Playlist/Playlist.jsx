@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-import TrackCell from "./TrackCell.jsx";
+import TrackCell from "../TrackCell/TrackCell.jsx";
+import './Playlist.css'
+
+import Typography from '../Typography/Typography'
 
 const Playlist = () => {
   const [tracks, setTracks] = useState([
@@ -17,8 +20,8 @@ const Playlist = () => {
   ]);
 
   return (
-    <div style={Styles.mainContainer}>
-      <div style={Styles.platlistName}>Squad Playlist</div>
+    <div className="playlist-container">
+      <Typography margin="5px" fontSize={25} bold color="#eee">Squad Playlist</Typography>
       {tracks.map((track) => (
         <TrackCell
           track={track.track}
@@ -30,23 +33,4 @@ const Playlist = () => {
   );
 };
 
-const Styles = {
-  mainContainer: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    margin: 5,
-    width: "55%",
-    backgroundColor: "pink",
-  },
-
-  playlistName: {
-    display: "flex",
-    fontFamily: "OpenSans",
-    margin: 5,
-    fontSize: 25,
-    fontWeight: 700,
-    color: "white",
-  },
-};
 export default Playlist;

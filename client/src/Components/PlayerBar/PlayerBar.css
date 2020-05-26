@@ -1,0 +1,18 @@
+.player-container {
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+
+    background-color: gray;
+}
+
+.track-info {
+    display: flex;
+    margin: 5px;
+}
+
+.player-control-status {
+    display: flex;
+    margin: 5px;
+    background-color: red;
+}
