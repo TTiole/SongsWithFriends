@@ -8,11 +8,14 @@ const {
   pauseDevice,
   requestContext,
   playContext,
+  createTempPlaylist,
+  deleteTempPlaylist,
   requestAddQueue,
   requestDeleteQueue,
   requestReorderQueue,
 } = require("./requests");
 const events = require("../helpers/socket_events");
+const { makeid } = require("../helpers/string_utils");
 
 module.exports = (io) => (socket) => {
   console.log("New connection");
@@ -30,14 +33,12 @@ module.exports = (io) => (socket) => {
       socket.join(room.id); // Join the socket room
       user.room = room.id; // Update the room property of user
       user.host = true; // Set the user as host
-      requestContext(user).then((playback) => {
-        room.position = playback.progress_ms;
-        room.currentSong = playback.item.name;
-        room.currentSongUri = playback.item.uri;
-        room.contextUri = playback.context.uri;
-        room.playing = playback.is_playing;
-        socket.emit(events.CREATE, room.getPlayback(), room.id); // Emit the event back if success
-      });
+      createTempPlaylist(user, makeid(16)).then(
+        ({ id, name, uri, owner, tracks }) => {
+          room.playlist = { id, name, uri, owner, tracks };
+          socket.emit(events.CREATE, room.getPlayback(), room.id); // Emit the event back if success
+        }
+      );
     }
   });
 
@@ -94,6 +95,8 @@ module.exports = (io) => (socket) => {
     } else if (!user.host) {
       socket.emit(events.ERROR, "You are not a host");
     } else {
+      deleteTempPlaylist(user, getRoom(roomID).playlist.id);
+      getRoom(roomID).members.forEach((user) => pauseDevice(user));
       closeRoom(roomID); // Close the room, updating everyone's user objects and removing the room
       // Go through all the clients in the room
       io.of("/")

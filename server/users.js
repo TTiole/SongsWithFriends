@@ -9,6 +9,7 @@ class User {
     this.playback_devices = [];
     this.room = "";
     this.host = false;
+    this.spotify_id = 0;
 
     // Music related objects/vars
     this.playlists = [];
@@ -31,6 +32,7 @@ class User {
   clientInfo = () => ({
     name: this.name,
     id: this.id,
+    spotify_id: this.spotify_id,
     playbackDevice: this.playback_device,
     playbackDevices: this.playback_devices
   });

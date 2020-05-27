@@ -6,9 +6,16 @@ const fetch = require("node-fetch");
  * @param {User} user User authorizing the request
  * @param {String} method Optional, default value = GET. The request method
  * @param {Object} body Optional, default value = null. The request body. Not compatible with GET method.
+ * @param {Boolean} expectEmptyBody Optional, default value = false. Determines whether fetch should expect an empty body
  * @returns {Promise} Returns a promise containing the parsed json data
  */
-const requestSpotify = (path, user, method = "GET", body = null) => {
+const requestSpotify = (
+  path,
+  user,
+  method = "GET",
+  body = null,
+  expectEmptyBody = false
+) => {
   // Input validation
   if (path == null || path === "" || !path.includes("/"))
     throw new Error("Path is invalid");
@@ -32,7 +39,7 @@ const requestSpotify = (path, user, method = "GET", body = null) => {
     // send the request
     return fetch(`https://api.spotify.com/v1${path}`, fetchObject).then(
       (resp) => {
-        if (resp.status === 204)
+        if (resp.status === 204 || expectEmptyBody)
           // No content, returned by POST and PUT requests
           return resp.text();
         if (resp.status >= 300)
@@ -44,7 +51,6 @@ const requestSpotify = (path, user, method = "GET", body = null) => {
     );
   } catch (err) {
     console.error(err);
-    throw new Error("Error calling spotify API. See above");
   }
 };
 
@@ -152,6 +158,25 @@ const requestReorderQueue = (playlist_id, itemOffset, newOffset) => {
   requestSpotify(`playlists/${playlist_id}/tracks`, user, "PUT", reqBody);
 };
 
+// Creates temporary
+const createTempPlaylist = (user, name) =>
+  requestSpotify(`/users/${user.spotify_id}/playlists`, user, "POST", {
+    name,
+    public: false,
+    collaborative: true,
+    description:
+      "Temporary playlist for Songs with Friends. Deleted once room is destroyed",
+  });
+
+const deleteTempPlaylist = (user, playlist_id) =>
+  requestSpotify(
+    `/playlists/${playlist_id}/followers`,
+    user,
+    "DELETE",
+    null,
+    true
+  );
+
 module.exports = {
   requestUserInfo,
   requestToken,
@@ -170,4 +195,6 @@ module.exports = {
   requestAddQueue,
   requestDeleteQueue,
   requestReorderQueue,
+  createTempPlaylist,
+  deleteTempPlaylist,
 };
