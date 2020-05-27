@@ -5,10 +5,7 @@ class Room {
   constructor(id, host) {
     this.id = id; this.members = [host]; this.host = host;
     this.playing = false;
-    this.currentSong = "";
-    this.contextUri = "";
-    this.currentSongUri = "";
-    this.position = 0;
+    this.playlist = null;
   }
 
   // Adds a member to the room
@@ -21,7 +18,7 @@ class Room {
     this.members = this.members.filter(member => member.id !== user.id);
   }
 
-  getPlayback = () => ({playing: this.playing, currentSong: this.currentSong, contextUri: this.contextUri, position: this.position, currentSongUri:this.currentSongUri})
+  getPlayback = () => ({playing: this.playing, playlist: this.playlist})
 }
 
 /**

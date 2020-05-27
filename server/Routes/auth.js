@@ -12,7 +12,7 @@ module.exports = function (app) {
     }
 
     const scopes =
-      "user-modify-playback-state playlist-modify-public user-library-read playlist-read-private user-read-playback-state";
+      "user-modify-playback-state playlist-modify-public user-library-read playlist-read-private user-read-playback-state playlist-modify-private";
 
     // Redirects user to Spotify page, prompting if they want to allow our access to their account
     res.redirect(
@@ -47,6 +47,7 @@ module.exports = function (app) {
       })
       .then((data) => {
         user.name = data.display_name;
+        user.spotify_id = data.id;
         // Send the information to the client
         res.json(user.clientInfo());
       })
