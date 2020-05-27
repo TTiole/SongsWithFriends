@@ -6,8 +6,6 @@ import Typography from '../Typography/Typography'
 
 const PlayerBar = (props) => {
   let curTrack = "Attention";
-  // Doctor called, you have divitis! lol
-  // Seriously though what's up with all the divs. If we're displaying text put them in headers or p's or make our own Typography component
   return (
     <div className="player-container">
       <div className="track-info">

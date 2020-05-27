@@ -55,6 +55,22 @@ class App extends React.Component {
     }
   }
 
+  // TODO
+  /**
+    On create room -> Create a temporary playlist host
+    On join room => We get the host's context and play
+    On leave room => Pause
+    On destroy room => Delete temporary playlist. Pause everyone's playbacks
+
+    Room needs to know everything in the playlist
+    It needs to know the current song. It can either uri or index
+    QUEUE ADD => Adds to the playlist. Post that in the temporary playlist, and you can update the room playlist
+    QUEUE_REMOVE => Same as above but opposite
+    QUEUE_REORDER => ...
+    NEXT_SONG => Update the current song in the room
+  */
+
+
   // Sends CREATE event
   createRoom = () => this.state.socket.emit(CREATE);
 
@@ -78,6 +94,7 @@ class App extends React.Component {
 
   // Sends previous event
   previous = () => this.state.socket.emit(PREVIOUS);
+
 
   // Sets the user's playback device
   setPlaybackDevice = (deviceID) => (e) =>

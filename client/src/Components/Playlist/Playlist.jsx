@@ -24,6 +24,7 @@ const Playlist = () => {
       <Typography margin="5px" fontSize={25} bold color="#eee">Squad Playlist</Typography>
       {tracks.map((track) => (
         <TrackCell
+          key={track.track}
           track={track.track}
           artist={track.artist}
           duration={track.duration}
