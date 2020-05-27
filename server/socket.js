@@ -120,22 +120,22 @@ module.exports = (io) => (socket) => {
     }
   });
 
-  socket.on(event.QUEUE_ADD, (track) => {
+  socket.on(events.QUEUE_ADD, (track) => {
     const user = getUser(socket.id);
     let room = getRoom(user.room);
-    requestAddQueue(room.playlist.id, track);
+    requestAddQueue(user, room.playlist.id, track);
   });
 
-  socket.on(event.QUEUE_REMOVE, (track) => {
+  socket.on(events.QUEUE_REMOVE, (track) => {
     const user = getUser(socket.id);
     let room = getRoom(user.room);
-    requestDeleteQueue(room.playlist.id, track);
+    requestDeleteQueue(user, room.playlist.id, track);
   });
 
-  socket.on(event.QUEUE_REORDER, (trackOffset, newOffset) => {
+  socket.on(events.QUEUE_REORDER, (trackOffset, newOffset) => {
     const user = getUser(socket.id);
     let room = getRoom(user.room);
-    requestReorderQueue(room.playlist.id, trackOffset, newOffset);
+    requestReorderQueue(user, room.playlist.id, trackOffset, newOffset);
   });
 
   // When receiving the play event, resume the song
@@ -179,6 +179,7 @@ module.exports = (io) => (socket) => {
 
   // On disconnect remove the user
   socket.on(events.DISCONNECT, () => {
+    // TODO: IF USER IS IN THE ROOM, MAKE THEM LEAVE. IF USER IS HOST, DESTROY THE ROOM
     removeUser(socket.id);
   });
 };

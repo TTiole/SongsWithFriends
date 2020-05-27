@@ -131,9 +131,9 @@ const playContext = (user, context_uri, offset, position_ms) =>
   });
 
 // Rqeust to add an item(track) to the playlist
-const requestAddQueue = (playlist_id, trackObj) => {
+const requestAddQueue = (user, playlist_id, trackObj) => {
   requestSpotify(
-    `playlists/${playlist_id}/tracks?uris=${trackObj.uri}`,
+    `/playlists/${playlist_id}/tracks?uris=${trackObj.uri}`,
     user,
     "PUT"
   );
@@ -141,21 +141,21 @@ const requestAddQueue = (playlist_id, trackObj) => {
 
 // Rqeust to delete an item(track) to the playlist
 // TODO: Add offset and/or snapshot_id to remove specific track
-const requestDeleteQueue = (playlist_id, trackObj) => {
+const requestDeleteQueue = (user, playlist_id, trackObj) => {
   let reqBody = {
-    tracks: {
+    tracks: [{
       uri: trackObj.uri,
-    },
+    }],
   };
-  requestSpotify(`playlists/${playlist_id}/tracks`, user, "DELETE", reqBody);
+  requestSpotify(`/playlists/${playlist_id}/tracks`, user, "DELETE", reqBody);
 };
 
-const requestReorderQueue = (playlist_id, itemOffset, newOffset) => {
+const requestReorderQueue = (user, playlist_id, itemOffset, newOffset) => {
   let reqBody = {
     range_start: itemOffset,
     insert_before: newOffset,
   };
-  requestSpotify(`playlists/${playlist_id}/tracks`, user, "PUT", reqBody);
+  requestSpotify(`/playlists/${playlist_id}/tracks`, user, "PUT", reqBody);
 };
 
 // Creates temporary
