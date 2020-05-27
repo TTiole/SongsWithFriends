@@ -22,22 +22,26 @@ const requestSpotify = (path, user, method = "GET", body = null) => {
       headers: {
         Authorization: `${user.token_type} ${user.token}`,
       },
-    }
+    };
 
     // Add the body to the parameters if it has been passed and is not a GET
-    if(method !== "GET" && body !== null) {
+    if (method !== "GET" && body !== null) {
       fetchObject.body = JSON.stringify(body);
-      fetchObject.headers["Content-Type"] = "application/json"
+      fetchObject.headers["Content-Type"] = "application/json";
     }
     // send the request
-    return fetch(`https://api.spotify.com/v1${path}`, fetchObject).then(resp => {
-      if(resp.status === 204) // No content, returned by POST and PUT requests
-        return resp.text();
-      if(resp.status >= 300)
-        resp.text().then(text => {throw new Error(text)})
-      else
-        return resp.json()
-    });
+    return fetch(`https://api.spotify.com/v1${path}`, fetchObject).then(
+      (resp) => {
+        if (resp.status === 204)
+          // No content, returned by POST and PUT requests
+          return resp.text();
+        if (resp.status >= 300)
+          resp.text().then((text) => {
+            throw new Error(text);
+          });
+        else return resp.json();
+      }
+    );
   } catch (err) {
     console.error(err);
     throw new Error("Error calling spotify API. See above");
@@ -81,44 +85,72 @@ const requestSearch = (user, itemName, searchType) => {
 };
 
 // Get the user's playback devices
-const requestDevices = (user) => 
-  requestSpotify(`/me/player/devices`, user);
+const requestDevices = (user) => requestSpotify(`/me/player/devices`, user);
 
 // Set the user's playback device
 const assignDevice = (user, device_id) =>
-  requestSpotify(`/me/player`, user, "PUT", {device_ids: [device_id], play: false})
+  requestSpotify(`/me/player`, user, "PUT", {
+    device_ids: [device_id],
+    play: false,
+  });
 
 // Pause the user's device
 // If device_id not passed, it'll pause the current device
-const pauseDevice = (user) =>
-  requestSpotify(`/me/player/pause`, user, "PUT");
+const pauseDevice = (user) => requestSpotify(`/me/player/pause`, user, "PUT");
 
 // Go to previous song
 const previousSong = (user) =>
-  requestSpotify(`/me/player/previous`, user, "POST")
+  requestSpotify(`/me/player/previous`, user, "POST");
 
 // Go to next song
-const nextSong = (user) =>
-  requestSpotify(`/me/player/next`, user, "POST")
+const nextSong = (user) => requestSpotify(`/me/player/next`, user, "POST");
 
 // Set the position of a song. pos is the time from the start in ms
 // Optionally takes in device_id
 const setSongPosition = (user, position_ms) =>
-  requestSpotify(`/me/player/seek?position_ms=${position_ms}`, user, "PUT")
+  requestSpotify(`/me/player/seek?position_ms=${position_ms}`, user, "PUT");
 
 // Resume song
-const resumeSong = (user) =>
-  requestSpotify(`/me/player/play`, user, "PUT")
+const resumeSong = (user) => requestSpotify(`/me/player/play`, user, "PUT");
 
 // Get information on what's currently playing
-const requestContext = (user) => 
-  requestSpotify(`/me/player`, user)
+const requestContext = (user) => requestSpotify(`/me/player`, user);
 
 // Play music based off a context at a specific song and position
 const playContext = (user, context_uri, offset, position_ms) =>
   requestSpotify(`/me/player/play`, user, "PUT", {
-    context_uri, offset: {uri: offset}, position_ms
-  })
+    context_uri,
+    offset: { uri: offset },
+    position_ms,
+  });
+
+// Rqeust to add an item(track) to the playlist
+const requestAddQueue = (playlist_id, trackObj) => {
+  requestSpotify(
+    `playlists/${playlist_id}/tracks?uris=${trackObj.uri}`,
+    user,
+    "PUT"
+  );
+};
+
+// Rqeust to delete an item(track) to the playlist
+// TODO: Add offset and/or snapshot_id to remove specific track
+const requestDeleteQueue = (playlist_id, trackObj) => {
+  let reqBody = {
+    tracks: {
+      uri: trackObj.uri,
+    },
+  };
+  requestSpotify(`playlists/${playlist_id}/tracks`, user, "DELETE", reqBody);
+};
+
+const requestReorderQueue = (playlist_id, itemOffset, newOffset) => {
+  let reqBody = {
+    range_start: itemOffset,
+    insert_before: newOffset,
+  };
+  requestSpotify(`playlists/${playlist_id}/tracks`, user, "PUT", reqBody);
+};
 
 module.exports = {
   requestUserInfo,
@@ -134,5 +166,8 @@ module.exports = {
   setSongPosition,
   resumeSong,
   playContext,
-  requestContext
+  requestContext,
+  requestAddQueue,
+  requestDeleteQueue,
+  requestReorderQueue,
 };

@@ -11,7 +11,7 @@ const {
   requestSearch,
   pauseDevice,
   assignDevice,
-  requestDevices
+  requestDevices,
 } = require("../requests");
 
 module.exports = (app) => {
@@ -89,38 +89,40 @@ module.exports = (app) => {
   });
 
   // Sets the user's playback device
-  app.post("/setDevice", (req,res) => {
+  app.post("/setDevice", (req, res) => {
     const user = getUser(req.query.userID);
-    const {device_id} = req.body;
+    const { device_id } = req.body;
     // Pause the device we're going to play music off of
     pauseDevice(user)
-    .then(data => assignDevice(user, device_id)) // Set the device
-    .then(data => {
-      // Update the user's device information without doing another request
-      let devices = user.playback_devices;
-      devices.find(device => device.is_active).is_active = false;
-      devices.find(device => device.id === device_id).is_active = true;
-      user.setDevices(devices);
-      // Send the client info
-      res.json(user.clientInfo())
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).send("Some errors occurred")
-    })
-  })
+      .then((data) => assignDevice(user, device_id)) // Set the device
+      .then((data) => {
+        // Update the user's device information without doing another request
+        let devices = user.playback_devices;
+        devices.find((device) => device.is_active).is_active = false;
+        devices.find((device) => device.id === device_id).is_active = true;
+        user.setDevices(devices);
+        // Send the client info
+        res.json(user.clientInfo());
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send("Some errors occurred");
+      });
+  });
 
   // Refreshes the user's playback devices
-  app.get('/refreshDevices', (req, res) => {
+  app.get("/refreshDevices", (req, res) => {
     let user = getUser(req.query.userID);
-    requestDevices(user).then(data => {
-      user.setDevices(data.devices)
-      res.json(user.clientInfo()); // Send the updated user back
-    }).catch(err => {
-      console.error(err);
-      res.status(500).send("Some errors occurred")
-    })
-  })
+    requestDevices(user)
+      .then((data) => {
+        user.setDevices(data.devices);
+        res.json(user.clientInfo()); // Send the updated user back
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send("Some errors occurred");
+      });
+  });
 };
 
 //? You'll have to walk me through what this does
@@ -151,12 +153,13 @@ const getNextPage = (user, pages, pageLimit) => {
 };
 
 const simplifyTrack = (rawTrack) => ({
-    albumName: rawTrack.album.name,
-    // Map the artist names
-    artists: rawTrack.artists.map(artist => artist.name),
-    explicit: rawTrack.explicit,
-    id: rawTrack.id,
-    name: rawTrack.name,
-  });
+  albumName: rawTrack.album.name,
+  // Map the artist names
+  artists: rawTrack.artists.map((artist) => artist.name),
+  explicit: rawTrack.explicit,
+  uri: rawTrack.uri,
+  id: rawTrack.id,
+  name: rawTrack.name,
+});
 
 // 4xMXgzU2ZyZJ92iCH5HCJg
