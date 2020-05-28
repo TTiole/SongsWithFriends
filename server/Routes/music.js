@@ -160,6 +160,7 @@ const simplifyTrack = (rawTrack) => ({
   // Map the artist names
   artists: rawTrack.artists.map((artist) => artist.name),
   explicit: rawTrack.explicit,
+  duration_ms: rawTrack.duration_ms,
   uri: rawTrack.uri,
   id: rawTrack.id,
   name: rawTrack.name,

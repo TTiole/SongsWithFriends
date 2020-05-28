@@ -1,13 +1,12 @@
 .track-container {
-    display: flex;
-    justify-content: space-between;
-    width: 90%;
-    background-color: blue;
+  display: flex;
+  justify-content: space-between;
+  background-color: blue;
 }
 
 .track-container-info {
-    display: flex;
-    flex-direction: column;
-    margin: 5px;
-    background-color: green;
+  display: flex;
+  flex-direction: column;
+  margin: 5px;
+  background-color: green;
 }
