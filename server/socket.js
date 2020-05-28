@@ -73,51 +73,12 @@ module.exports = (io) => (socket) => {
 
   // On room leave, reset the user room property
   socket.on(events.LEAVE, () => {
-    const user = getUser(socket.id);
-    if (user.room === "") {
-      socket.emit(events.ERROR, "You are not in a room");
-    } else {
-      let room = getRoom(user.room);
-      room.removeMember(user); // Remove the user from the room object
-      socket.leave(user.room); // Leave the socket room
-      user.room = ""; // Update the user object
-      socket.emit(events.LEAVE, room.id);
-      pauseDevice(user); // Pause the user's playback
-    }
+    leaveRoom();
   });
 
   // On room destroy, get rid of the room, and wipe the information off all its users
   socket.on(events.DESTROY, () => {
-    const user = getUser(socket.id);
-    const roomID = user.room;
-    if (roomID === "") {
-      socket.emit(events.ERROR, "You are not in a room");
-    } else if (!user.host) {
-      socket.emit(events.ERROR, "You are not a host");
-    } else {
-      deleteTempPlaylist(user, getRoom(roomID).playlist.id);
-      getRoom(roomID).members.forEach((user) => pauseDevice(user));
-      closeRoom(roomID); // Close the room, updating everyone's user objects and removing the room
-      // Go through all the clients in the room
-      io.of("/")
-        .in(roomID)
-        .clients((error, socketIDs) => {
-          if (error) {
-            socket.emit(events.ERROR, `Error getting room clients: ${error}`);
-          } else {
-            // Let all the members know the room has been destroyed
-            socket.to(roomID).emit(events.DESTROYED, roomID);
-            // Let the host know the room has been destroyed successfully
-            socket.emit(events.DESTROY, roomID);
-            // Make all clients leave socket room
-            socketIDs.forEach((socketID) =>
-              io.sockets.sockets[socketID].leave(roomID)
-            );
-
-            // TODO: Destroy temporary playlist
-          }
-        });
-    }
+    destroyRoom();
   });
 
   socket.on(events.QUEUE_ADD, (track) => {
@@ -167,7 +128,14 @@ module.exports = (io) => (socket) => {
   socket.on(events.SKIP, () => {
     const user = getUser(socket.id);
     let room = getRoom(user.room);
-    room.members.forEach((user) => nextSong(user));
+
+    Promise.all(room.members.map((user) => nextSong(user))).then((datas) => {
+      requestContext(room.host).then(playback => {
+        room.currentSong = playback.item.name;
+        room.playing = true;
+        io.to(room.id).emit(events.SKIP, room.getPlayback());
+      })
+    });
   });
 
   // When receiving the previous event, go to the previous song
@@ -175,11 +143,69 @@ module.exports = (io) => (socket) => {
     const user = getUser(socket.id);
     let room = getRoom(user.room);
     room.members.forEach((user) => previousSong(user));
+    Promise.all(room.members.map((user) => nextSong(user))).then((datas) => {
+      requestContext(room.host).then(playback => {
+        room.currentSong = playback.item.name;
+        room.playing = true;
+        io.to(room.id).emit(events.SKIP, room.getPlayback());
+      })
+    });
   });
 
   // On disconnect remove the user
   socket.on(events.DISCONNECT, () => {
-    // TODO: IF USER IS IN THE ROOM, MAKE THEM LEAVE. IF USER IS HOST, DESTROY THE ROOM
+    const user = getUser(socket.id);
+    if(user.host)
+      destroyRoom();
+    else if (user.room !== "") // User is a member
+      leaveRoom();
     removeUser(socket.id);
   });
+
+  /* ----- HELPERS ------ */
+  
+  const leaveRoom = () => {
+    const user = getUser(socket.id);
+    if (user.room === "") {
+      socket.emit(events.ERROR, "You are not in a room");
+    } else {
+      let room = getRoom(user.room);
+      room.removeMember(user); // Remove the user from the room object
+      socket.leave(user.room); // Leave the socket room
+      user.room = ""; // Update the user object
+      socket.emit(events.LEAVE, room.id);
+      pauseDevice(user); // Pause the user's playback
+    }
+  }
+  
+  const destroyRoom = () => {
+    const user = getUser(socket.id);
+    const roomID = user.room;
+    if (roomID === "") {
+      socket.emit(events.ERROR, "You are not in a room");
+    } else if (!user.host) {
+      socket.emit(events.ERROR, "You are not a host");
+    } else {
+      deleteTempPlaylist(user, getRoom(roomID).playlist.id);
+      getRoom(roomID).members.forEach((user) => pauseDevice(user));
+      closeRoom(roomID); // Close the room, updating everyone's user objects and removing the room
+      // Go through all the clients in the room
+      io.of("/")
+        .in(roomID)
+        .clients((error, socketIDs) => {
+          if (error) {
+            socket.emit(events.ERROR, `Error getting room clients: ${error}`);
+          } else {
+            // Let all the members know the room has been destroyed
+            socket.to(roomID).emit(events.DESTROYED, roomID);
+            // Let the host know the room has been destroyed successfully
+            socket.emit(events.DESTROY, roomID);
+            // Make all clients leave socket room
+            socketIDs.forEach((socketID) =>
+              io.sockets.sockets[socketID].leave(roomID)
+            );
+          }
+        });
+    }
+  }
 };

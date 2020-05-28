@@ -33,7 +33,7 @@ const Playlist = (props) => {
         setTracks(playlist.tracks.map(track => ({track: track.name, artist: track.artists, duration: "0:00", id: track.id})));
       })
       .catch((err) => console.error(err));
-  }, [])
+  }, [userID])
 
   return (
     <div className="playlist-container">

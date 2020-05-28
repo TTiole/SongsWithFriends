@@ -18,6 +18,7 @@ import {
   PREVIOUS,
   QUEUE_ADD,
   QUEUE_REMOVE,
+  JUMP
 } from "helpers/socket_events.js";
 
 class App extends React.Component {
@@ -34,6 +35,7 @@ class App extends React.Component {
       roomID: "",
     };
     this.joinRef = React.createRef();
+    this.jumpRef = React.createRef();
     // this.newInputRef = React.createRef();
     // this.newInputRef.current.value
   }
@@ -89,6 +91,9 @@ class App extends React.Component {
 
   // Sends previous event
   previous = () => this.state.socket.emit(PREVIOUS);
+
+  // Jump to point in song
+  jumpTo = () => this.state.socket.emit(JUMP, this.jumpRef.current.value)
 
   addSong = () =>
     this.state.socket.emit(QUEUE_ADD, {
@@ -186,6 +191,14 @@ class App extends React.Component {
     this.state.socket.on(PAUSE, (playback) => {
       this.setState({ playback });
     });
+
+    this.state.socket.on(SKIP, (playback) => {
+      this.setState({ playback });
+    });
+
+    this.state.socket.on(PREVIOUS, (playback) => {
+      this.setState({ playback });
+    });
   };
 
   render() {
@@ -257,6 +270,10 @@ class App extends React.Component {
             <button onClick={this.previous}>Previous</button>
             <button onClick={this.addSong}>Add hardcoded song</button>
             <button onClick={this.removeSong}>Remove hardcoded song</button>
+            <input type='number' min="0" ref={this.jumpRef} />
+            <button onClick={this.jumpTo}>Jump To</button>
+
+            <h1>Now playing: {this.state.playback.currentSong}</h1>
             {/* <input type="text" ref={this.newInputRef}/> */}
             <Main user={this.state.user} />
           </React.Fragment>
