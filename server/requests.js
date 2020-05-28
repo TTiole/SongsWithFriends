@@ -131,6 +131,7 @@ const playContext = (user, context_uri, offset, position_ms) =>
   });
 
 // Rqeust to add an item(track) to the playlist
+//! IMPORTANT: THERES A BUG WHICH REMOVES ALL SONGS FROM THE PLAYLIST HERE......
 const requestAddQueue = (user, playlist_id, trackObj) => {
   requestSpotify(
     `/playlists/${playlist_id}/tracks?uris=${trackObj.uri}`,

@@ -36,7 +36,7 @@ const Playlist = (props) => {
           }))
         );
       });
-  }, []);
+  }, [userID]);
 
   return (
     <div className="playlist-container">
