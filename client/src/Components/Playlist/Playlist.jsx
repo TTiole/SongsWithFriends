@@ -1,59 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TrackCell from "../TrackCell/TrackCell.jsx";
 import "./Playlist.css";
 
 import Typography from "../Typography/Typography";
 
 const Playlist = (props) => {
-  const [tracks, setTracks] = useState([
-    {
-      track: "Attention",
-      artist: "Charlie Puth · Voicenotes",
-      duration: "3:31",
-    },
-    {
-      track: "Lucid Dreams",
-      artist: "Juice WRLD · Lucid Dreams",
-      duration: "0:00",
-    },
-    { track: "Starboy", artist: "The Weeknd · Starboy", duration: "1:00" },
-  ]);
+  const [tracks, setTracks] = useState([]);
 
   let userID = props.user.id;
   // console.log(userID);
-
-  fetch(`http://localhost:8000/playlists?userID=${userID}`, {
-    method: "GET",
-  })
-    .then((resp) => resp.json())
-    .then((playlists) => {
-      // console.log(props.user); //!TODO: WHY DOES THE USER OBJECT HERE DOESN'T HAVE PALYLISTS?
-      // console.log(playlist);
-      // console.log(playlists);
-      let playlistName = playlists[3].name;
-      fetch(
-        `http://localhost:8000/allTracks?userID=${userID}&playlistName=${playlistName}`,
-        {
-          method: "GET",
-        }
-      )
-        .then((resp) => resp.json())
-        .then((playlist) => {
-          // console.log(playlist);
-          console.log("FF");
-          let trackState = [];
-          playlist.tracks.forEach((track) => {
-            console.log(track.name);
-            trackState.push({
-              track: track.name,
-              artist: track.artists,
-              duration: "0:00",
-            });
-          });
-          setTracks(trackState);
-        });
+  useEffect(() => {
+    fetch(`http://localhost:8000/playlists?userID=${userID}`, {
+      method: "GET",
     })
-    .catch((err) => console.error(err));
+      .then((resp) => resp.json())
+      .then((playlists) => {
+        // console.log(props.user); //!TODO: WHY DOES THE USER OBJECT HERE DOESN'T HAVE PALYLISTS?
+        // console.log(playlist);
+        // console.log(playlists);
+        let playlistName = playlists[3].name;
+        return fetch(
+          `http://localhost:8000/allTracks?userID=${userID}&playlistName=${playlistName}`,
+          {
+            method: "GET",
+          }
+        )
+      })
+      .then((resp) => resp.json())
+      .then((playlist) => {
+        // console.log(playlist);
+        console.log("FF");
+        setTracks(playlist.tracks.map(track => ({track: track.name, artist: track.artists, duration: "0:00", id: track.id})));
+      })
+      .catch((err) => console.error(err));
+  }, [])
 
   return (
     <div className="playlist-container">
@@ -62,7 +42,7 @@ const Playlist = (props) => {
       </Typography>
       {tracks.map((track) => (
         <TrackCell
-          key={track.track}
+          key={track.id}
           track={track.track}
           artist={track.artist}
           duration={track.duration}
