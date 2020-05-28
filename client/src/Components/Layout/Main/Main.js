@@ -1,14 +1,15 @@
 import React from "react";
-import "./Main.css"
+import "./Main.css";
 
 import Playlist from "../../Playlist/Playlist.jsx";
 import PlayerBar from "../../PlayerBar/PlayerBar.jsx";
 
-const Main = () => {
+const Main = (props) => {
+  console.log(props);
   return (
     <main id="main-container">
       <div className="container-top">
-        <Playlist />
+        <Playlist user={props.user} />
         <button>Invite</button>
       </div>
 

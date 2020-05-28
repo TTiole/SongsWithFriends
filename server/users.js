@@ -25,8 +25,8 @@ class User {
   setDevices = (devices) => {
     this.playback_devices = devices;
     // Get the device that is active
-    this.playback_device = devices.find(device => device.is_active);
-  }
+    this.playback_device = devices.find((device) => device.is_active);
+  };
 
   // Returns all the information that is OK for the client to have
   clientInfo = () => ({
@@ -34,7 +34,7 @@ class User {
     id: this.id,
     spotify_id: this.spotify_id,
     playbackDevice: this.playback_device,
-    playbackDevices: this.playback_devices
+    playbackDevices: this.playback_devices,
   });
 }
 

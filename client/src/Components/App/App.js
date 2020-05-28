@@ -17,7 +17,7 @@ import {
   PAUSE,
   PREVIOUS,
   QUEUE_ADD,
-  QUEUE_REMOVE
+  QUEUE_REMOVE,
 } from "helpers/socket_events.js";
 
 class App extends React.Component {
@@ -66,7 +66,6 @@ class App extends React.Component {
     If user clicks on track, then use the add_queue event
   */
 
-
   // Sends CREATE event
   createRoom = () => this.state.socket.emit(CREATE);
 
@@ -91,10 +90,15 @@ class App extends React.Component {
   // Sends previous event
   previous = () => this.state.socket.emit(PREVIOUS);
 
-  addSong = () => this.state.socket.emit(QUEUE_ADD, { uri: "spotify:track:7cBkZ5cBvMUrHoCtsoDotj"});
+  addSong = () =>
+    this.state.socket.emit(QUEUE_ADD, {
+      uri: "spotify:track:7cBkZ5cBvMUrHoCtsoDotj",
+    });
 
-  removeSong = () => this.state.socket.emit(QUEUE_REMOVE, { uri: "spotify:track:7cBkZ5cBvMUrHoCtsoDotj"}); 
-
+  removeSong = () =>
+    this.state.socket.emit(QUEUE_REMOVE, {
+      uri: "spotify:track:7cBkZ5cBvMUrHoCtsoDotj",
+    });
 
   // Sets the user's playback device
   setPlaybackDevice = (deviceID) => (e) =>
@@ -192,7 +196,6 @@ class App extends React.Component {
           <a href={`http://localhost:8000/login?userID=${this.state.userID}`}>
             Try sign in
           </a>
-          <Main />
         </div>
       );
     // Display if you are logged in
@@ -255,6 +258,7 @@ class App extends React.Component {
             <button onClick={this.addSong}>Add hardcoded song</button>
             <button onClick={this.removeSong}>Remove hardcoded song</button>
             {/* <input type="text" ref={this.newInputRef}/> */}
+            <Main user={this.state.user} />
           </React.Fragment>
         ) : null}
       </div>

@@ -19,7 +19,7 @@ module.exports = (app) => {
 
   app.get("/playlists", function (req, res) {
     let userID = req.query.userID;
-    console.log(userID);
+    // console.log(userID);
     requestPlaylists(getUser(userID))
       .then((data) => {
         // Items is an array of "playlist objects"
@@ -36,7 +36,8 @@ module.exports = (app) => {
           };
           addSinglePlaylist(userID, simplifiedPlaylist);
         });
-        console.log(getAllPlaylists(userID));
+        // console.log(getAllPlaylists(userID));
+        res.json(getAllPlaylists(userID));
       })
       .catch((err) => {
         console.log(err);
@@ -46,8 +47,8 @@ module.exports = (app) => {
 
   app.get("/allTracks", function (req, res) {
     let userID = req.query.userID;
-    // let playlistName = req.query.playlistName;
-    let playlistName = "home🏠";
+    let playlistName = req.query.playlistName;
+    // let playlistName = "home🏠";
 
     let playlist = getSinglePlaylist(userID, playlistName);
     let tracks = [];
@@ -61,10 +62,12 @@ module.exports = (app) => {
         pages.items.forEach((playlistTrackObj) => {
           //  If there's multiple artists, put them in an array beforehand
           tracks.push(simplifyTrack(playlistTrackObj.track));
-          console.log(simplifyTrack(playlistTrackObj.track));
+          // console.log(simplifyTrack(playlistTrackObj.track));
         });
         //  Update the selected playlist
         playlist.tracks = tracks;
+        // console.log("In music\n" + getUser(userID).playlists[3].tracks);
+        res.json(playlist);
       })
       .catch((err) => {
         console.log(err);
