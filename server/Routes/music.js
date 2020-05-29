@@ -79,7 +79,7 @@ module.exports = (app) => {
   app.get("/search", function (req, res) {
     let searchResult = [];
     let userID = req.query.userID;
-    let itemName = "Attention";
+    let itemName = req.query.searchWord;
     let searchType = "track"; //  Options: album,artist,playlist,show,episode
     let pageLimit = 5;
 

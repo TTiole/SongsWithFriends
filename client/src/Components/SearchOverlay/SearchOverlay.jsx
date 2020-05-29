@@ -10,34 +10,6 @@ import {
   QUEUE_ADD,
 } from "helpers/socket_events.js";
 
-// let testResult = [
-//   {
-//     title: "Attention",
-//     artist: "Charlie Puth",
-//     album: "Voicenotes",
-//   },
-//   {
-//     title: "Attention",
-//     artist: "Charlie Puth",
-//     album: "Voicenotes",
-//   },
-//   {
-//     title: "Attention",
-//     artist: "Charlie Puth",
-//     album: "Voicenotes",
-//   },
-//   {
-//     title: "Attention",
-//     artist: "Charlie Puth",
-//     album: "Voicenotes",
-//   },
-//   {
-//     title: "Attention",
-//     artist: "Charlie Puth",
-//     album: "Voicenotes",
-//   },
-// ];
-
 const SearchOverlay = (props) => {
   const [result, setResult] = useState([]);
   const addSong = result => () => {
@@ -62,14 +34,22 @@ const SearchOverlay = (props) => {
 };
 
 export const SearchBar = (props) => {
+  const [searchWord, setSearchWord] = useState("");
+
+  function handleChange(event) {
+    setSearchWord(event.target.value);
+  }
+
   const handleSearch = () => {
-    get('/search', { userID: props.user.id }, (data) => {
+    get('/search', { userID: props.user.id, searchWord: searchWord }, (data) => {
       props.setResult(data);
     });
+    setSearchWord("");
   };
   return (
     <div className="searchbar-wrapper">
-      <input placeholder="Search a Song!" id="searchBox"></input>
+      <input placeholder="Search a Song!" id="searchBox" onChange={handleChange}
+        value={searchWord}></input>
       <button className="searchBtn" onClick={handleSearch}>
         Search
       </button>
