@@ -20,8 +20,6 @@ const Playlist = (props) => {
             key={track.id}
             duration={ms2time(track.duration_ms)}
             track={track}
-            addSong={props.addSong}
-            removeSong={props.removeSong}
           />
         ))}
       </div>

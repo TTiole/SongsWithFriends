@@ -1,111 +1,96 @@
-import React, { userState, useEffect } from "react";
+import React from "react";
+import {connect} from 'react-redux'
+import Typography from '../Typography/Typography'
 import "./SearchOverlay.css";
 import { useState } from "react";
+import {get} from '../../Fetch'
+import Popup from "../Popup/Popup";
 
-let testResult = [
-  {
-    title: "Attention",
-    artist: "Charlie Puth",
-    album: "Voicenotes",
-  },
-  {
-    title: "Attention",
-    artist: "Charlie Puth",
-    album: "Voicenotes",
-  },
-  {
-    title: "Attention",
-    artist: "Charlie Puth",
-    album: "Voicenotes",
-  },
-  {
-    title: "Attention",
-    artist: "Charlie Puth",
-    album: "Voicenotes",
-  },
-  {
-    title: "Attention",
-    artist: "Charlie Puth",
-    album: "Voicenotes",
-  },
-];
+import {
+  QUEUE_ADD,
+} from "helpers/socket_events.js";
+
+// let testResult = [
+//   {
+//     title: "Attention",
+//     artist: "Charlie Puth",
+//     album: "Voicenotes",
+//   },
+//   {
+//     title: "Attention",
+//     artist: "Charlie Puth",
+//     album: "Voicenotes",
+//   },
+//   {
+//     title: "Attention",
+//     artist: "Charlie Puth",
+//     album: "Voicenotes",
+//   },
+//   {
+//     title: "Attention",
+//     artist: "Charlie Puth",
+//     album: "Voicenotes",
+//   },
+//   {
+//     title: "Attention",
+//     artist: "Charlie Puth",
+//     album: "Voicenotes",
+//   },
+// ];
 
 const SearchOverlay = (props) => {
   const [result, setResult] = useState([]);
-
-  useEffect(() => {
-    console.log(result);
-  }, [result]);
+  const addSong = result => () => {
+    props.socket.emit(QUEUE_ADD, result)
+    props.handleClose();
+  };
   return (
-    <div id={"popup-wrapper"}>
-      <div id="popup">
-        Add Songs to Queue
-        <SearchBar user={props.user} setResult={setResult} />
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            width: "90%",
-            fontSize: "15px",
-          }}
-        >
-          <div>Title</div>
-          <div>Artist</div>
-          <div>Album</div>
-        </div>
-        <div id="result-container">
-          <ResultCell result={result} />
-        </div>
+    <Popup open={props.open} handleClose={props.handleClose}>
+      <Typography bold fontSize="20px" align="center">Add Songs to Queue</Typography>
+      <SearchBar user={props.user} setResult={setResult} />
+      <div className="search-overlay-headers">
+        <Typography bold fontSize="15px">Title</Typography>
+        <Typography bold fontSize="15px">Artist</Typography>
+        <Typography bold fontSize="15px">Album</Typography>
+        <p/>
       </div>
-    </div>
+      <div id="result-container">
+        <ResultCell addSong={addSong} result={result} />
+      </div>
+    </Popup>
   );
 };
 
 export const SearchBar = (props) => {
   const handleSearch = () => {
-    fetch(`http://localhost:8000/search?userID=${props.user.id}`)
-      .then((resp) => resp.json())
-      .then((data) => {
-        console.log(data);
-        let newResult = [];
-        data.forEach((track) => {
-          console.log(track);
-          let simplifiedTrack = {
-            title: track.name,
-            artist: track.artists,
-            album: track.albumName,
-          };
-          newResult.push(simplifiedTrack);
-        });
-        props.setResult(newResult);
-        console.log(newResult);
+    get('/search', {userID:props.user.id}, (data) => {
+        props.setResult(data);
       });
   };
   return (
-    <div style={{ display: "flex", width: "90%", height: "35px" }}>
+    <div className="searchbar-wrapper">
       <input placeholder="Search a Song!" id="searchBox"></input>
-      <button id="searchBtn" onClick={handleSearch}>
+      <button className="searchBtn" onClick={handleSearch}>
         Search
       </button>
     </div>
   );
 };
 
-export const ResultCell = (props) => {
-  useEffect(() => {}, [props.result]);
+export const ResultCell = ((props) => {
   return (
     <div id="result-wrapper">
       {props.result.map((result) => (
         <div className="resultCell">
-          <div>{result.title}</div>
-          <div>{result.artist}</div>
-          <div>{result.album}</div>{" "}
+          <Typography>{result.name}</Typography>
+          <Typography>{result.artists}</Typography>
+          <Typography>{result.albumName} </Typography>
+          <button className="searchBtn" onClick={props.addSong(result)}>Add</button>
         </div>
       ))}
     </div>
   );
-};
+});
 
-export default SearchOverlay;
-{
-}
+const mapStateToProps = state => ({socket: state.userReducer.socket})
+export default connect(mapStateToProps, null)(SearchOverlay);
