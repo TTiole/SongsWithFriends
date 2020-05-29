@@ -6,14 +6,13 @@
   margin: 5px;
   width: 55%;
   height: 500px;
-  overflow: scroll;
   background-color: pink;
 }
 
 .tracks {
-  align-items: center;
   margin: 5px;
   height: 90%;
-  overflow: scroll;
+  overflow: auto;
+  scrollbar-color: green;
   background-color: pink;
 }
