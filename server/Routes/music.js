@@ -49,7 +49,6 @@ module.exports = (app) => {
     let userID = req.query.userID;
     let playlistName = req.query.playlistName;
     // let playlistName = "home🏠";
-
     let playlist = getSinglePlaylist(userID, playlistName);
     let tracks = [];
 

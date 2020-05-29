@@ -14,29 +14,33 @@ const Playlist = (props) => {
   let userID = props.user.id;
   // console.log(userID);
   useEffect(() => {
-    // console.log(props.user); //!TODO: WHY DOES THE USER OBJECT HERE DOESN'T HAVE PALYLISTS?
-    // console.log(playlist);
-    // console.log(playlists);
-    let playlistName = props.playlist.name;
-    return fetch(
-      `http://localhost:8000/allTracks?userID=${userID}&playlistName=${playlistName}`,
-      {
-        method: "GET",
-      }
-    )
-      .then((resp) => resp.json())
-      .then((playlist) => {
-        // console.log(playlist);
-        setTracks(
-          playlist.tracks.map((track) => ({
-            track: track.name,
-            artist: track.artists,
-            duration: ms2time(track.duration_ms),
-            id: track.id,
-          }))
-        );
-      });
-  }, [userID]);
+    // console.log(props.playlist.name);
+    if (props.playlist.name !== "") {
+      // console.log(playlist);
+      // console.log(playlists);
+      let playlistName = props.playlist.name;
+
+      fetch(
+        `http://localhost:8000/allTracks?userID=${userID}&playlistName=${playlistName}`,
+        {
+          method: "GET",
+        }
+      )
+        .then((resp) => resp.json())
+        .then((playlist) => {
+          // console.log(playlist);
+          setTracks(
+            playlist.tracks.map((track) => ({
+              track: track.name,
+              artist: track.artists,
+              duration: ms2time(track.duration_ms),
+              uri: track.uri,
+              id: track.id,
+            }))
+          );
+        });
+    }
+  }, [userID, props.playlist.name, tracks]);
 
   return (
     <div className="playlist-container">
@@ -50,6 +54,9 @@ const Playlist = (props) => {
             track={track.track}
             artist={track.artist}
             duration={track.duration}
+            uri={track.uri}
+            addSong={props.addSong}
+            removeSong={props.removeSong}
           />
         ))}
       </div>

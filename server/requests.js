@@ -136,7 +136,7 @@ const requestAddQueue = (user, playlist_id, trackObj) => {
   requestSpotify(
     `/playlists/${playlist_id}/tracks?uris=${trackObj.uri}`,
     user,
-    "PUT"
+    "POST"
   );
 };
 
@@ -144,9 +144,11 @@ const requestAddQueue = (user, playlist_id, trackObj) => {
 // TODO: Add offset and/or snapshot_id to remove specific track
 const requestDeleteQueue = (user, playlist_id, trackObj) => {
   let reqBody = {
-    tracks: [{
-      uri: trackObj.uri,
-    }],
+    tracks: [
+      {
+        uri: trackObj.uri,
+      },
+    ],
   };
   requestSpotify(`/playlists/${playlist_id}/tracks`, user, "DELETE", reqBody);
 };
