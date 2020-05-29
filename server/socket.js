@@ -84,7 +84,10 @@ module.exports = (io) => (socket) => {
   socket.on(events.QUEUE_ADD, (track) => {
     const user = getUser(socket.id);
     let room = getRoom(user.room);
-    requestAddQueue(user, room.playlist.id, track);
+    requestAddQueue(user, room.playlist.id, track).then(() => {
+      room.playlist.tracks.items.push(track);
+      socket.emit(events.QUEUE_ADD, room.getPlayback());
+    });
   });
 
   socket.on(events.QUEUE_REMOVE, (track) => {
@@ -130,11 +133,11 @@ module.exports = (io) => (socket) => {
     let room = getRoom(user.room);
 
     Promise.all(room.members.map((user) => nextSong(user))).then((datas) => {
-      requestContext(room.host).then(playback => {
+      requestContext(room.host).then((playback) => {
         room.currentSong = playback.item.name;
         room.playing = true;
         io.to(room.id).emit(events.SKIP, room.getPlayback());
-      })
+      });
     });
   });
 
@@ -144,26 +147,26 @@ module.exports = (io) => (socket) => {
     let room = getRoom(user.room);
     room.members.forEach((user) => previousSong(user));
     Promise.all(room.members.map((user) => nextSong(user))).then((datas) => {
-      requestContext(room.host).then(playback => {
+      requestContext(room.host).then((playback) => {
         room.currentSong = playback.item.name;
         room.playing = true;
         io.to(room.id).emit(events.SKIP, room.getPlayback());
-      })
+      });
     });
   });
 
   // On disconnect remove the user
   socket.on(events.DISCONNECT, () => {
     const user = getUser(socket.id);
-    if(user.host)
-      destroyRoom();
-    else if (user.room !== "") // User is a member
+    if (user.host) destroyRoom();
+    else if (user.room !== "")
+      // User is a member
       leaveRoom();
     removeUser(socket.id);
   });
 
   /* ----- HELPERS ------ */
-  
+
   const leaveRoom = () => {
     const user = getUser(socket.id);
     if (user.room === "") {
@@ -176,8 +179,8 @@ module.exports = (io) => (socket) => {
       socket.emit(events.LEAVE, room.id);
       pauseDevice(user); // Pause the user's playback
     }
-  }
-  
+  };
+
   const destroyRoom = () => {
     const user = getUser(socket.id);
     const roomID = user.room;
@@ -207,5 +210,5 @@ module.exports = (io) => (socket) => {
           }
         });
     }
-  }
+  };
 };

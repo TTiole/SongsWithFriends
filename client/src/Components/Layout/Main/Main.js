@@ -3,9 +3,11 @@ import "./Main.css";
 
 import Playlist from "../../Playlist/Playlist.jsx";
 import PlayerBar from "../../PlayerBar/PlayerBar.jsx";
+import SearchOverlay from "../../SearchOverlay/SearchOverlay.jsx";
 
 const Main = (props) => {
-  const [playlists, setPlaylists] = useState([]);
+  const [tracks, setTracks] = useState([]);
+  const [playlistNames, setPlaylistNames] = useState("");
   console.log(props);
 
   useEffect(() => {
@@ -15,25 +17,40 @@ const Main = (props) => {
     })
       .then((resp) => resp.json())
       .then((playlists) => {
-        setPlaylists(playlists);
+        let playlistName = playlists[1].name;
+        setPlaylistNames(playlistName);
+
+        return fetch(
+          `http://localhost:8000/allTracks?userID=${props.user.id}&playlistName=${playlistName}`,
+          {
+            method: "GET",
+          }
+        );
+      })
+      .then((resp) => resp.json())
+      .then((playlist) => {
+        // console.log(playlist);
+        setTracks(playlist.tracks);
       })
       .catch((err) => console.error(err));
   }, []);
 
-  if (playlists.length === 0) return <div>Loading...</div>;
+  if (tracks.length === 0) return <div>Loading...</div>;
   else {
     return (
       <main id="main-container">
         <div className="container-top">
           <Playlist
             user={props.user}
-            playlist={props.playback.playlist}
+            tracks={props.playback.playlist.tracks.items}
+            playlistName={props.playback.playlist.name}
             addSong={props.addSong}
             removeSong={props.removeSong}
           />
           <Playlist
             user={props.user}
-            playlist={playlists[15]}
+            tracks={tracks}
+            playlistName={playlistNames}
             addSong={props.addSong}
             removeSong={props.removeSong}
           />

@@ -133,7 +133,7 @@ const playContext = (user, context_uri, offset, position_ms) =>
 // Rqeust to add an item(track) to the playlist
 //! IMPORTANT: THERES A BUG WHICH REMOVES ALL SONGS FROM THE PLAYLIST HERE......
 const requestAddQueue = (user, playlist_id, trackObj) => {
-  requestSpotify(
+  return requestSpotify(
     `/playlists/${playlist_id}/tracks?uris=${trackObj.uri}`,
     user,
     "POST"
@@ -150,7 +150,12 @@ const requestDeleteQueue = (user, playlist_id, trackObj) => {
       },
     ],
   };
-  requestSpotify(`/playlists/${playlist_id}/tracks`, user, "DELETE", reqBody);
+  return requestSpotify(
+    `/playlists/${playlist_id}/tracks`,
+    user,
+    "DELETE",
+    reqBody
+  );
 };
 
 const requestReorderQueue = (user, playlist_id, itemOffset, newOffset) => {
@@ -158,7 +163,12 @@ const requestReorderQueue = (user, playlist_id, itemOffset, newOffset) => {
     range_start: itemOffset,
     insert_before: newOffset,
   };
-  requestSpotify(`/playlists/${playlist_id}/tracks`, user, "PUT", reqBody);
+  return requestSpotify(
+    `/playlists/${playlist_id}/tracks`,
+    user,
+    "PUT",
+    reqBody
+  );
 };
 
 // Creates temporary

@@ -36,7 +36,7 @@ module.exports = (app) => {
           };
           addSinglePlaylist(userID, simplifiedPlaylist);
         });
-        // console.log(getAllPlaylists(userID));
+        console.log(getAllPlaylists(userID));
         res.json(getAllPlaylists(userID));
       })
       .catch((err) => {
@@ -49,6 +49,7 @@ module.exports = (app) => {
     let userID = req.query.userID;
     let playlistName = req.query.playlistName;
     // let playlistName = "home🏠";
+    console.log(playlistName);
     let playlist = getSinglePlaylist(userID, playlistName);
     let tracks = [];
 

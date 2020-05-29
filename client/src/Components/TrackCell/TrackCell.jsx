@@ -5,10 +5,10 @@ import "./TrackCell.css";
 
 const TrackCell = (props) => {
   return (
-    <div className="track-container" onClick={props.addSong(props.uri)}>
+    <div className="track-container" onClick={props.addSong(props.track)}>
       <div className="track-container-info">
-        <Typography bold>{props.track}</Typography>
-        <Typography>{props.artist}</Typography>
+        <Typography bold>{props.track.name}</Typography>
+        <Typography>{props.track.artists}</Typography>
       </div>
       <Typography margin="5px" additionalStyles={{ backgroundColor: "green" }}>
         {props.duration}

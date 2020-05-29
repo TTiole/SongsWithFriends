@@ -18,6 +18,7 @@ import {
   PREVIOUS,
   QUEUE_ADD,
   QUEUE_REMOVE,
+  QUEUE_REORDER,
   JUMP,
 } from "helpers/socket_events.js";
 
@@ -95,17 +96,12 @@ class App extends React.Component {
   // Jump to point in song
   jumpTo = () => this.state.socket.emit(JUMP, this.jumpRef.current.value);
 
-  addSong = (uri) => () => {
-    console.log(uri);
-    this.state.socket.emit(QUEUE_ADD, {
-      uri,
-    });
+  addSong = (track) => () => {
+    console.log(track);
+    this.state.socket.emit(QUEUE_ADD, track);
   };
 
-  removeSong = (uri) => () =>
-    this.state.socket.emit(QUEUE_REMOVE, {
-      uri,
-    });
+  removeSong = (track) => () => this.state.socket.emit(QUEUE_REMOVE, track);
 
   // Sets the user's playback device
   setPlaybackDevice = (deviceID) => (e) =>
@@ -199,6 +195,18 @@ class App extends React.Component {
     });
 
     this.state.socket.on(PREVIOUS, (playback) => {
+      this.setState({ playback });
+    });
+
+    this.state.socket.on(QUEUE_ADD, (playback) => {
+      this.setState({ playback });
+    });
+
+    this.state.socket.on(QUEUE_REMOVE, (playback) => {
+      this.setState({ playback });
+    });
+
+    this.state.socket.on(QUEUE_REORDER, (playback) => {
       this.setState({ playback });
     });
   };
