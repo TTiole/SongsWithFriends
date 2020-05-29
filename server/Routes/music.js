@@ -37,7 +37,7 @@ module.exports = (app) => {
           addSinglePlaylist(userID, simplifiedPlaylist);
         });
         console.log(getAllPlaylists(userID));
-        res.json(getAllPlaylists(userID));
+        res.json(getUser(userID).clientInfo());
       })
       .catch((err) => {
         console.log(err);

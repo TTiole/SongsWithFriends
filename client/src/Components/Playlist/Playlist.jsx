@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import TrackCell from "../TrackCell/TrackCell.jsx";
 import "./Playlist.css";
 
@@ -9,8 +9,6 @@ const ms2time = (ms) => {
 };
 
 const Playlist = (props) => {
-  let userID = props.user.id;
-
   return (
     <div className="playlist-container">
       <Typography margin="5px" fontSize={25} bold color="#eee">

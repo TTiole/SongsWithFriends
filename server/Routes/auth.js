@@ -3,17 +3,13 @@ const {
   requestUserInfo,
   requestToken,
   requestDevices,
+  requestPlaylists
 } = require("../requests");
 
 module.exports = function (app) {
   // Request authroization from user to access data
   // Current scopes: user-modify-playback-state, playlist-modify-public, user-library-read playlist-read-private
   app.get("/login", function (req, res) {
-    // Make sure the userID gets passed
-    if (!req.query.userID) {
-      res.status(400).end("Bad login");
-      return;
-    }
 
     const scopes =
       "user-modify-playback-state playlist-modify-public user-library-read playlist-read-private user-read-playback-state playlist-modify-private playlist-read-collaborative";
@@ -54,6 +50,24 @@ module.exports = function (app) {
         user.name = data.display_name;
         user.spotify_id = data.id;
         // Send the information to the client
+        return requestPlaylists(user)
+        
+        
+      }).then((data) => {
+        // Items is an array of "playlist objects"
+        let playlists = data.items;
+
+        // Get rid of unnecessary info for each playlist
+        playlists.forEach((playlist) => {
+          let simplifiedPlaylist = {
+            name: playlist.name,
+            id: playlist.id,
+            owner: playlist.owner.display_name,
+            numTracks: playlist.tracks.total,
+            tracks: null,
+          };
+          user.playlists.push(simplifiedPlaylist)
+        });
         res.json(user.clientInfo());
       })
       .catch((err) => {

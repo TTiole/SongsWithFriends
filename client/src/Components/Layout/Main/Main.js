@@ -1,39 +1,23 @@
 import React, { useState, useEffect } from "react";
+import {connect} from 'react-redux'
 import "./Main.css";
+
+import {get} from '../../../Fetch'
 
 import Playlist from "../../Playlist/Playlist.jsx";
 import PlayerBar from "../../PlayerBar/PlayerBar.jsx";
-import SearchOverlay from "../../SearchOverlay/SearchOverlay.jsx";
 
 const Main = (props) => {
   const [tracks, setTracks] = useState([]);
-  const [playlistNames, setPlaylistNames] = useState("");
-  console.log(props);
+  const [selectedPlaylist, setSelectedPlaylist] = useState(1);
 
   useEffect(() => {
-    console.log("fetching....");
-    fetch(`http://localhost:8000/playlists?userID=${props.user.id}`, {
-      method: "GET",
-    })
-      .then((resp) => resp.json())
-      .then((playlists) => {
-        let playlistName = playlists[1].name;
-        setPlaylistNames(playlistName);
+    let playlistName = props.user.playlists[selectedPlaylist].name;
 
-        return fetch(
-          `http://localhost:8000/allTracks?userID=${props.user.id}&playlistName=${playlistName}`,
-          {
-            method: "GET",
-          }
-        );
-      })
-      .then((resp) => resp.json())
-      .then((playlist) => {
-        // console.log(playlist);
-        setTracks(playlist.tracks);
-      })
-      .catch((err) => console.error(err));
-  }, []);
+    get("/allTracks", {userID: props.user.id, playlistName}, playlist => {
+      setTracks(playlist.tracks);
+    })
+  }, [props.user.id, props.user.playlists, selectedPlaylist]);
 
   if (tracks.length === 0) return <div>Loading...</div>;
   else {
@@ -50,7 +34,7 @@ const Main = (props) => {
           <Playlist
             user={props.user}
             tracks={tracks}
-            playlistName={playlistNames}
+            playlistName={props.user.playlists[selectedPlaylist].name}
             addSong={props.addSong}
             removeSong={props.removeSong}
           />
@@ -67,4 +51,11 @@ const Main = (props) => {
   }
 };
 
-export default Main;
+const mapStateToProps = (state) => {
+  return { 
+    user: state.userReducer.user,
+    playback: state.playbackReducer.playback
+  }
+}
+
+export default connect(mapStateToProps, null)(Main);

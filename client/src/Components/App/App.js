@@ -1,11 +1,12 @@
 import React from "react";
-import io from "socket.io-client";
 
 import {connect} from 'react-redux'
 
-import {connectUser, authenticateUser} from '../../Redux/Actions/userAction'
+import {connectUser, authenticateUser, joinRoom, createRoomUserSuccess, leaveRoom, destroyRoom, destroyedRoom, refreshDevices, setDevice} from '../../Redux/Actions/userAction'
+import {joinRoomPlaybackSuccess, createRoomSuccess, modifyPlayback} from '../../Redux/Actions/playbackAction'
 
 import "./App.css";
+import io from "socket.io-client";
 
 import Main from "../Layout/Main/Main";
 
@@ -26,10 +27,12 @@ import {
   QUEUE_REORDER,
   JUMP,
 } from "helpers/socket_events.js";
+import {server} from "helpers/constants.js"
 
 class App extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {socketReceived: false}
     this.joinRef = React.createRef();
     this.jumpRef = React.createRef();
     // this.newInputRef = React.createRef();
@@ -44,153 +47,122 @@ class App extends React.Component {
       if (urlParams.has("code")) {
         //! If this code is running, the user has logged in through spotify and authorized us to use their information
         // If that's the case, we'll set up a socket connection. Upon success, we will call socketEstablished
-        this.props.connectUser(process.env.REACT_APP_SERVER);
-        this.setupSocketListeners(urlParams.get("code"));
+        let socket = io(server)
+        this.props.connectUser(socket);
+        this.setupSocketListeners(socket, urlParams.get("code"))
       }
     }
   }
-
   // Sends CREATE event
-  createRoom = () => this.state.socket.emit(CREATE);
+  createRoom = () => this.props.socket.emit(CREATE);
 
   // Sends JOIN event
-  joinRoom = () => this.state.socket.emit(JOIN, this.joinRef.current.value);
+  joinRoom = () => this.props.socket.emit(JOIN, this.joinRef.current.value);
 
   // Sends LEAVE event
-  leaveRoom = () => this.state.socket.emit(LEAVE);
+  leaveRoom = () => this.props.socket.emit(LEAVE);
 
   // Sends DESTROY event
-  destroyRoom = () => this.state.socket.emit(DESTROY);
+  destroyRoom = () => this.props.socket.emit(DESTROY);
 
   // Sends play event
-  resume = () => this.state.socket.emit(PLAY);
+  resume = () => this.props.socket.emit(PLAY);
 
   // Sends pause event
-  pause = () => this.state.socket.emit(PAUSE);
+  pause = () => this.props.socket.emit(PAUSE);
 
   // Sends skip event
-  skip = () => this.state.socket.emit(SKIP);
+  skip = () => this.props.socket.emit(SKIP);
 
   // Sends previous event
-  previous = () => this.state.socket.emit(PREVIOUS);
+  previous = () => this.props.socket.emit(PREVIOUS);
 
   // Jump to point in song
-  jumpTo = () => this.state.socket.emit(JUMP, this.jumpRef.current.value);
-
-  addSong = (track) => () => {
-    console.log(track);
-    this.state.socket.emit(QUEUE_ADD, track);
-  };
-
-  removeSong = (track) => () => this.state.socket.emit(QUEUE_REMOVE, track);
-
-  // Sets the user's playback device
-  setPlaybackDevice = (deviceID) => (e) =>
-    fetch(`http://localhost:8000/setDevice?userID=${this.state.userID}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        device_id: deviceID,
-      }),
-    })
-      .then((resp) => resp.json())
-      .then((data) => {
-        this.setState({ user: data });
-        console.log("Successfully set playback device");
-      })
-      .catch((err) => console.error(err));
-
-  refreshDevices = (e) =>
-    fetch(`http://localhost:8000/refreshDevices?userID=${this.state.userID}`)
-      .then((resp) => resp.json())
-      .then((data) => {
-        this.setState({ user: data });
-        console.log("Successfully refreshed playback devices");
-      })
-      .catch((err) => console.error(err));
+  jumpTo = () => this.props.socket.emit(JUMP, this.jumpRef.current.value);
 
   // Socket connection has been established
   socketEstablished = (code) => () => {
     // Get the user id from the socket
-    const userID = this.state.socket.id;
-    this.props.authenticateUser(code, userID).then(() => {
-      window.history.replaceState(null, "", window.location.href.split("?")[0]);
-      // Set up the socket listeners
-      this.setupSocketListeners();
-    });
+    console.log("Socket established")
+    const userID = this.props.socket.id;
+    this.props.authenticateUser(code, userID);
+    window.history.replaceState(null, "", window.location.href.split("?")[0]);
   };
 
-  setupSocketListeners = code => {
+  setupSocketListeners = (socket, code) => {
     // On connection established, authenticate user
-    this.props.socket.on(CONNECT, this.socketEstablished(code))
+    console.log(server);
+    socket.on(CONNECT, this.socketEstablished(code))
+    if(socket.connected)
+      this.socketEstablished(code);
     // On error, console.error the msg
-    this.props.socket.on(ERROR, (msg) => console.error(msg));
+    socket.on(ERROR, (msg) => console.error(msg));
     // On create, let the client know that the user is a host
-    this.props.socket.on(CREATE, (playback, roomID) => {
-      this.setState({ host: true, playback, roomID });
+    socket.on(CREATE, (playback, roomID) => {
+      this.props.createRoom(roomID);
+      this.props.createRoomSuccess(playback);
       console.log(`Successfully created room ${roomID}`);
     });
     // On join, let the client know that the user is a member
-    this.props.socket.on(JOIN, (playback) => {
-      this.setState({ member: true, playback });
+    socket.on(JOIN, (playback) => {
+      this.props.joinRoom();
+      this.props.joinRoomPlaybackSuccess(playback)
       console.log(`Successfully joined room`);
     });
 
     // On leave, let the client know that the user is no longer a member
-    this.props.socket.on(LEAVE, (id) => {
-      this.setState({ member: false });
+    socket.on(LEAVE, (id) => {
+      this.props.leaveRoom();
       console.log(`Successfully left ${id}`);
     });
 
     // On destroy room, let the client know you're no longer host
-    this.props.socket.on(DESTROY, (id) => {
-      this.setState({ host: false });
+    socket.on(DESTROY, (id) => {
+      this.props.destroyRoom();
       console.log(`Successfully destroyed ${id}`);
     });
 
     // On room destroyed, let the client know you're no longer a member of that room
-    this.props.socket.on(DESTROYED, (id) => {
-      this.setState({ member: false });
+    socket.on(DESTROYED, (id) => {
+      this.props.destroyedRoom();
       console.log(`Room ${id} has been destroyed`);
     });
 
-    this.props.socket.on(PLAY, (playback) => {
-      this.setState({ playback });
+    socket.on(PLAY, (playback) => {
+      this.props.modifyPlayback(playback)
     });
 
-    this.props.socket.on(PAUSE, (playback) => {
-      this.setState({ playback });
+    socket.on(PAUSE, (playback) => {
+      this.props.modifyPlayback(playback)
     });
 
-    this.props.socket.on(SKIP, (playback) => {
-      this.setState({ playback });
+    socket.on(SKIP, (playback) => {
+      this.props.modifyPlayback(playback)
     });
 
-    this.props.socket.on(PREVIOUS, (playback) => {
-      this.setState({ playback });
+    socket.on(PREVIOUS, (playback) => {
+      this.props.modifyPlayback(playback)
     });
 
-    this.state.socket.on(QUEUE_ADD, (playback) => {
-      this.setState({ playback });
+    socket.on(QUEUE_ADD, (playback) => {
+      this.props.modifyPlayback(playback)
     });
 
-    this.state.socket.on(QUEUE_REMOVE, (playback) => {
-      this.setState({ playback });
+    socket.on(QUEUE_REMOVE, (playback) => {
+      this.props.modifyPlayback(playback)
     });
 
-    this.state.socket.on(QUEUE_REORDER, (playback) => {
-      this.setState({ playback });
+    socket.on(QUEUE_REORDER, (playback) => {
+      this.props.modifyPlayback(playback)
     });
   };
 
   render() {
     // Display if not logged in
-    if (!this.state.loggedIn)
+    if (!this.props.loggedIn)
       return (
         <div>
-          <a href={`http://localhost:8000/login?userID=${this.prop.userID}`}>
+          <a href={`http://localhost:8000/login?userID=${this.props.userID}`}>
             Try sign in
           </a>
         </div>
@@ -198,20 +170,20 @@ class App extends React.Component {
     // Display if you are logged in
     return (
       <div>
-        <a href={`http://localhost:8000/playlists?userID=${this.prop.userID}`}>
+        <a href={`http://localhost:8000/playlists?userID=${this.props.userID}`}>
           Try getting playlists
         </a>
         <br />
-        <a href={`http://localhost:8000/allTracks?userID=${this.prop.userID}`}>
+        <a href={`http://localhost:8000/allTracks?userID=${this.props.userID}`}>
           Try getting all the tracks in that playlist
         </a>
         <br />
-        <a href={`http://localhost:8000/search?userID=${this.prop.userID}`}>
+        <a href={`http://localhost:8000/search?userID=${this.props.userID}`}>
           Try search with hardcoded search keyword
         </a>
 
         {/* Displays if neither host or member */}
-        {!this.state.host && !this.state.member ? (
+        {!this.props.host && !this.props.member ? (
           <React.Fragment>
             <button onClick={this.createRoom}>Create room</button>
             <input type="text" ref={this.joinRef} />
@@ -219,11 +191,11 @@ class App extends React.Component {
           </React.Fragment>
         ) : null}
         {/* Displays if host */}
-        {this.state.host ? (
+        {this.props.host ? (
           <button onClick={this.destroyRoom}>Destroy room</button>
         ) : null}
         {/* Displays if member */}
-        {this.state.member ? (
+        {this.props.member ? (
           <button onClick={this.leaveRoom}>Leave room</button>
         ) : null}
         {/* List the playback devices and onclick, set them */}
@@ -234,17 +206,17 @@ class App extends React.Component {
             alignItems: "flex-start",
           }}
         >
-          {this.state.user.playbackDevices.map((device) => (
-            <button key={device.id} onClick={this.setPlaybackDevice(device.id)}>
+          {this.props.user.playbackDevices.map((device) => (
+            <button key={device.id} onClick={() => this.props.setPlaybackDevice(device.id, this.props.userID)}>
               {device.name} {device.is_active ? "(Active)" : ""}
             </button>
           ))}
         </div>
         {/* Displays when either member or host */}
-        {this.state.member || this.state.host ? (
+        {this.props.member || this.props.host ? (
           <React.Fragment>
-            <button onClick={this.refreshDevices}>Refresh Devices</button>
-            {this.state.playback.playing ? (
+            <button onClick={() => this.props.refreshDevices(this.props.userID)}>Refresh Devices</button>
+            {this.props.playback.playing ? (
               <button onClick={this.pause}>Pause</button>
             ) : (
               <button onClick={this.resume}>Resume</button>
@@ -252,19 +224,12 @@ class App extends React.Component {
 
             <button onClick={this.skip}>Skip</button>
             <button onClick={this.previous}>Previous</button>
-            <button onClick={this.addSong}>Add hardcoded song</button>
-            <button onClick={this.removeSong}>Remove hardcoded song</button>
             <input type="number" min="0" ref={this.jumpRef} />
             <button onClick={this.jumpTo}>Jump To</button>
 
-            <h1>Now playing: {this.state.playback.currentSong}</h1>
+            <h1>Now playing: {this.props.playback.currentSong}</h1>
             {/* <input type="text" ref={this.newInputRef}/> */}
-            <Main
-              user={this.state.user}
-              playback={this.state.playback}
-              addSong={this.addSong}
-              removeSong={this.removeSong}
-            />
+            <Main/>
           </React.Fragment>
         ) : null}
       </div>
@@ -273,16 +238,31 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  return {
+  return { 
     socket: state.userReducer.socket,
-    userID: state.userReducer.userID
+    userID: state.userReducer.userID,
+    loggedIn: state.userReducer.loggedIn,
+    member: state.userReducer.member,
+    host: state.userReducer.host,
+    user: state.userReducer.user,
+    playback: state.playbackReducer.playback
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    connectUser: (server) => dispatch(connectUser(server)),
-    authenticateUser: (code, userID) => dispatch(authenticateUser(code, userID))
+    connectUser: (socket) => dispatch(connectUser(socket)),
+    leaveRoom: () => dispatch(leaveRoom()),
+    joinRoom: () => dispatch(joinRoom()),
+    createRoom: (roomID) => dispatch(createRoomUserSuccess(roomID)),
+    destroyRoom: () => dispatch(destroyRoom()),
+    destroyedRoom: () => dispatch(destroyedRoom()),
+    authenticateUser: (code, userID) => dispatch(authenticateUser(code, userID)),
+    joinRoomPlaybackSuccess: (playback) => dispatch(joinRoomPlaybackSuccess(playback)),
+    createRoomSuccess: (playback) => dispatch(createRoomSuccess(playback)),
+    modifyPlayback: (playback) => dispatch(modifyPlayback(playback)),
+    refreshDevices: (userID) => dispatch(refreshDevices(userID)),
+    setDevice: (deviceID, userID) => dispatch(setDevice(deviceID, userID))
   }
 }
  

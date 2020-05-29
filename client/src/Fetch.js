@@ -1,13 +1,15 @@
 import store from './Redux/store.js'
+import {server} from 'helpers/constants'
 import {deactivateLoading, activateLoading, triggerResponseModal} from './Redux/Actions/loadingAction'
 /**
  * @param {string} url [resource to access]
  * @param {object} queryParamObj [Optional (default null): object containing key-value pairs of query parameters]
  * @param {function} callback [request callback, operates like a .then]
  */
+ 
  export const get = (url, queryParamObj = null, callback, props = {}, additionalText = null, errorCallback = null) => {
   store.dispatch(activateLoading());
-  let path = url;
+  let path = server+url;
   // Adds query parameters to url
   if(queryParamObj !== null) {
     path = path + '?';
@@ -31,7 +33,9 @@ import {deactivateLoading, activateLoading, triggerResponseModal} from './Redux/
     if(additionalText != null)
       store.dispatch(triggerResponseModal(additionalText));
     callback(data);
-  }).finally(() => {
+  })
+  .catch(err => console.error(err))
+  .finally(() => {
     store.dispatch(deactivateLoading());
   })
 }
@@ -41,11 +45,21 @@ import {deactivateLoading, activateLoading, triggerResponseModal} from './Redux/
  * @param {object} body [object containing key-value pairs of json body]
  * @param {function} callback [request callback, operates like a .then]
  */
-export const post = (url, body, callback, props, additionalText = null, errorCallback = null) => {
+export const post = (url, queryParamObj = null, body = {}, callback, props, additionalText = null, errorCallback = null) => {
   store.dispatch(activateLoading());
-  return fetch(url, {
+  let path = server+url;
+  // Adds query parameters to url
+  if(queryParamObj !== null) {
+    path = path + '?';
+    Object.keys(queryParamObj).forEach((el, i) => {
+      if(i !== 0)
+        path = path+'&';
+      path = `${path}${el}=${queryParamObj[el]}`;
+    });
+  }
+  return fetch(path, {
     method: "POST",
-    body,
+    body: JSON.stringify(body),
     headers: {
       'Content-Type':'application/json'
     },
@@ -76,7 +90,7 @@ const requestError = (resp) => {
   } else if(resp.status === 500) {
     store.dispatch(triggerResponseModal('There was a server error. Try again later or contact support'))
   } else {
-    console.log(err);
+    console.log(resp);
   }
 } 
 
