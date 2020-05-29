@@ -14,7 +14,7 @@ const TrackCell = (props) => {
   const removeSong = track => () => props.socket.emit(QUEUE_REMOVE, track);
   return (
     <div className="entry-wrapper">
-      {props.showDelete ? <button id="removeBtn">-</button> : null}
+      {props.showDelete ? <button id="removeBtn" onClick={removeSong(props.track)}>-</button> : null}
       <div className="track-container" onClick={addSong(props.track)}>
         <div className="track-container-info">
           <Typography bold>{props.track.name}</Typography>

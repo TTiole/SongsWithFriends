@@ -93,7 +93,11 @@ module.exports = (io) => (socket) => {
   socket.on(events.QUEUE_REMOVE, (track) => {
     const user = getUser(socket.id);
     let room = getRoom(user.room);
-    requestDeleteQueue(user, room.playlist.id, track);
+    requestDeleteQueue(user, room.playlist.id, track).then(() => {
+      //! Better, shorter way to do this?
+      room.playlist.tracks.items = room.playlist.tracks.items.filter(item => item.name !== track.name);
+      socket.emit(events.QUEUE_REMOVE, room.getPlayback());
+    });
   });
 
   socket.on(events.QUEUE_REORDER, (trackOffset, newOffset) => {
