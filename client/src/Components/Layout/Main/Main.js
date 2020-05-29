@@ -6,10 +6,14 @@ import {get} from '../../../Fetch'
 
 import Playlist from "../../Playlist/Playlist.jsx";
 import PlayerBar from "../../PlayerBar/PlayerBar.jsx";
+import SearchOverlay from '../../SearchOverlay/SearchOverlay'
 
 const Main = (props) => {
   const [tracks, setTracks] = useState([]);
   const [selectedPlaylist, setSelectedPlaylist] = useState(1);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+
 
   useEffect(() => {
     let playlistName = props.user.playlists[selectedPlaylist].name;
@@ -39,9 +43,9 @@ const Main = (props) => {
             removeSong={props.removeSong}
           />
           <button>Invite</button>
-          <SearchOverlay user={props.user} />
+          <button onClick={() => setSearchOpen(true)}>Search</button>
+          <SearchOverlay user={props.user} open={searchOpen} handleClose={() => setSearchOpen(false)} />
         </div>
-        {/* <SearchOverlay /> */}
         <PlayerBar
           track="Attention"
           artist="Charlie Puth · Voicenotes"

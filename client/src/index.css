@@ -25,6 +25,7 @@ button {
   height: 30px;
   max-height: 30px;
   width: 60px;
+  cursor: pointer;
   /* max-width: 60px;  */
   /* Doesn't make sense to set both to the same value */
 }

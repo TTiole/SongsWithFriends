@@ -5,7 +5,7 @@ import "./PlayerBar.css"
 import Typography from '../Typography/Typography'
 
 const PlayerBar = (props) => {
-  let curTrack = "Attention";
+  // let curTrack = "Attention";
   return (
     <div className="player-container">
       <div className="track-info">

@@ -1,88 +1,64 @@
-import React, { userState, useEffect } from "react";
+import React, { useEffect } from "react";
+import Typography from '../Typography/Typography'
 import "./SearchOverlay.css";
 import { useState } from "react";
+import {get} from '../../Fetch'
+import Popup from "../Popup/Popup";
 
-let testResult = [
-  {
-    title: "Attention",
-    artist: "Charlie Puth",
-    album: "Voicenotes",
-  },
-  {
-    title: "Attention",
-    artist: "Charlie Puth",
-    album: "Voicenotes",
-  },
-  {
-    title: "Attention",
-    artist: "Charlie Puth",
-    album: "Voicenotes",
-  },
-  {
-    title: "Attention",
-    artist: "Charlie Puth",
-    album: "Voicenotes",
-  },
-  {
-    title: "Attention",
-    artist: "Charlie Puth",
-    album: "Voicenotes",
-  },
-];
+// let testResult = [
+//   {
+//     title: "Attention",
+//     artist: "Charlie Puth",
+//     album: "Voicenotes",
+//   },
+//   {
+//     title: "Attention",
+//     artist: "Charlie Puth",
+//     album: "Voicenotes",
+//   },
+//   {
+//     title: "Attention",
+//     artist: "Charlie Puth",
+//     album: "Voicenotes",
+//   },
+//   {
+//     title: "Attention",
+//     artist: "Charlie Puth",
+//     album: "Voicenotes",
+//   },
+//   {
+//     title: "Attention",
+//     artist: "Charlie Puth",
+//     album: "Voicenotes",
+//   },
+// ];
 
 const SearchOverlay = (props) => {
   const [result, setResult] = useState([]);
-
-  useEffect(() => {
-    console.log(result);
-  }, [result]);
   return (
-    <div id={"popup-wrapper"}>
-      <div id="popup">
-        Add Songs to Queue
-        <SearchBar user={props.user} setResult={setResult} />
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            width: "90%",
-            fontSize: "15px",
-          }}
-        >
-          <div>Title</div>
-          <div>Artist</div>
-          <div>Album</div>
-        </div>
-        <div id="result-container">
-          <ResultCell result={result} />
-        </div>
+    <Popup open={props.open} handleClose={props.handleClose}>
+      <Typography bold fontSize="20px" align="center">Add Songs to Queue</Typography>
+      <SearchBar user={props.user} setResult={setResult} />
+      <div className="search-overlay-headers">
+        <Typography bold fontSize="15px">Title</Typography>
+        <Typography bold fontSize="15px">Artist</Typography>
+        <Typography bold fontSize="15px">Album</Typography>
       </div>
-    </div>
+      <div id="result-container">
+        <ResultCell result={result} />
+      </div>
+    </Popup>
   );
 };
 
 export const SearchBar = (props) => {
   const handleSearch = () => {
-    fetch(`http://localhost:8000/search?userID=${props.user.id}`)
-      .then((resp) => resp.json())
-      .then((data) => {
-        console.log(data);
-        let newResult = [];
-        data.forEach((track) => {
-          console.log(track);
-          let simplifiedTrack = {
-            title: track.name,
-            artist: track.artists,
-            album: track.albumName,
-          };
-          newResult.push(simplifiedTrack);
-        });
-        props.setResult(newResult);
-        console.log(newResult);
+    get('/search', {userID:props.user.id}, (data) => {
+        props.setResult(data.map(track => ({title: track.name, artist: track.artists, album: track.albumName})));
       });
   };
   return (
-    <div style={{ display: "flex", width: "90%", height: "35px" }}>
+    <div className="searchbar-wrapper">
       <input placeholder="Search a Song!" id="searchBox"></input>
       <button id="searchBtn" onClick={handleSearch}>
         Search
@@ -92,14 +68,13 @@ export const SearchBar = (props) => {
 };
 
 export const ResultCell = (props) => {
-  useEffect(() => {}, [props.result]);
   return (
     <div id="result-wrapper">
       {props.result.map((result) => (
         <div className="resultCell">
-          <div>{result.title}</div>
-          <div>{result.artist}</div>
-          <div>{result.album}</div>{" "}
+          <Typography>{result.title}</Typography>
+          <Typography>{result.artist}</Typography>
+          <Typography>{result.album} </Typography>
         </div>
       ))}
     </div>
@@ -107,5 +82,3 @@ export const ResultCell = (props) => {
 };
 
 export default SearchOverlay;
-{
-}
