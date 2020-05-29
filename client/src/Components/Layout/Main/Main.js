@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import "./Main.css";
 
-import {get} from '../../../Fetch'
+import { get } from '../../../Fetch'
 
 import Playlist from "../../Playlist/Playlist.jsx";
 import PlayerBar from "../../PlayerBar/PlayerBar.jsx";
@@ -18,7 +18,7 @@ const Main = (props) => {
   useEffect(() => {
     let playlistName = props.user.playlists[selectedPlaylist].name;
 
-    get("/allTracks", {userID: props.user.id, playlistName}, playlist => {
+    get("/allTracks", { userID: props.user.id, playlistName }, playlist => {
       setTracks(playlist.tracks);
     })
   }, [props.user.id, props.user.playlists, selectedPlaylist]);
@@ -57,7 +57,7 @@ const Main = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  return { 
+  return {
     user: state.userReducer.user,
     playback: state.playbackReducer.playback
   }
