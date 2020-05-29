@@ -44,7 +44,7 @@ const requestSpotify = (
           return resp.text();
         if (resp.status >= 300)
           resp.text().then((text) => {
-            throw new Error(text);
+            console.error(text);
           });
         else return resp.json();
       }

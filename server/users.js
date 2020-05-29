@@ -35,6 +35,7 @@ class User {
     spotify_id: this.spotify_id,
     playbackDevice: this.playback_device,
     playbackDevices: this.playback_devices,
+    playlists: this.playlists
   });
 }
 
