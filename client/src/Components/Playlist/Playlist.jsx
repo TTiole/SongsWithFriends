@@ -26,14 +26,12 @@ const Playlist = (props) => {
       </div>
       <div className="tracks">
         {props.tracks.map((track) => (
-          <div className="track-wrapper">
-            {showDelete ? <button id="removeBtn">-</button> : null}
-            <TrackCell
-              key={track.id}
-              duration={ms2time(track.duration_ms)}
-              track={track}
-            />
-          </div>
+          <TrackCell
+            key={track.id}
+            duration={ms2time(track.duration_ms)}
+            track={track}
+            showDelete={showDelete}
+          />
         ))}
       </div>
     </div>
