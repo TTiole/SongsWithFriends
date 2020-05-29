@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from "react";
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import "./Main.css";
 
-import {get} from '../../../Fetch'
+import { get } from '../../../Fetch'
 
 import Playlist from "../../Playlist/Playlist.jsx";
 import PlayerBar from "../../PlayerBar/PlayerBar.jsx";
+import SearchOverlay from '../../SearchOverlay/SearchOverlay'
 
 const Main = (props) => {
   const [tracks, setTracks] = useState([]);
   const [selectedPlaylist, setSelectedPlaylist] = useState(1);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+
 
   useEffect(() => {
     let playlistName = props.user.playlists[selectedPlaylist].name;
 
-    get("/allTracks", {userID: props.user.id, playlistName}, playlist => {
+    get("/allTracks", { userID: props.user.id, playlistName }, playlist => {
       setTracks(playlist.tracks);
     })
   }, [props.user.id, props.user.playlists, selectedPlaylist]);
@@ -39,9 +43,9 @@ const Main = (props) => {
             removeSong={props.removeSong}
           />
           <button>Invite</button>
-          <SearchOverlay user={props.user} />
+          <button onClick={() => setSearchOpen(true)}>Search</button>
+          <SearchOverlay user={props.user} open={searchOpen} handleClose={() => setSearchOpen(false)} />
         </div>
-        {/* <SearchOverlay /> */}
         <PlayerBar
           track="Attention"
           artist="Charlie Puth · Voicenotes"
@@ -53,7 +57,7 @@ const Main = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  return { 
+  return {
     user: state.userReducer.user,
     playback: state.playbackReducer.playback
   }
