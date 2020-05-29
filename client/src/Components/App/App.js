@@ -23,7 +23,8 @@ import {
   PREVIOUS,
   QUEUE_ADD,
   QUEUE_REMOVE,
-  JUMP
+  QUEUE_REORDER,
+  JUMP,
 } from "helpers/socket_events.js";
 
 class App extends React.Component {
@@ -74,17 +75,14 @@ class App extends React.Component {
   previous = () => this.state.socket.emit(PREVIOUS);
 
   // Jump to point in song
-  jumpTo = () => this.state.socket.emit(JUMP, this.jumpRef.current.value)
+  jumpTo = () => this.state.socket.emit(JUMP, this.jumpRef.current.value);
 
-  addSong = uri => () =>
-    this.state.socket.emit(QUEUE_ADD, {
-      uri,
-    });
+  addSong = (track) => () => {
+    console.log(track);
+    this.state.socket.emit(QUEUE_ADD, track);
+  };
 
-  removeSong = uri => () =>
-    this.state.socket.emit(QUEUE_REMOVE, {
-      uri,
-    });
+  removeSong = (track) => () => this.state.socket.emit(QUEUE_REMOVE, track);
 
   // Sets the user's playback device
   setPlaybackDevice = (deviceID) => (e) =>
@@ -173,6 +171,18 @@ class App extends React.Component {
     this.props.socket.on(PREVIOUS, (playback) => {
       this.setState({ playback });
     });
+
+    this.state.socket.on(QUEUE_ADD, (playback) => {
+      this.setState({ playback });
+    });
+
+    this.state.socket.on(QUEUE_REMOVE, (playback) => {
+      this.setState({ playback });
+    });
+
+    this.state.socket.on(QUEUE_REORDER, (playback) => {
+      this.setState({ playback });
+    });
   };
 
   render() {
@@ -244,12 +254,17 @@ class App extends React.Component {
             <button onClick={this.previous}>Previous</button>
             <button onClick={this.addSong}>Add hardcoded song</button>
             <button onClick={this.removeSong}>Remove hardcoded song</button>
-            <input type='number' min="0" ref={this.jumpRef} />
+            <input type="number" min="0" ref={this.jumpRef} />
             <button onClick={this.jumpTo}>Jump To</button>
 
             <h1>Now playing: {this.state.playback.currentSong}</h1>
             {/* <input type="text" ref={this.newInputRef}/> */}
-            <Main user={this.state.user} />
+            <Main
+              user={this.state.user}
+              playback={this.state.playback}
+              addSong={this.addSong}
+              removeSong={this.removeSong}
+            />
           </React.Fragment>
         ) : null}
       </div>
