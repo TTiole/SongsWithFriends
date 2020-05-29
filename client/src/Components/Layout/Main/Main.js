@@ -55,8 +55,9 @@ const Main = (props) => {
             removeSong={props.removeSong}
           />
           <button>Invite</button>
+          <SearchOverlay user={props.user} />
         </div>
-
+        {/* <SearchOverlay /> */}
         <PlayerBar
           track="Attention"
           artist="Charlie Puth · Voicenotes"

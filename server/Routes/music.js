@@ -36,7 +36,7 @@ module.exports = (app) => {
           };
           addSinglePlaylist(userID, simplifiedPlaylist);
         });
-        console.log(getAllPlaylists(userID));
+        // console.log(getAllPlaylists(userID));
         res.json(getAllPlaylists(userID));
       })
       .catch((err) => {
@@ -77,6 +77,7 @@ module.exports = (app) => {
 
   //! This should be a post in the future
   app.get("/search", function (req, res) {
+    let searchResult = [];
     let userID = req.query.userID;
     let itemName = "Attention";
     let searchType = "track"; //  Options: album,artist,playlist,show,episode
@@ -84,7 +85,12 @@ module.exports = (app) => {
 
     //! Also, where does the response end other than error?
     requestSearch(getUser(userID), encodeURIComponent(itemName), searchType)
-      .then((pages) => getNextPage(getUser(userID), pages, pageLimit))
+      .then((pages) => {
+        getNextPage(getUser(userID), pages, pageLimit, searchResult);
+      })
+      .then(() => {
+        res.json(searchResult);
+      })
       .catch((err) => {
         console.log(err);
         res.status(500).send("Some Errors Occured");
@@ -129,29 +135,32 @@ module.exports = (app) => {
 };
 
 //? You'll have to walk me through what this does
-const getNextPage = (user, pages, pageLimit) => {
+const getNextPage = (user, pages, pageLimit, searchResult) => {
   //  Possible Keys: track, album, artist, playlist, show, episode
   //  Value will always be a page object
   if (pages.error != undefined) {
     throw pages.error.status;
   }
+  // console.log(searchResult);
   Object.entries(pages).forEach(([key, value]) => {
     value.items.forEach((trackObj) => {
       track = simplifyTrack(trackObj);
-      console.log(track);
+      searchResult.push(track);
+      // console.log(track);
     });
     //  Recursively invoke getNextPage to get all the search results
     if (value.next != null && pageLimit > 0) {
-      console.log(pageLimit);
+      // console.log(pageLimit);
+      // console.log(value.total);
       pageLimit--;
-      console.log(value.total);
       //  Parsed next page's url and call getNextPage recursively
       let nextItemName = value.next.split("query=")[1].split("&")[0];
       let nextItemType = value.next.split("type=")[1];
       requestSearch(user, nextItemName, nextItemType).then((pages) =>
-        getNextPage(user, pages, pageLimit)
+        getNextPage(user, pages, pageLimit, searchResult)
       );
     }
+    return searchResult;
   });
 };
 
