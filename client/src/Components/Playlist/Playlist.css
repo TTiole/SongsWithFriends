@@ -9,10 +9,50 @@
   background-color: pink;
 }
 
+.top-container{
+  display: flex;
+  justify-content: space-between;
+  margin: 5px;
+}
+
+#editBtn{
+  padding: 0px 10px;
+  height: auto;
+  max-height: unset;
+  min-height: 30px;
+  border-radius: 3px;
+  width: auto;
+  border: 1px solid #1db954;
+
+  color: white;
+  background-color: #1db954;
+}
+
+#removeBtn{
+
+  height: 25px;
+  width: 25px;
+  border: none;
+  margin: 10px;
+  padding: 0 0 1px 1px;
+  
+  border-radius: 24px;
+  font-size: 25px;
+  
+  color: white;
+  background-color: rgb(243, 89, 89);
+}
+
+.track-wrapper{
+  display: flex;
+  align-items: center;
+
+  margin: 3px 0px;
+  background-color: gray;
+}
+
 .tracks {
   margin: 5px;
   height: 90%;
   overflow: auto;
-  scrollbar-color: green;
-  background-color: pink;
 }
