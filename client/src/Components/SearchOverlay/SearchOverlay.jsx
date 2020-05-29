@@ -1,9 +1,9 @@
 import React from "react";
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import Typography from '../Typography/Typography'
 import "./SearchOverlay.css";
 import { useState } from "react";
-import {get} from '../../Fetch'
+import { get } from '../../Fetch'
 import Popup from "../Popup/Popup";
 
 import {
@@ -52,7 +52,7 @@ const SearchOverlay = (props) => {
         <Typography bold fontSize="15px">Title</Typography>
         <Typography bold fontSize="15px">Artist</Typography>
         <Typography bold fontSize="15px">Album</Typography>
-        <p/>
+        <p />
       </div>
       <div id="result-container">
         <ResultCell addSong={addSong} result={result} />
@@ -63,9 +63,9 @@ const SearchOverlay = (props) => {
 
 export const SearchBar = (props) => {
   const handleSearch = () => {
-    get('/search', {userID:props.user.id}, (data) => {
-        props.setResult(data);
-      });
+    get('/search', { userID: props.user.id }, (data) => {
+      props.setResult(data);
+    });
   };
   return (
     <div className="searchbar-wrapper">
@@ -92,5 +92,5 @@ export const ResultCell = ((props) => {
   );
 });
 
-const mapStateToProps = state => ({socket: state.userReducer.socket})
+const mapStateToProps = state => ({ socket: state.userReducer.socket })
 export default connect(mapStateToProps, null)(SearchOverlay);

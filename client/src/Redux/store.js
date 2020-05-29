@@ -1,15 +1,15 @@
-import {createStore, applyMiddleware, compose} from 'redux'
+import { createStore, applyMiddleware, compose } from 'redux'
 import rootReducer from './Reducers'
 import thunk from 'redux-thunk'
 import api from '../Fetch.js'
 
 let store;
-if(process.env.REACT_APP_ENVIRONMENT === 'PROD')
-  store = createStore(rootReducer, applyMiddleware(thunk.withExtraArgument(api)));
-else
-  store = createStore(rootReducer, compose(
-    applyMiddleware(thunk.withExtraArgument(api)), 
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
-  );
+// dev tools middleware
+const composeSetup = process.env.NODE_ENV !== 'production' && typeof window === 'object' &&
+  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
+  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : compose
+store = createStore(rootReducer, composeSetup(
+  applyMiddleware(thunk.withExtraArgument(api))
+));
 
 export default store;
