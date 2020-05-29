@@ -18,7 +18,7 @@ const Playlist = (props) => {
     // console.log(playlist);
     // console.log(playlists);
     let playlistName = props.playlist.name;
-    return fetch(
+    fetch(
       `http://localhost:8000/allTracks?userID=${userID}&playlistName=${playlistName}`,
       {
         method: "GET",

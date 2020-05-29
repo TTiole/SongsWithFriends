@@ -1,5 +1,10 @@
 import React from "react";
 import io from "socket.io-client";
+
+import {connect} from 'react-redux'
+
+import {connectUser, authenticateUser} from '../../Redux/Actions/userAction'
+
 import "./App.css";
 
 import Main from "../Layout/Main/Main";
@@ -24,16 +29,6 @@ import {
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      socket: null,
-      userID: null,
-      loggedIn: false,
-      member: false,
-      host: false,
-      user: null,
-      playback: null,
-      roomID: "",
-    };
     this.joinRef = React.createRef();
     this.jumpRef = React.createRef();
     // this.newInputRef = React.createRef();
@@ -48,25 +43,11 @@ class App extends React.Component {
       if (urlParams.has("code")) {
         //! If this code is running, the user has logged in through spotify and authorized us to use their information
         // If that's the case, we'll set up a socket connection. Upon success, we will call socketEstablished
-        this.setState(
-          { socket: io("http://localhost:8000", { reconnection: false }) },
-          () => {
-            this.state.socket.on(
-              CONNECT,
-              this.socketEstablished(urlParams.get("code"))
-            );
-          }
-        );
+        this.props.connectUser(process.env.REACT_APP_SERVER);
+        this.setupSocketListeners(urlParams.get("code"));
       }
     }
   }
-
-  // TODO
-  /**
-    Get the user's library and diplay it. (Get their playlists, and if they click on a playlist get the songs)
-    Implement search bar and display the results of the search
-    If user clicks on track, then use the add_queue event
-  */
 
   // Sends CREATE event
   createRoom = () => this.state.socket.emit(CREATE);
@@ -95,14 +76,14 @@ class App extends React.Component {
   // Jump to point in song
   jumpTo = () => this.state.socket.emit(JUMP, this.jumpRef.current.value)
 
-  addSong = () =>
+  addSong = uri => () =>
     this.state.socket.emit(QUEUE_ADD, {
-      uri: "spotify:track:7cBkZ5cBvMUrHoCtsoDotj",
+      uri,
     });
 
-  removeSong = () =>
+  removeSong = uri => () =>
     this.state.socket.emit(QUEUE_REMOVE, {
-      uri: "spotify:track:7cBkZ5cBvMUrHoCtsoDotj",
+      uri,
     });
 
   // Sets the user's playback device
@@ -136,67 +117,60 @@ class App extends React.Component {
   socketEstablished = (code) => () => {
     // Get the user id from the socket
     const userID = this.state.socket.id;
-    // Set it to the client state
-    this.setState({ userID: userID });
-    // Let the server know that the user has authorized our access, and send the code so the server can generate a token
-    fetch(`http://localhost:8000/authSuccess?userID=${userID}&code=${code}`)
-      .then((resp) => resp.json())
-      .then((data) => {
-        // At this point, login stuff is finished and the user is fully logged in
-        this.setState({ loggedIn: true, user: data });
-      })
-      .catch((err) => console.error(err));
-    // Get rid of the query parameters since we're done with them, but don't refresh page
-    window.history.replaceState(null, "", window.location.href.split("?")[0]);
-    // Set up the socket listeners
-    this.setupSocketListeners();
+    this.props.authenticateUser(code, userID).then(() => {
+      window.history.replaceState(null, "", window.location.href.split("?")[0]);
+      // Set up the socket listeners
+      this.setupSocketListeners();
+    });
   };
 
-  setupSocketListeners = () => {
+  setupSocketListeners = code => {
+    // On connection established, authenticate user
+    this.props.socket.on(CONNECT, this.socketEstablished(code))
     // On error, console.error the msg
-    this.state.socket.on(ERROR, (msg) => console.error(msg));
+    this.props.socket.on(ERROR, (msg) => console.error(msg));
     // On create, let the client know that the user is a host
-    this.state.socket.on(CREATE, (playback, roomID) => {
+    this.props.socket.on(CREATE, (playback, roomID) => {
       this.setState({ host: true, playback, roomID });
       console.log(`Successfully created room ${roomID}`);
     });
     // On join, let the client know that the user is a member
-    this.state.socket.on(JOIN, (playback) => {
+    this.props.socket.on(JOIN, (playback) => {
       this.setState({ member: true, playback });
       console.log(`Successfully joined room`);
     });
 
     // On leave, let the client know that the user is no longer a member
-    this.state.socket.on(LEAVE, (id) => {
+    this.props.socket.on(LEAVE, (id) => {
       this.setState({ member: false });
       console.log(`Successfully left ${id}`);
     });
 
     // On destroy room, let the client know you're no longer host
-    this.state.socket.on(DESTROY, (id) => {
+    this.props.socket.on(DESTROY, (id) => {
       this.setState({ host: false });
       console.log(`Successfully destroyed ${id}`);
     });
 
     // On room destroyed, let the client know you're no longer a member of that room
-    this.state.socket.on(DESTROYED, (id) => {
+    this.props.socket.on(DESTROYED, (id) => {
       this.setState({ member: false });
       console.log(`Room ${id} has been destroyed`);
     });
 
-    this.state.socket.on(PLAY, (playback) => {
+    this.props.socket.on(PLAY, (playback) => {
       this.setState({ playback });
     });
 
-    this.state.socket.on(PAUSE, (playback) => {
+    this.props.socket.on(PAUSE, (playback) => {
       this.setState({ playback });
     });
 
-    this.state.socket.on(SKIP, (playback) => {
+    this.props.socket.on(SKIP, (playback) => {
       this.setState({ playback });
     });
 
-    this.state.socket.on(PREVIOUS, (playback) => {
+    this.props.socket.on(PREVIOUS, (playback) => {
       this.setState({ playback });
     });
   };
@@ -206,7 +180,7 @@ class App extends React.Component {
     if (!this.state.loggedIn)
       return (
         <div>
-          <a href={`http://localhost:8000/login?userID=${this.state.userID}`}>
+          <a href={`http://localhost:8000/login?userID=${this.prop.userID}`}>
             Try sign in
           </a>
         </div>
@@ -214,15 +188,15 @@ class App extends React.Component {
     // Display if you are logged in
     return (
       <div>
-        <a href={`http://localhost:8000/playlists?userID=${this.state.userID}`}>
+        <a href={`http://localhost:8000/playlists?userID=${this.prop.userID}`}>
           Try getting playlists
         </a>
         <br />
-        <a href={`http://localhost:8000/allTracks?userID=${this.state.userID}`}>
+        <a href={`http://localhost:8000/allTracks?userID=${this.prop.userID}`}>
           Try getting all the tracks in that playlist
         </a>
         <br />
-        <a href={`http://localhost:8000/search?userID=${this.state.userID}`}>
+        <a href={`http://localhost:8000/search?userID=${this.prop.userID}`}>
           Try search with hardcoded search keyword
         </a>
 
@@ -283,4 +257,18 @@ class App extends React.Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    socket: state.userReducer.socket,
+    userID: state.userReducer.userID
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    connectUser: (server) => dispatch(connectUser(server)),
+    authenticateUser: (code, userID) => dispatch(authenticateUser(code, userID))
+  }
+}
+ 
+export default connect(mapStateToProps, mapDispatchToProps)(App);
