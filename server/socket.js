@@ -100,10 +100,30 @@ module.exports = (io) => (socket) => {
     });
   });
 
-  socket.on(events.QUEUE_REORDER, (trackOffset, newOffset) => {
+  socket.on(events.QUEUE_REORDER, (track, offset) => {
+
     const user = getUser(socket.id);
     let room = getRoom(user.room);
-    requestReorderQueue(user, room.playlist.id, trackOffset, newOffset);
+
+    //  Find the selected song's index in queue
+    let trackIndex = room.playlist.tracks.items.findIndex(item => item.name === track.name);
+    //  The new offset is always either current index +1 or -1
+    let newOffset = trackIndex + offset;
+
+    //  Don't reorder songs that on very top or very buttom
+    if (newOffset < 0)
+      newOffset = 0;
+    if (newOffset >= room.playlist.tracks.items.length)
+      newOffset = room.playlist.tracks.items.length - 1;
+
+    requestReorderQueue(user, room.playlist.id, trackIndex, newOffset).then(() => {
+      //  Save the reordered track and delete it from queue
+      let tmpTrack = room.playlist.tracks.items[trackIndex];
+      room.playlist.tracks.items.splice(trackIndex, 1);
+      //  Add the reordered track back to the new offset
+      room.playlist.tracks.items.splice(newOffset, 0, tmpTrack);
+      socket.emit(events.QUEUE_REORDER, room.getPlayback());
+    })
   });
 
   // When receiving the play event, resume the song
