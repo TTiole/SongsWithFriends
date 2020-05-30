@@ -123,12 +123,10 @@ const resumeSong = (user) => requestSpotify(`/me/player/play`, user, "PUT");
 const requestContext = (user) => requestSpotify(`/me/player`, user);
 
 // Play music based off a context at a specific song and position
-const playContext = (user, context_uri, offset, position_ms) =>
-  requestSpotify(`/me/player/play`, user, "PUT", {
-    context_uri,
-    offset: { uri: offset },
-    position_ms,
-  });
+const playContext = (user, context_uri, offset = null, position_ms = 0) => {
+  const body = offset == null ? {context_uri, position_ms}:{context_uri, position_ms, offset: {uri: offset}}
+  return requestSpotify(`/me/player/play`, user, "PUT", body);
+}
 
 // Rqeust to add an item(track) to the playlist
 //! IMPORTANT: THERES A BUG WHICH REMOVES ALL SONGS FROM THE PLAYLIST HERE......

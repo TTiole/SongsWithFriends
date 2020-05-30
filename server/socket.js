@@ -36,7 +36,10 @@ module.exports = (io) => (socket) => {
       createTempPlaylist(user, makeid(16)).then(
         ({ id, name, uri, owner, tracks }) => {
           room.playlist = { id, name, uri, owner, tracks };
-          socket.emit(events.CREATE, room.getPlayback(), room.id); // Emit the event back if success
+          playContext(user, uri).then(data => { // Begin the queue context for the host
+            pauseDevice(user);
+            socket.emit(events.CREATE, room.getPlayback(), room.id); // Emit the event back if success
+          })
         }
       );
     }
