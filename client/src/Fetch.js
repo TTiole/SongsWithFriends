@@ -77,7 +77,7 @@ export const post = (url, queryParamObj = null, body = {}, callback, props, addi
     if(additionalText != null)
       store.dispatch(triggerResponseModal(additionalText));
     callback(data);
-  }).finally(() => {
+  }).catch(err => console.error(err)).finally(() => {
     store.dispatch(deactivateLoading());
   })
 }

@@ -7,6 +7,8 @@ class Room {
     this.playing = false;
     this.playlist = null;
     this.currentSong = "";
+    this.currentSongDuration = 0;
+    this.initialPosition = 0;
   }
 
   // Adds a member to the room
@@ -19,7 +21,7 @@ class Room {
     this.members = this.members.filter(member => member.id !== user.id);
   }
 
-  getPlayback = () => ({playing: this.playing, playlist: this.playlist, currentSong: this.currentSong})
+  getPlayback = () => ({playing: this.playing, playlist: this.playlist, currentSong: this.currentSong, currentSongDuration: this.currentSongDuration, initialPosition: this.initialPosition})
 }
 
 /**
