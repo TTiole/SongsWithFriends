@@ -21,10 +21,10 @@ const TrackCell = (props) => {
       {props.showDelete ? <button id="removeBtn" onClick={removeSong(props.track)}>-</button> : null}
       <div className="track-container" onClick={addSong(props.track)}>
         <div className="track-container-info">
-          <Typography bold>{props.track.name}</Typography>
-          <Typography>{props.track.artists}</Typography>
+          <Typography bold color="white">{props.track.name}</Typography>
+          <Typography color="#b3b3b3">{props.track.artists}</Typography>
         </div>
-        <Typography margin="5px" additionalStyles={{ backgroundColor: "green" }}>
+        <Typography margin="5px" color="#b3b3b3" additionalStyles={{ backgroundColor: "black" }}>
           {props.duration}
         </Typography>
       </div>

@@ -1,9 +1,9 @@
 import React from "react";
 
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 
-import {connectUser, authenticateUser, joinRoom, createRoomUserSuccess, leaveRoom, destroyRoom, destroyedRoom, refreshDevices, setDevice} from '../../Redux/Actions/userAction'
-import {joinRoomPlaybackSuccess, createRoomSuccess, modifyPlayback} from '../../Redux/Actions/playbackAction'
+import { connectUser, authenticateUser, joinRoom, createRoomUserSuccess, leaveRoom, destroyRoom, destroyedRoom, refreshDevices, setDevice } from '../../Redux/Actions/userAction'
+import { joinRoomPlaybackSuccess, createRoomSuccess, modifyPlayback } from '../../Redux/Actions/playbackAction'
 
 import "./App.css";
 import io from "socket.io-client";
@@ -27,12 +27,12 @@ import {
   QUEUE_REORDER,
   JUMP,
 } from "helpers/socket_events.js";
-import {server} from "helpers/constants.js"
+import { server } from "helpers/constants.js"
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {socketReceived: false}
+    this.state = { socketReceived: false }
     this.joinRef = React.createRef();
     this.jumpRef = React.createRef();
     // this.newInputRef = React.createRef();
@@ -93,7 +93,7 @@ class App extends React.Component {
     // On connection established, authenticate user
     console.log(server);
     socket.on(CONNECT, this.socketEstablished(code))
-    if(socket.connected)
+    if (socket.connected)
       this.socketEstablished(code);
     // On error, console.error the msg
     socket.on(ERROR, (msg) => console.error(msg));
@@ -170,18 +170,6 @@ class App extends React.Component {
     // Display if you are logged in
     return (
       <div>
-        <a href={`http://localhost:8000/playlists?userID=${this.props.userID}`}>
-          Try getting playlists
-        </a>
-        <br />
-        <a href={`http://localhost:8000/allTracks?userID=${this.props.userID}`}>
-          Try getting all the tracks in that playlist
-        </a>
-        <br />
-        <a href={`http://localhost:8000/search?userID=${this.props.userID}`}>
-          Try search with hardcoded search keyword
-        </a>
-
         {/* Displays if neither host or member */}
         {!this.props.host && !this.props.member ? (
           <React.Fragment>
@@ -219,8 +207,8 @@ class App extends React.Component {
             {this.props.playback.playing ? (
               <button onClick={this.pause}>Pause</button>
             ) : (
-              <button onClick={this.resume}>Resume</button>
-            )}
+                <button onClick={this.resume}>Resume</button>
+              )}
 
             <button onClick={this.skip}>Skip</button>
             <button onClick={this.previous}>Previous</button>
@@ -229,7 +217,7 @@ class App extends React.Component {
 
             <h1>Now playing: {this.props.playback.currentSong}</h1>
             {/* <input type="text" ref={this.newInputRef}/> */}
-            <Main/>
+            <Main />
           </React.Fragment>
         ) : null}
       </div>
@@ -238,7 +226,7 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  return { 
+  return {
     socket: state.userReducer.socket,
     userID: state.userReducer.userID,
     loggedIn: state.userReducer.loggedIn,
@@ -265,5 +253,5 @@ const mapDispatchToProps = dispatch => {
     setDevice: (deviceID, userID) => dispatch(setDevice(deviceID, userID))
   }
 }
- 
+
 export default connect(mapStateToProps, mapDispatchToProps)(App);

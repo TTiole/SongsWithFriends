@@ -42,10 +42,10 @@ const Main = (props) => {
             addSong={props.addSong}
             removeSong={props.removeSong}
           />
-          <button>Invite</button>
-          <button onClick={() => setSearchOpen(true)}>Search</button>
+          <button id="inviteBtn">Invite</button>
           <SearchOverlay user={props.user} open={searchOpen} handleClose={() => setSearchOpen(false)} />
         </div>
+        <button id="searchBtn" onClick={() => setSearchOpen(true)}>+</button>
         <PlayerBar
           track="Attention"
           artist="Charlie Puth · Voicenotes"
