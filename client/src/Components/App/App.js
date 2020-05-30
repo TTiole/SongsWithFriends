@@ -27,6 +27,7 @@ import {
   QUEUE_REMOVE,
   QUEUE_REORDER,
   JUMP,
+  UPDATE_PLAYBACK
 } from "helpers/socket_events.js";
 import { server } from "helpers/constants.js"
 
@@ -154,7 +155,15 @@ class App extends React.Component {
     socket.on(QUEUE_REORDER, (playback) => {
       this.props.modifyPlayback(playback)
     });
+    socket.on(UPDATE_PLAYBACK, (playback) => {
+      this.props.modifyPlayback(playback)
+    });
   };
+
+  songFinished = () => {
+    if(this.props.host)
+      this.props.socket.emit(UPDATE_PLAYBACK)
+  }
 
   render() {
     // Display if not logged in
@@ -211,7 +220,7 @@ class App extends React.Component {
 
             <button onClick={this.skip}>Skip</button>
             <button onClick={this.previous}>Previous</button>
-            <Slider max={this.props.playback.currentSongDuration} initialValue={this.props.playback.initialPosition} stop={!this.props.playback.playing} autoincrement callback={this.jumpTo} />
+            <Slider max={this.props.playback.currentSongDuration} maxCallback={this.songFinished} initialValue={this.props.playback.initialPosition} position={this.props.playback.initialPosition} stop={!this.props.playback.playing} autoincrement callback={this.jumpTo} instanceID={this.props.playback.currentSong} />
             <button onClick={this.jumpTo}>Jump To</button>
 
             <h1>Now playing: {this.props.playback.currentSong}</h1>
