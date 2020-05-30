@@ -10,19 +10,14 @@ const ms2time = (ms) => {
 
 const Playlist = (props) => {
   const [showDelete, setShowDelete] = useState(false);
-  const handleEdit = () => {
-    if (showDelete === false)
-      setShowDelete(true);
-    else
-      setShowDelete(false);
-  }
+  const handleEdit = () => setShowDelete(!showDelete)
   return (
     <div className="playlist-container">
       <div className="top-container">
         <Typography margin="5px" fontSize={25} bold color="#eee">
           {props.playlistName}
         </Typography>
-        <button id="editBtn" onClick={handleEdit}>Edit Playlist</button>
+        <button className="editBtn" onClick={handleEdit}>Edit Playlist</button>
       </div>
       <div className="tracks">
         {props.tracks.map((track) => (

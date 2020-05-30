@@ -15,19 +15,6 @@
   margin: 5px;
 }
 
-#editBtn{
-  padding: 0px 10px;
-  height: auto;
-  max-height: unset;
-  min-height: 30px;
-  border-radius: 3px;
-  width: auto;
-  border: 1px solid #1db954;
-
-  color: white;
-  background-color: #1db954;
-}
-
 .tracks {
   margin: 5px;
   height: 90%;

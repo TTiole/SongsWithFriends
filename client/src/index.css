@@ -22,10 +22,13 @@ button {
   justify-content: "center";
   align-content: "center";
   margin: 5px;
-  height: 30px;
-  max-height: 30px;
-  width: 60px;
+  padding: 1px 11px;
+  min-height: 30px;
+  border-radius: 3px;
+  color: white;
+  background-color: #1db954;
   cursor: pointer;
+  border: none;
   /* max-width: 60px;  */
   /* Doesn't make sense to set both to the same value */
 }
