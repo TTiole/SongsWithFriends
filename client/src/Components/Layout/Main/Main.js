@@ -11,11 +11,13 @@ import SearchOverlay from '../../SearchOverlay/SearchOverlay'
 
 const Main = (props) => {
   const [tracks, setTracks] = useState([]);
-  const [selectedPlaylist, setSelectedPlaylist] = useState(3);
+  const [selectedPlaylist, setSelectedPlaylist] = useState(1);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [showLibrary, setShowLibrary] = useState(true);
+  const [showLibrary, setShowLibrary] = useState(false);
+  const [showPlaylist, setShowPlaylist] = useState(false);
 
   const handleLibrary = () => setShowLibrary(!showLibrary);
+  const handlePlaylist = () => setShowPlaylist(!showPlaylist);
 
   useEffect(() => {
     let playlistName = props.user.playlists[selectedPlaylist].name;
@@ -37,16 +39,18 @@ const Main = (props) => {
             addSong={props.addSong}
             removeSong={props.removeSong}
           />
-          <Playlist
+          {showPlaylist ? <Playlist
             user={props.user}
             tracks={tracks}
             playlistName={props.user.playlists[selectedPlaylist].name}
             addSong={props.addSong}
             removeSong={props.removeSong}
-          />
+          /> : null}
+
           {showLibrary ? <UserLibrary userName={props.user.name} playlists={props.user.playlists} setSelectedPlaylist={setSelectedPlaylist} /> : null}
           <button id="inviteBtn">Invite</button>
           <button id="inviteBtn" onClick={handleLibrary}>Library</button>
+          <button id="inviteBtn" onClick={handlePlaylist}>Playlist</button>
 
           <SearchOverlay user={props.user} open={searchOpen} handleClose={() => setSearchOpen(false)} />
         </div>
