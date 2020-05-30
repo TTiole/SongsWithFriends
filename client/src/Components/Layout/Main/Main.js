@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { connect } from 'react-redux'
+import { connect, useStore } from 'react-redux'
 import "./Main.css";
 
 import { get } from '../../../Fetch'
 
 import Playlist from "../../Playlist/Playlist.jsx";
+import UserLibrary from "../../Playlist/UserLibrary.jsx";
 import PlayerBar from "../../PlayerBar/PlayerBar.jsx";
 import SearchOverlay from '../../SearchOverlay/SearchOverlay'
 
@@ -12,6 +13,9 @@ const Main = (props) => {
   const [tracks, setTracks] = useState([]);
   const [selectedPlaylist, setSelectedPlaylist] = useState(3);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [showLibrary, setShowLibrary] = useState(true);
+
+  const handleLibrary = () => setShowLibrary(!showLibrary);
 
   useEffect(() => {
     let playlistName = props.user.playlists[selectedPlaylist].name;
@@ -40,7 +44,10 @@ const Main = (props) => {
             addSong={props.addSong}
             removeSong={props.removeSong}
           />
+          {showLibrary ? <UserLibrary userName={props.user.name} playlists={props.user.playlists} setSelectedPlaylist={setSelectedPlaylist} /> : null}
           <button id="inviteBtn">Invite</button>
+          <button id="inviteBtn" onClick={handleLibrary}>Library</button>
+
           <SearchOverlay user={props.user} open={searchOpen} handleClose={() => setSearchOpen(false)} />
         </div>
         <button id="searchBtn" onClick={() => setSearchOpen(true)}>+</button>
