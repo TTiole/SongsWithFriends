@@ -13,8 +13,6 @@ const Main = (props) => {
   const [selectedPlaylist, setSelectedPlaylist] = useState(1);
   const [searchOpen, setSearchOpen] = useState(false);
 
-
-
   useEffect(() => {
     let playlistName = props.user.playlists[selectedPlaylist].name;
 
