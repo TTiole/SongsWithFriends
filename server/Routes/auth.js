@@ -3,7 +3,8 @@ const {
   requestUserInfo,
   requestToken,
   requestDevices,
-  requestPlaylists
+  requestPlaylists,
+  disableShuffle
 } = require("../requests");
 
 module.exports = function (app) {
@@ -50,9 +51,11 @@ module.exports = function (app) {
         user.name = data.display_name;
         user.spotify_id = data.id;
         // Send the information to the client
+        return disableShuffle(user)
+        
+        
+      }).then(data => {
         return requestPlaylists(user)
-        
-        
       }).then((data) => {
         // Items is an array of "playlist objects"
         let playlists = data.items;

@@ -190,6 +190,9 @@ const deleteTempPlaylist = (user, playlist_id) =>
     true
   );
 
+const disableShuffle = (user) =>
+    requestSpotify(`/me/player/shuffle?state=${false}`, user, "PUT", null, true);
+
 module.exports = {
   requestUserInfo,
   requestToken,
@@ -210,4 +213,5 @@ module.exports = {
   requestReorderQueue,
   createTempPlaylist,
   deleteTempPlaylist,
+  disableShuffle
 };

@@ -154,7 +154,10 @@ module.exports = (io) => (socket) => {
   socket.on(events.JUMP, (pos) => {
     const user = getUser(socket.id);
     let room = getRoom(user.room);
-    room.members.forEach((user) => setSongPosition(user, pos));
+    room.initialPosition = pos/1000;
+    Promise.all(room.members.map((user) => setSongPosition(user, pos))).then(datas => {
+      io.to(room.id).emit(events.UPDATE_PLAYBACK, room.getPlayback());
+    });
   });
 
   // When receiving the skip event, skip the song
@@ -185,6 +188,16 @@ module.exports = (io) => (socket) => {
       });
     });
   });
+
+  socket.on(events.UPDATE_PLAYBACK, () => {
+    const user = getUser(socket.id);
+    let room = getRoom(user.room);
+    requestContext(room.host).then(playback => {
+      room.currentSong = playback.item.name;
+      room.currentSongDuration = playback.item.duration_ms/1000;
+      io.to(room.id).emit(events.UPDATE_PLAYBACK, room.getPlayback());
+    })
+  })
 
   // On disconnect remove the user
   socket.on(events.DISCONNECT, () => {

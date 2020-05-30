@@ -31,9 +31,11 @@ const DESTROYED = "destroyed"
 // Display error
 const ERROR = "swf-error";
 
+const UPDATE_PLAYBACK = "update_playback"
+
 module.exports = {
   QUEUE_ADD, QUEUE_REMOVE, QUEUE_REORDER,
-  PLAY, PAUSE, SKIP, PREVIOUS, JUMP,
+  PLAY, PAUSE, SKIP, PREVIOUS, JUMP, UPDATE_PLAYBACK,
   DISCONNECT, CONNECT,
   JOIN, LEAVE, CREATE, DESTROY, DESTROYED,
   ERROR
