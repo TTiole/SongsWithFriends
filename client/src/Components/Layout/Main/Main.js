@@ -10,7 +10,7 @@ import SearchOverlay from '../../SearchOverlay/SearchOverlay'
 
 const Main = (props) => {
   const [tracks, setTracks] = useState([]);
-  const [selectedPlaylist, setSelectedPlaylist] = useState(1);
+  const [selectedPlaylist, setSelectedPlaylist] = useState(3);
   const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {

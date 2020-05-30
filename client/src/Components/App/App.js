@@ -2,13 +2,14 @@ import React from "react";
 
 import { connect } from 'react-redux'
 
-import { connectUser, authenticateUser, joinRoom, createRoomUserSuccess, leaveRoom, destroyRoom, destroyedRoom, refreshDevices, setDevice } from '../../Redux/Actions/userAction'
+import { connectUser, authenticateUser, createRoomUserSuccess, leaveRoom, destroyRoom, destroyedRoom, refreshDevices, setDevice } from '../../Redux/Actions/userAction'
 import { joinRoomPlaybackSuccess, createRoomSuccess, modifyPlayback } from '../../Redux/Actions/playbackAction'
 
 import "./App.css";
 import io from "socket.io-client";
 
 import Main from "../Layout/Main/Main";
+import Slider from '../Slider/Slider'
 
 import {
   CONNECT,
@@ -32,9 +33,7 @@ import { server } from "helpers/constants.js"
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { socketReceived: false }
     this.joinRef = React.createRef();
-    this.jumpRef = React.createRef();
     // this.newInputRef = React.createRef();
     // this.newInputRef.current.value
   }
@@ -78,7 +77,7 @@ class App extends React.Component {
   previous = () => this.props.socket.emit(PREVIOUS);
 
   // Jump to point in song
-  jumpTo = () => this.props.socket.emit(JUMP, this.jumpRef.current.value);
+  jumpTo = (e) => this.props.socket.emit(JUMP, e.target.value*1000);
 
   // Socket connection has been established
   socketEstablished = (code) => () => {
@@ -105,7 +104,7 @@ class App extends React.Component {
     });
     // On join, let the client know that the user is a member
     socket.on(JOIN, (playback) => {
-      this.props.joinRoom();
+      console.log(playback);
       this.props.joinRoomPlaybackSuccess(playback)
       console.log(`Successfully joined room`);
     });
@@ -195,13 +194,13 @@ class App extends React.Component {
           }}
         >
           {this.props.user.playbackDevices.map((device) => (
-            <button key={device.id} onClick={() => this.props.setPlaybackDevice(device.id, this.props.userID)}>
+            <button key={device.id} onClick={() => this.props.setDevice(device.id, this.props.userID)}>
               {device.name} {device.is_active ? "(Active)" : ""}
             </button>
           ))}
         </div>
         {/* Displays when either member or host */}
-        {this.props.member || this.props.host ? (
+        {(this.props.member || this.props.host) && this.props.playback ? (
           <React.Fragment>
             <button onClick={() => this.props.refreshDevices(this.props.userID)}>Refresh Devices</button>
             {this.props.playback.playing ? (
@@ -212,7 +211,7 @@ class App extends React.Component {
 
             <button onClick={this.skip}>Skip</button>
             <button onClick={this.previous}>Previous</button>
-            <input type="number" min="0" ref={this.jumpRef} />
+            <Slider max={this.props.playback.currentSongDuration} initialValue={this.props.playback.initialPosition} stop={!this.props.playback.playing} autoincrement callback={this.jumpTo} />
             <button onClick={this.jumpTo}>Jump To</button>
 
             <h1>Now playing: {this.props.playback.currentSong}</h1>
@@ -241,7 +240,6 @@ const mapDispatchToProps = dispatch => {
   return {
     connectUser: (socket) => dispatch(connectUser(socket)),
     leaveRoom: () => dispatch(leaveRoom()),
-    joinRoom: () => dispatch(joinRoom()),
     createRoom: (roomID) => dispatch(createRoomUserSuccess(roomID)),
     destroyRoom: () => dispatch(destroyRoom()),
     destroyedRoom: () => dispatch(destroyedRoom()),

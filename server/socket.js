@@ -58,12 +58,18 @@ module.exports = (io) => (socket) => {
 
         // Get the currently playing information from host
         requestContext(room.host).then((playback) => {
+          room.currentSong = playback.item.name;
+          room.currentSongDuration = playback.item.duration_ms/1000;
+          room.playing = playback.is_playing;
+          room.initialPosition = playback.progress_ms/1000;
           playContext(
             user,
             playback.context.uri,
             playback.item.uri,
             playback.progress_ms
           ).then(() => {
+            if(!room.is_playing)
+              pauseDevice(user);
             socket.emit(events.JOIN, room.getPlayback()); // Success
           });
         });
@@ -86,7 +92,7 @@ module.exports = (io) => (socket) => {
     let room = getRoom(user.room);
     requestAddQueue(user, room.playlist.id, track).then(() => {
       room.playlist.tracks.items.push(track);
-      socket.emit(events.QUEUE_ADD, room.getPlayback());
+      io.to(room.id).emit(events.QUEUE_ADD, room.getPlayback());
     });
   });
 
@@ -96,7 +102,7 @@ module.exports = (io) => (socket) => {
     requestDeleteQueue(user, room.playlist.id, track).then(() => {
       //! Better, shorter way to do this?
       room.playlist.tracks.items = room.playlist.tracks.items.filter(item => item.name !== track.name);
-      socket.emit(events.QUEUE_REMOVE, room.getPlayback());
+      io.to(room.id).emit(events.QUEUE_REMOVE, room.getPlayback());
     });
   });
 
@@ -122,7 +128,7 @@ module.exports = (io) => (socket) => {
       room.playlist.tracks.items.splice(trackIndex, 1);
       //  Add the reordered track back to the new offset
       room.playlist.tracks.items.splice(newOffset, 0, tmpTrack);
-      socket.emit(events.QUEUE_REORDER, room.getPlayback());
+      io.to(room.id).emit(events.QUEUE_REORDER, room.getPlayback());
     })
   });
 
@@ -159,6 +165,7 @@ module.exports = (io) => (socket) => {
     Promise.all(room.members.map((user) => nextSong(user))).then((datas) => {
       requestContext(room.host).then((playback) => {
         room.currentSong = playback.item.name;
+        room.currentSongDuration = playback.item.duration_ms/1000;
         room.playing = true;
         io.to(room.id).emit(events.SKIP, room.getPlayback());
       });
@@ -169,11 +176,11 @@ module.exports = (io) => (socket) => {
   socket.on(events.PREVIOUS, () => {
     const user = getUser(socket.id);
     let room = getRoom(user.room);
-    room.members.forEach((user) => previousSong(user));
-    Promise.all(room.members.map((user) => nextSong(user))).then((datas) => {
+    Promise.all(room.members.map((user) => previousSong(user))).then((datas) => {
       requestContext(room.host).then((playback) => {
         room.currentSong = playback.item.name;
         room.playing = true;
+        room.currentSongDuration = playback.item.duration_ms/1000;
         io.to(room.id).emit(events.SKIP, room.getPlayback());
       });
     });

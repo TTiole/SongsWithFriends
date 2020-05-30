@@ -1,4 +1,4 @@
-import {AUTHENTICATE_USER, CREATE_ROOM, CONNECT, JOIN_ROOM, LEAVE_ROOM, DESTROYED_ROOM, DESTROY_ROOM, MODIFY_USER} from './action_types'
+import {AUTHENTICATE_USER, CREATE_ROOM, CONNECT, LEAVE_ROOM, DESTROYED_ROOM, DESTROY_ROOM, MODIFY_USER} from './action_types'
 
 export const connectUser = (socket) => {
   return {
@@ -23,13 +23,6 @@ export const refreshDevices = (userID) => (dispatch, getState, api) => {
   return api.get('/refreshDevices', {userID}, data => {
     dispatch(modifyUser(data));
   })
-}
-
-export const joinRoom = () => {
-  return {
-    type: JOIN_ROOM,
-    payload: null
-  }
 }
 export const leaveRoom = () => {
   return {
