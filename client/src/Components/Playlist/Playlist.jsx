@@ -11,13 +11,18 @@ const ms2time = (ms) => {
 const Playlist = (props) => {
   const [showDelete, setShowDelete] = useState(false);
   const handleEdit = () => setShowDelete(!showDelete)
+  const handleBack = () => {
+    props.setShowPlaylist(false);
+    props.setShowLibrary(true);
+  }
   return (
     <div className="playlist-container">
       <div className="top-container">
         <Typography margin="5px" fontSize={25} bold color="#eee">
           {props.playlistName}
         </Typography>
-        {props.queue? <button className="editBtn" onClick={handleEdit}>Edit Playlist</button>:null}
+        {props.queue ? <button className="editBtn" onClick={handleEdit}>Edit Playlist</button> :
+          <button className="editBtn" onClick={handleBack}>Back</button>}
       </div>
       <div className="tracks">
         {props.tracks.map((track) => (
