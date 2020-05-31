@@ -1,9 +1,8 @@
-const makeid = (length) => {
+const makeid = (length, charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789") => {
   let result           = '';
-  let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let charactersLength = characters.length;
+  let charactersLength = charset.length;
   for ( let i = 0; i < length; i++ ) {
-     result += characters.charAt(Math.floor(Math.random() * charactersLength));
+     result += charset.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
 }

@@ -17,7 +17,7 @@ const Main = (props) => {
   const [showPlaylist, setShowPlaylist] = useState(false);
 
   const handleLibrary = () => {
-    if (showPlaylist != true) setShowLibrary(!showLibrary);
+    if (!showPlaylist) setShowLibrary(!showLibrary);
 
     setShowPlaylist(false)
   };
