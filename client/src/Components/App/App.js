@@ -2,7 +2,7 @@ import React from "react";
 
 import { connect } from 'react-redux'
 
-import { connectUser, authenticateUser, createRoomUserSuccess, leaveRoom, destroyRoom, destroyedRoom, refreshDevices, setDevice } from '../../Redux/Actions/userAction'
+import { connectUser, authenticateUser, createRoomUserSuccess, leaveRoom, destroyRoom, destroyedRoom, refreshDevices, setDevice, guestLogin } from '../../Redux/Actions/userAction'
 import { joinRoomPlaybackSuccess, createRoomSuccess, modifyPlayback } from '../../Redux/Actions/playbackAction'
 
 import "./App.css";
@@ -89,12 +89,10 @@ class App extends React.Component {
     window.history.replaceState(null, "", window.location.href.split("?")[0]);
   };
 
-  setupSocketListeners = (socket, code) => {
+  setupSocketListeners = (socket, code = null) => {
     // On connection established, authenticate user
     console.log(server);
-    socket.on(CONNECT, this.socketEstablished(code))
-    if (socket.connected)
-      this.socketEstablished(code);
+    socket.on(CONNECT, code !== null ? this.socketEstablished(code):this.props.guestLogin)
     // On error, console.error the msg
     socket.on(ERROR, (msg) => console.error(msg));
     // On create, let the client know that the user is a host
@@ -165,6 +163,12 @@ class App extends React.Component {
       this.props.socket.emit(UPDATE_PLAYBACK)
   }
 
+  guestLogin = () => {
+    let socket = io(server)
+    this.props.connectUser(socket);
+    this.setupSocketListeners(socket)
+  }
+
   render() {
     // Display if not logged in
     if (!this.props.loggedIn)
@@ -173,6 +177,7 @@ class App extends React.Component {
           <a href={`http://localhost:8000/login?userID=${this.props.userID}`}>
             Try sign in
           </a>
+          <button onClick={this.guestLogin}>Guest login</button>
         </div>
       );
     // Display if you are logged in
@@ -181,7 +186,7 @@ class App extends React.Component {
         {/* Displays if neither host or member */}
         {!this.props.host && !this.props.member ? (
           <React.Fragment>
-            <button onClick={this.createRoom}>Create room</button>
+            {this.props.guest ? null:<button onClick={this.createRoom}>Create room</button>}
             <input type="text" ref={this.joinRef} />
             <button onClick={this.joinRoom}> Join room</button>
           </React.Fragment>
@@ -202,7 +207,7 @@ class App extends React.Component {
             alignItems: "flex-start",
           }}
         >
-          {this.props.user.playbackDevices.map((device) => (
+          {this.props.guest ? null:this.props.user.playbackDevices.map((device) => (
             <button key={device.id} onClick={() => this.props.setDevice(device.id, this.props.userID)}>
               {device.name} {device.is_active ? "(Active)" : ""}
             </button>
@@ -241,7 +246,8 @@ const mapStateToProps = (state) => {
     member: state.userReducer.member,
     host: state.userReducer.host,
     user: state.userReducer.user,
-    playback: state.playbackReducer.playback
+    playback: state.playbackReducer.playback,
+    guest: state.userReducer.guest
   }
 }
 
@@ -257,7 +263,8 @@ const mapDispatchToProps = dispatch => {
     createRoomSuccess: (playback) => dispatch(createRoomSuccess(playback)),
     modifyPlayback: (playback) => dispatch(modifyPlayback(playback)),
     refreshDevices: (userID) => dispatch(refreshDevices(userID)),
-    setDevice: (deviceID, userID) => dispatch(setDevice(deviceID, userID))
+    setDevice: (deviceID, userID) => dispatch(setDevice(deviceID, userID)),
+    guestLogin: () => dispatch(guestLogin())
   }
 }
 

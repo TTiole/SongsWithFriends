@@ -19,7 +19,7 @@ const TrackCell = (props) => {
       {props.showDelete ? <button id="removeBtn" onClick={reorderSong(props.track, -1)}>&#8593;</button> : null}
       {props.showDelete ? <button id="removeBtn" onClick={reorderSong(props.track, 1)}>&#8595;</button> : null}
       {props.showDelete ? <button id="removeBtn" onClick={removeSong(props.track)}>-</button> : null}
-      <div className="track-container" onClick={addSong(props.track)}>
+      <div className="track-container" onClick={!props.queue ? addSong(props.track):null}>
         <div className="track-container-info">
           <Typography bold color="white">{props.track.name}</Typography>
           <Typography color="#b3b3b3">{props.track.artists}</Typography>

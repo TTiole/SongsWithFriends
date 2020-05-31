@@ -3,7 +3,7 @@ const {getUser} = require('./users')
 let rooms = [];
 class Room {
   constructor(id, host) {
-    this.id = id; this.members = [host]; this.host = host;
+    this.id = id; this.members = [host]; this.host = host; this.guests = [];
     this.playing = false;
     this.playlist = null;
     this.currentSong = "";
@@ -16,10 +16,16 @@ class Room {
     this.members.push(user);
   }
 
+  addGuest = user => this.guests.push(user);
+
+  getUsers = () => [...this.members, ...this.guests]
+
   // Removes a member from a room
   removeMember = user => {
     this.members = this.members.filter(member => member.id !== user.id);
   }
+
+  removeGuest = user => this.guests.filter(guest => guest.id !== user.id);
 
   getPlayback = () => ({playing: this.playing, playlist: this.playlist, currentSong: this.currentSong, currentSongDuration: this.currentSongDuration, initialPosition: this.initialPosition})
 }
@@ -42,11 +48,13 @@ const addRoom = (host) => {
 const closeRoom = id => {
   const room = getRoom(id);
   // Go through each member and remove them from the room
-  room.members.forEach(member => {
+  room.getUsers().forEach(member => {
     // Get the reference from the users array
     let user = getUser(member.id);
-    user.host = false;
-    user.room = "";
+    if(user) { //! Memory leak? Gotta be careful I can't figure out why this would be undefined
+      user.host = false;
+      user.room = "";
+    }
   })
   rooms = rooms.filter(room => room.id !== id)
 } 

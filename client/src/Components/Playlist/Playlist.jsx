@@ -17,7 +17,7 @@ const Playlist = (props) => {
         <Typography margin="5px" fontSize={25} bold color="#eee">
           {props.playlistName}
         </Typography>
-        <button className="editBtn" onClick={handleEdit}>Edit Playlist</button>
+        {props.queue? <button className="editBtn" onClick={handleEdit}>Edit Playlist</button>:null}
       </div>
       <div className="tracks">
         {props.tracks.map((track) => (
@@ -26,6 +26,7 @@ const Playlist = (props) => {
             duration={ms2time(track.duration_ms)}
             track={track}
             showDelete={showDelete}
+            queue={props.queue}
           />
         ))}
       </div>

@@ -2,7 +2,7 @@ let users = [];
 class User {
   constructor(id) {
     this.id = id;
-    this.name = "";
+    this.name = "Guest";
     this.token = "";
     this.token_type = "";
     this.playback_device = null;
@@ -37,6 +37,8 @@ class User {
     playbackDevices: this.playback_devices,
     playlists: this.playlists
   });
+
+  isGuest = () => this.token === "" && this.token_type === ""
 }
 
 /**

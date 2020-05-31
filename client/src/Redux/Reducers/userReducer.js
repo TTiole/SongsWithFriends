@@ -1,7 +1,7 @@
-import {AUTHENTICATE_USER, CREATE_ROOM, JOIN_ROOM, DESTROY_ROOM, DESTROYED_ROOM, LEAVE_ROOM, CONNECT} from '../Actions/action_types'
+import {AUTHENTICATE_USER, CREATE_ROOM, JOIN_ROOM, DESTROY_ROOM, DESTROYED_ROOM, LEAVE_ROOM, CONNECT, GUEST_LOGIN} from '../Actions/action_types'
 
 
-const initialState = {socket: null, userID: "", user: null, loggedIn: false, member: false, host: false, roomID: ""}
+const initialState = {socket: null, userID: "", user: null, loggedIn: false, member: false, host: false, roomID: "", guest: false}
 
 export default  (state = initialState, action) => {
   switch(action.type) {
@@ -9,6 +9,8 @@ export default  (state = initialState, action) => {
       return {...state, socket: action.payload}
     case AUTHENTICATE_USER:
       return {...state, user: action.payload, loggedIn: true, userID: state.socket.id}
+    case GUEST_LOGIN:
+      return {...state, loggedIn: true, guest: true, userID: state.socket.id}
     case CREATE_ROOM:
       return {...state, host: true, roomID: action.payload}
     case JOIN_ROOM:

@@ -5,6 +5,7 @@ export const CLOSE_RESPONSE_MODAL = "close_response_modal";
 
 export const CONNECT = "connect";
 export const AUTHENTICATE_USER = "authenticate_user";
+export const GUEST_LOGIN = "guest_login"
 export const CREATE_ROOM = "create_room";
 export const JOIN_ROOM = "join_room";
 export const LEAVE_ROOM = "leave_room";

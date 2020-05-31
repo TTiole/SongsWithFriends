@@ -56,25 +56,30 @@ module.exports = (io) => (socket) => {
         socket.emit(events.ERROR, "The room you entered is invalid");
       } else {
         socket.join(id); // Join the socket room
-        room.addMember(user); // Add the member to the rooms object
         user.room = id; // Update the room property of user
-
+        
         // Get the currently playing information from host
         requestContext(room.host).then((playback) => {
-          room.currentSong = playback.item.name;
-          room.currentSongDuration = playback.item.duration_ms/1000;
+          room.currentSong = playback.item ? playback.item.name:"";
+          room.currentSongDuration = playback.item ? playback.item.duration_ms/1000:0;
           room.playing = playback.is_playing;
           room.initialPosition = playback.progress_ms/1000;
-          playContext(
-            user,
-            playback.context.uri,
-            playback.item.uri,
-            playback.progress_ms
-          ).then(() => {
-            if(!room.is_playing)
-              pauseDevice(user);
+          if(user.isGuest()) { // Guest
             socket.emit(events.JOIN, room.getPlayback()); // Success
-          });
+            room.addGuest(user);
+          } else {
+            room.addMember(user);
+            playContext(
+              user,
+              playback.context.uri,
+              playback.item.uri,
+              playback.progress_ms
+            ).then(() => {
+              if(!room.is_playing)
+                pauseDevice(user);
+              socket.emit(events.JOIN, room.getPlayback()); // Success
+            });
+          }
         });
       }
     }
@@ -93,7 +98,7 @@ module.exports = (io) => (socket) => {
   socket.on(events.QUEUE_ADD, (track) => {
     const user = getUser(socket.id);
     let room = getRoom(user.room);
-    requestAddQueue(user, room.playlist.id, track).then(() => {
+    requestAddQueue(user.isGuest() ? room.host:user, room.playlist.id, track).then(() => {
       room.playlist.tracks.items.push(track);
       io.to(room.id).emit(events.QUEUE_ADD, room.getPlayback());
     });
@@ -102,7 +107,7 @@ module.exports = (io) => (socket) => {
   socket.on(events.QUEUE_REMOVE, (track) => {
     const user = getUser(socket.id);
     let room = getRoom(user.room);
-    requestDeleteQueue(user, room.playlist.id, track).then(() => {
+    requestDeleteQueue(user.isGuest() ? room.host:user, room.playlist.id, track).then(() => {
       //! Better, shorter way to do this?
       room.playlist.tracks.items = room.playlist.tracks.items.filter(item => item.name !== track.name);
       io.to(room.id).emit(events.QUEUE_REMOVE, room.getPlayback());
@@ -125,7 +130,7 @@ module.exports = (io) => (socket) => {
     if (newOffset >= room.playlist.tracks.items.length)
       newOffset = room.playlist.tracks.items.length - 1;
 
-    requestReorderQueue(user, room.playlist.id, trackIndex, newOffset).then(() => {
+    requestReorderQueue(user.isGuest() ? room.host:user, room.playlist.id, trackIndex, newOffset).then(() => {
       //  Save the reordered track and delete it from queue
       let tmpTrack = room.playlist.tracks.items[trackIndex];
       room.playlist.tracks.items.splice(trackIndex, 1);
@@ -220,11 +225,16 @@ module.exports = (io) => (socket) => {
       socket.emit(events.ERROR, "You are not in a room");
     } else {
       let room = getRoom(user.room);
-      room.removeMember(user); // Remove the user from the room object
+      
       socket.leave(user.room); // Leave the socket room
       user.room = ""; // Update the user object
       socket.emit(events.LEAVE, room.id);
-      pauseDevice(user); // Pause the user's playback
+      if(user.isGuest()) {
+        room.removeGuest(user);
+      } else {
+        room.removeMember(user); // Remove the user from the room object
+        pauseDevice(user); // Pause the user's playback
+      }
     }
   };
 
