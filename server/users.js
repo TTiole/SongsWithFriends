@@ -84,8 +84,8 @@ const addSinglePlaylist = (id, playlist) =>
  * @param {String} id User ID
  * @param {String} playlist playlist name
  */
-const getSinglePlaylist = (id, playlistName) =>
-  getUser(id).playlists.find((playlist) => playlist.name === playlistName);
+const getSinglePlaylist = (id, playlistID) =>
+  getUser(id).playlists.find((playlist) => playlist.id === playlistID);
 
 /**
  * Add all the playlist objects from a specific user's playlist list

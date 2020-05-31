@@ -8,6 +8,8 @@ const UserLibrary = (props) => {
         let trackIndex = props.playlists.findIndex(item => item.name === name);
         console.log(trackIndex)
         props.setSelectedPlaylist(trackIndex);
+        props.setShowLibrary(false);
+        props.setShowPlaylist(true);
     }
     const musicUnicode = String.fromCodePoint(0x266A);
     return (

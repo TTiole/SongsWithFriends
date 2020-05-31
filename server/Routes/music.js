@@ -47,10 +47,10 @@ module.exports = (app) => {
 
   app.get("/allTracks", function (req, res) {
     let userID = req.query.userID;
-    let playlistName = req.query.playlistName;
+    let playlistID = req.query.playlistID;
     // let playlistName = "home🏠";
-    console.log(playlistName);
-    let playlist = getSinglePlaylist(userID, playlistName);
+    console.log(playlistID);
+    let playlist = getSinglePlaylist(userID, playlistID);
     let tracks = [];
 
     // Get all the tracks in this playlist from Spotify
