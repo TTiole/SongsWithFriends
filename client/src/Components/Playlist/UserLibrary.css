@@ -1,0 +1,32 @@
+.library-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    margin: 5px;
+    width: 55%;
+    height: 500px;
+    background-color: pink;
+  }
+
+  .playlists {
+    margin: 5px;
+    height: 90%;
+    overflow: auto;
+  }
+
+  .entry-wrapper{
+    display: flex;
+    justify-content: space-between;
+  
+    margin: 3px 0px;
+    background-color: gray;
+  }
+  
+  .track-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    background-color: #1db954;
+  }
+  
