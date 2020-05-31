@@ -13,6 +13,7 @@ const {
   requestAddQueue,
   requestDeleteQueue,
   requestReorderQueue,
+  setVolume
 } = require("./requests");
 const events = require("../helpers/socket_events");
 const { makeid } = require("../helpers/string_utils");
@@ -94,6 +95,12 @@ module.exports = (io) => (socket) => {
   socket.on(events.DESTROY, () => {
     destroyRoom();
   });
+
+  socket.on(events.SET_VOLUME, (percentage) => {
+    const user = getUser(socket.id);
+    setVolume(user, percentage)
+    socket.emit(events.SET_VOLUME, percentage)
+  })
 
   socket.on(events.QUEUE_ADD, (track) => {
     const user = getUser(socket.id);

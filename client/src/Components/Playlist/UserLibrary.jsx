@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import "./UserLibrary.css";
 import Typography from "../Typography/Typography";
 
 
-const PlaylistsLibrary = (props) => {
+const UserLibrary = (props) => {
     const handleLibrary = (name) => () => {
         let trackIndex = props.playlists.findIndex(item => item.name === name);
         console.log(trackIndex)
@@ -18,7 +18,7 @@ const PlaylistsLibrary = (props) => {
 
             <div className="playlists">
                 {props.playlists.slice(1).map((playlist) => (
-                    <div className="entry-wrapper" onClick={handleLibrary(playlist.name)}>
+                    <div className="entry-wrapper" onClick={handleLibrary(playlist.name)} key={playlist.id}>
                         <div className="track-container-info">
                             <Typography bold color="white">{playlist.name}</Typography>
                             <Typography color="#b3b3b3">{playlist.owner}</Typography>
@@ -33,4 +33,4 @@ const PlaylistsLibrary = (props) => {
     );
 };
 
-export default PlaylistsLibrary;
+export default UserLibrary;

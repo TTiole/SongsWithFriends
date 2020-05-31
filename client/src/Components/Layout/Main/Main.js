@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { connect, useStore } from 'react-redux'
+import { connect } from 'react-redux'
 import "./Main.css";
 
 import { get } from '../../../Fetch'

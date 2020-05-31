@@ -129,7 +129,6 @@ const playContext = (user, context_uri, offset = null, position_ms = 0) => {
 }
 
 // Rqeust to add an item(track) to the playlist
-//! IMPORTANT: THERES A BUG WHICH REMOVES ALL SONGS FROM THE PLAYLIST HERE......
 const requestAddQueue = (user, playlist_id, trackObj) => {
   return requestSpotify(
     `/playlists/${playlist_id}/tracks?uris=${trackObj.uri}`,
@@ -188,6 +187,9 @@ const deleteTempPlaylist = (user, playlist_id) =>
     true
   );
 
+const setVolume = (user, percentage) =>
+    requestSpotify(`/me/player/volume?volume_percent=${percentage}`, user, "PUT", null, true);
+
 const disableShuffle = (user) =>
     requestSpotify(`/me/player/shuffle?state=${false}`, user, "PUT", null, true);
 
@@ -211,5 +213,6 @@ module.exports = {
   requestReorderQueue,
   createTempPlaylist,
   deleteTempPlaylist,
-  disableShuffle
+  disableShuffle,
+  setVolume
 };
