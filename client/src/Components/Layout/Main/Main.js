@@ -24,8 +24,8 @@ const Main = (props) => {
 
   useEffect(() => {
     if (!props.guest) {
-      let playlistName = props.user.playlists[selectedPlaylist].name;
-      get("/allTracks", { userID: props.user.id, playlistName }, playlist => {
+      let playlistID = props.user.playlists[selectedPlaylist].id;
+      get("/allTracks", { userID: props.user.id, playlistID }, playlist => {
         setTracks(playlist.tracks);
       })
     }
