@@ -3,7 +3,7 @@
     flex-direction: column;
     margin: 5px;
 
-    background-color: gray;
+    /* background-color: gray; */
 }
 
 .track-info {
@@ -11,8 +11,21 @@
     margin: 5px;
 }
 
-.player-control-status {
+.player-status {
     display: flex;
     margin: 5px;
-    background-color: red;
+    /* background-color: red; */
+}
+
+#player-control{
+    flex: 1 1;
+    display: flex;
+    padding: 5px;
+    justify-content: space-between;
+}
+
+#player-slide-bar {
+    flex: 4 1;
+    padding-top: 1px;
+    padding-right: 5px;
 }

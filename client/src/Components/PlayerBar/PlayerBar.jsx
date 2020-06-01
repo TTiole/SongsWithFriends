@@ -52,40 +52,32 @@ const PlayerBar = (props) => {
 
   return (
     <div className="player-container">
-      <div className="track-info">
-        <Typography>Currently Playing:</Typography>
-        <Typography margin="0 15px" bold>{props.track}</Typography>
-        <Typography>{props.artist}</Typography>
-      </div>
-      <div className="player-control-status">
-        {" "}
-        x x 1:05 ------------------------- 3:37
-      </div>
-
-
       {(props.member || props.host) && props.playback ? (
         <React.Fragment>
-          {props.guest ? null : (props.muted ? <VolumeUpRoundedIcon onClick={unmute}>Unmute</VolumeUpRoundedIcon> : <VolumeOffRoundedIcon onClick={mute}>Mute</VolumeOffRoundedIcon>)}
+          <div className="track-info">
+            <Typography color="#b3b3b3" bold>Currently Playing:</Typography>
+            <Typography margin="0 15px" color="white" bold>{props.playback.currentSong}</Typography>
+            <Typography color="#b3b3b3"> {props.playback.currentAlbum} · {props.playback.currentArtists} </Typography>
+          </div>
+
+          <div className="player-status">
+            <div id="player-control">
+              {props.guest ? null : (props.muted ? <VolumeUpRoundedIcon style={{ fill: "#535353" }} onClick={unmute}>Unmute</VolumeUpRoundedIcon> : <VolumeOffRoundedIcon style={{ fill: "#535353" }} onClick={mute}>Mute</VolumeOffRoundedIcon>)}
+              <SkipPreviousRoundedIcon style={{ fill: "#535353" }} onClick={previous}>Previous</SkipPreviousRoundedIcon>
+              {props.playback.playing ? (<PauseRoundedIcon style={{ fill: "#535353" }} onClick={pause}>Pause</PauseRoundedIcon>) : (<PlayArrowRoundedIcon style={{ fill: "#535353" }} onClick={resume}>Resume</PlayArrowRoundedIcon>)}
+              <SkipNextRoundedIcon style={{ fill: "#535353" }} onClick={skip}>Skip</SkipNextRoundedIcon>
+            </div>
+            <div id="player-slide-bar">
+              <Slider max={props.playback.currentSongDuration} maxCallback={songFinished}
+                initialValue={props.playback.initialPosition} position={props.playback.initialPosition}
+                stop={!props.playback.playing} autoincrement callback={jumpTo} instanceID={props.playback.currentSong} />
+            </div>
+          </div>
+
           <button onClick={() => props.refreshDevices(props.userID)}>Refresh Devices</button>
 
-          {props.playback.playing ? (
-            <PauseRoundedIcon onClick={pause}>Pause</PauseRoundedIcon>
-          ) : (
-              <PlayArrowRoundedIcon onClick={resume}>Resume</PlayArrowRoundedIcon>
-            )}
 
-          <SkipNextRoundedIcon onClick={skip}>Skip</SkipNextRoundedIcon>
-          <SkipPreviousRoundedIcon onClick={previous}>Previous</SkipPreviousRoundedIcon>
-          <Slider max={props.playback.currentSongDuration} maxCallback={songFinished}
-            initialValue={props.playback.initialPosition} position={props.playback.initialPosition}
-            stop={!props.playback.playing} autoincrement callback={jumpTo} instanceID={props.playback.currentSong} />
-
-          <button onClick={jumpTo}>Jump To</button>
-
-          <p>Currently Playing: {props.playback.currentSong}</p>
-          <p>Currently Playing: {props.playback.currentAlbum} </p>
-          <p>Currently Playing: {props.playback.currentArtists}</p>
-
+          {/* <button onClick={jumpTo}>Jump To</button> */}
           {/* <input type="text" ref={this.newInputRef}/> */}
         </React.Fragment>
       ) : null}
