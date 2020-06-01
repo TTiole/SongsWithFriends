@@ -3,7 +3,7 @@ import React from "react";
 import { connect } from 'react-redux'
 
 import { connectUser, authenticateUser, createRoomUserSuccess, leaveRoom, destroyRoom, destroyedRoom, refreshDevices, setDevice, guestLogin } from '../../Redux/Actions/userAction'
-import { joinRoomPlaybackSuccess, createRoomSuccess, modifyPlayback } from '../../Redux/Actions/playbackAction'
+import { joinRoomPlaybackSuccess, createRoomSuccess, modifyPlayback, toggleMute } from '../../Redux/Actions/playbackAction'
 
 import "./App.css";
 import io from "socket.io-client";
@@ -27,7 +27,8 @@ import {
   QUEUE_REMOVE,
   QUEUE_REORDER,
   JUMP,
-  UPDATE_PLAYBACK
+  UPDATE_PLAYBACK,
+  SET_VOLUME
 } from "helpers/socket_events.js";
 import { server } from "helpers/constants.js"
 
@@ -79,6 +80,10 @@ class App extends React.Component {
 
   // Jump to point in song
   jumpTo = (e) => this.props.socket.emit(JUMP, e.target.value*1000);
+
+  mute = () => this.props.socket.emit(SET_VOLUME, 0)
+
+  unmute = () => this.props.socket.emit(SET_VOLUME, 50);
 
   // Socket connection has been established
   socketEstablished = (code) => () => {
@@ -156,6 +161,10 @@ class App extends React.Component {
     socket.on(UPDATE_PLAYBACK, (playback) => {
       this.props.modifyPlayback(playback)
     });
+
+    socket.on(SET_VOLUME, percentage => {
+      this.props.toggleMute(percentage === 0);
+    })
   };
 
   songFinished = () => {
@@ -216,6 +225,7 @@ class App extends React.Component {
         {/* Displays when either member or host */}
         {(this.props.member || this.props.host) && this.props.playback ? (
           <React.Fragment>
+            {this.props.guest ? null:(this.props.muted ? <button onClick={this.unmute}>Unmute</button>:<button onClick={this.mute}>Mute</button>)}
             <button onClick={() => this.props.refreshDevices(this.props.userID)}>Refresh Devices</button>
             {this.props.playback.playing ? (
               <button onClick={this.pause}>Pause</button>
@@ -247,7 +257,8 @@ const mapStateToProps = (state) => {
     host: state.userReducer.host,
     user: state.userReducer.user,
     playback: state.playbackReducer.playback,
-    guest: state.userReducer.guest
+    guest: state.userReducer.guest,
+    muted: state.playbackReducer.muted
   }
 }
 
@@ -264,7 +275,8 @@ const mapDispatchToProps = dispatch => {
     modifyPlayback: (playback) => dispatch(modifyPlayback(playback)),
     refreshDevices: (userID) => dispatch(refreshDevices(userID)),
     setDevice: (deviceID, userID) => dispatch(setDevice(deviceID, userID)),
-    guestLogin: () => dispatch(guestLogin())
+    guestLogin: () => dispatch(guestLogin()),
+    toggleMute: mute => dispatch(toggleMute(mute))
   }
 }
 

@@ -14,6 +14,7 @@ export const DESTROYED_ROOM = "destroyed_room";
 export const MODIFY_USER = "modify_user";
 export const REFRESH_DEVICES = "refresh_devices";
 export const SET_DEVICE = "set_device";
+export const TOGGLE_MUTE = "toggle_mute";
 
 
 export const MODIFY_PLAYBACK = "modify_playback"

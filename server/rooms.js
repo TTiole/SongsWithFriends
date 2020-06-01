@@ -35,7 +35,7 @@ class Room {
  * @param {User} host User object which will be the host of the room
  */
 const addRoom = (host) => {
-  const id = makeid(8);
+  const id = makeid(6, "ABCDEFGHIJKLMNOPQRSTUVWXYZ"); //! NOT UNIQUE
   const room = new Room(id, host)
   rooms.push(room);
   return room;

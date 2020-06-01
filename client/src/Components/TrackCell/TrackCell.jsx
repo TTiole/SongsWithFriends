@@ -1,6 +1,8 @@
 import React from "react";
 import { connect } from 'react-redux';
 
+import { modifyPlayback } from '../../Redux/Actions/playbackAction'
+
 import Typography from "../Typography/Typography";
 import "./TrackCell.css";
 
@@ -34,8 +36,17 @@ const TrackCell = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    socket: state.userReducer.socket
+    socket: state.userReducer.socket,
   }
 }
 
+// const mapDispatchToProps = dispatch => {
+//   return {
+//     test: (playback) => dispatch(modifyPlayback(playback))
+//   }
+// }
+
+// props.test(playback)
+
 export default connect(mapStateToProps, null)(TrackCell);
+// export default connect(mapStateToProps, mapDispatchToProps)(TrackCell);

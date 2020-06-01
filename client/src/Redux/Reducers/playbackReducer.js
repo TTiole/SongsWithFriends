@@ -1,6 +1,6 @@
-import {JOIN_ROOM, MODIFY_PLAYBACK, CREATE_ROOM} from '../Actions/action_types'
+import {JOIN_ROOM, MODIFY_PLAYBACK, CREATE_ROOM, TOGGLE_MUTE} from '../Actions/action_types'
 
-const initialState = {playback: null}
+const initialState = {playback: null, muted: false}
 
 export default  (state = initialState, action) => {
   switch(action.type) {
@@ -8,6 +8,8 @@ export default  (state = initialState, action) => {
     case CREATE_ROOM:
     case MODIFY_PLAYBACK:
       return {...state, playback: action.payload}
+    case TOGGLE_MUTE:
+      return {...state, muted: action.payload}
     default: return state;
   }
 
