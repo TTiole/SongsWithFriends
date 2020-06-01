@@ -39,7 +39,7 @@ const PlayerBar = (props) => {
   const previous = () => props.socket.emit(PREVIOUS);
 
   // Jump to point in song
-  const jumpTo = (e) => props.socket.emit(JUMP, e.target.value * 1000);
+  const jumpTo = (e) => { props.socket.emit(JUMP, e.target.value * 1000) };
 
   const mute = () => props.socket.emit(SET_VOLUME, 0)
 
@@ -77,7 +77,7 @@ const PlayerBar = (props) => {
           <button onClick={() => props.refreshDevices(props.userID)}>Refresh Devices</button>
 
 
-          {/* <button onClick={jumpTo}>Jump To</button> */}
+          <button onClick={jumpTo}>Jump To</button>
           {/* <input type="text" ref={this.newInputRef}/> */}
         </React.Fragment>
       ) : null}

@@ -1,9 +1,9 @@
 .player-container {
     display: flex;
     flex-direction: column;
-    margin: 5px;
+    padding: 5px;
 
-    /* background-color: gray; */
+    background-color: #282828;
 }
 
 .track-info {
@@ -18,14 +18,13 @@
 }
 
 #player-control{
-    flex: 1 1;
+    flex: 1;
     display: flex;
     padding: 5px;
     justify-content: space-between;
 }
 
 #player-slide-bar {
-    flex: 4 1;
-    padding-top: 1px;
-    padding-right: 5px;
+    flex: 10;
+    padding: 1px 5px 0 15px;
 }
