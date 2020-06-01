@@ -60,7 +60,6 @@ module.exports = (app) => {
         //  Response come back in page objects, which contains an array of
         //  playlist track object that has: added_at, added_by, is_local, and the actual track object
         pages.items.forEach((playlistTrackObj) => {
-          //  If there's multiple artists, put them in an array beforehand
           tracks.push(simplifyTrack(playlistTrackObj.track));
           // console.log(simplifyTrack(playlistTrackObj.track));
         });
@@ -167,7 +166,8 @@ const getNextPage = (user, pages, pageLimit, searchResult) => {
 const simplifyTrack = (rawTrack) => ({
   albumName: rawTrack.album.name,
   // Map the artist names
-  artists: rawTrack.artists.map((artist) => artist.name),
+  //  If there's multiple artists, put them in an array beforehand
+  artists: rawTrack.artists.map((artist) => " " + artist.name).toString().slice(1),
   explicit: rawTrack.explicit,
   duration_ms: rawTrack.duration_ms,
   uri: rawTrack.uri,

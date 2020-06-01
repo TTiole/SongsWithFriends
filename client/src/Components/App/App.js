@@ -66,25 +66,6 @@ class App extends React.Component {
   // Sends DESTROY event
   destroyRoom = () => this.props.socket.emit(DESTROY);
 
-  // Sends play event
-  resume = () => this.props.socket.emit(PLAY);
-
-  // Sends pause event
-  pause = () => this.props.socket.emit(PAUSE);
-
-  // Sends skip event
-  skip = () => this.props.socket.emit(SKIP);
-
-  // Sends previous event
-  previous = () => this.props.socket.emit(PREVIOUS);
-
-  // Jump to point in song
-  jumpTo = (e) => this.props.socket.emit(JUMP, e.target.value*1000);
-
-  mute = () => this.props.socket.emit(SET_VOLUME, 0)
-
-  unmute = () => this.props.socket.emit(SET_VOLUME, 50);
-
   // Socket connection has been established
   socketEstablished = (code) => () => {
     // Get the user id from the socket
@@ -97,7 +78,7 @@ class App extends React.Component {
   setupSocketListeners = (socket, code = null) => {
     // On connection established, authenticate user
     console.log(server);
-    socket.on(CONNECT, code !== null ? this.socketEstablished(code):this.props.guestLogin)
+    socket.on(CONNECT, code !== null ? this.socketEstablished(code) : this.props.guestLogin)
     // On error, console.error the msg
     socket.on(ERROR, (msg) => console.error(msg));
     // On create, let the client know that the user is a host
@@ -167,11 +148,6 @@ class App extends React.Component {
     })
   };
 
-  songFinished = () => {
-    if(this.props.host)
-      this.props.socket.emit(UPDATE_PLAYBACK)
-  }
-
   guestLogin = () => {
     let socket = io(server)
     this.props.connectUser(socket);
@@ -195,7 +171,7 @@ class App extends React.Component {
         {/* Displays if neither host or member */}
         {!this.props.host && !this.props.member ? (
           <React.Fragment>
-            {this.props.guest ? null:<button onClick={this.createRoom}>Create room</button>}
+            {this.props.guest ? null : <button onClick={this.createRoom}>Create room</button>}
             <input type="text" ref={this.joinRef} />
             <button onClick={this.joinRoom}> Join room</button>
           </React.Fragment>
@@ -216,7 +192,7 @@ class App extends React.Component {
             alignItems: "flex-start",
           }}
         >
-          {this.props.guest ? null:this.props.user.playbackDevices.map((device) => (
+          {this.props.guest ? null : this.props.user.playbackDevices.map((device) => (
             <button key={device.id} onClick={() => this.props.setDevice(device.id, this.props.userID)}>
               {device.name} {device.is_active ? "(Active)" : ""}
             </button>
@@ -225,21 +201,6 @@ class App extends React.Component {
         {/* Displays when either member or host */}
         {(this.props.member || this.props.host) && this.props.playback ? (
           <React.Fragment>
-            {this.props.guest ? null:(this.props.muted ? <button onClick={this.unmute}>Unmute</button>:<button onClick={this.mute}>Mute</button>)}
-            <button onClick={() => this.props.refreshDevices(this.props.userID)}>Refresh Devices</button>
-            {this.props.playback.playing ? (
-              <button onClick={this.pause}>Pause</button>
-            ) : (
-                <button onClick={this.resume}>Resume</button>
-              )}
-
-            <button onClick={this.skip}>Skip</button>
-            <button onClick={this.previous}>Previous</button>
-            <Slider max={this.props.playback.currentSongDuration} maxCallback={this.songFinished} initialValue={this.props.playback.initialPosition} position={this.props.playback.initialPosition} stop={!this.props.playback.playing} autoincrement callback={this.jumpTo} instanceID={this.props.playback.currentSong} />
-            <button onClick={this.jumpTo}>Jump To</button>
-
-            <h1>Now playing: {this.props.playback.currentSong}</h1>
-            {/* <input type="text" ref={this.newInputRef}/> */}
             <Main />
           </React.Fragment>
         ) : null}

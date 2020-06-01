@@ -1,5 +1,5 @@
-const {makeid} = require('../helpers/string_utils');
-const {getUser} = require('./users')
+const { makeid } = require('../helpers/string_utils');
+const { getUser } = require('./users')
 let rooms = [];
 class Room {
   constructor(id, host) {
@@ -7,6 +7,8 @@ class Room {
     this.playing = false;
     this.playlist = null;
     this.currentSong = "";
+    this.currentAlbum = "";
+    this.currentArtists = "";
     this.currentSongDuration = 0;
     this.initialPosition = 0;
   }
@@ -27,7 +29,7 @@ class Room {
 
   removeGuest = user => this.guests.filter(guest => guest.id !== user.id);
 
-  getPlayback = () => ({playing: this.playing, playlist: this.playlist, currentSong: this.currentSong, currentSongDuration: this.currentSongDuration, initialPosition: this.initialPosition})
+  getPlayback = () => ({ playing: this.playing, playlist: this.playlist, currentSong: this.currentSong, currentAlbum: this.currentAlbum, currentArtists: this.currentArtists, currentSongDuration: this.currentSongDuration, initialPosition: this.initialPosition })
 }
 
 /**
@@ -51,13 +53,13 @@ const closeRoom = id => {
   room.getUsers().forEach(member => {
     // Get the reference from the users array
     let user = getUser(member.id);
-    if(user) { //! Memory leak? Gotta be careful I can't figure out why this would be undefined
+    if (user) { //! Memory leak? Gotta be careful I can't figure out why this would be undefined
       user.host = false;
       user.room = "";
     }
   })
   rooms = rooms.filter(room => room.id !== id)
-} 
+}
 
 /**
  * Takes a room id and returns the user object associated with the host
