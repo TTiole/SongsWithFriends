@@ -1,8 +1,6 @@
 import React from "react";
 import { connect } from 'react-redux';
 
-import { modifyPlayback } from '../../Redux/Actions/playbackAction'
-
 import Typography from "../Typography/Typography";
 import "./TrackCell.css";
 

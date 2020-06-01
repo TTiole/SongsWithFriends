@@ -9,7 +9,6 @@ import "./App.css";
 import io from "socket.io-client";
 
 import Main from "../Layout/Main/Main";
-import Slider from '../Slider/Slider'
 
 import {
   CONNECT,
@@ -26,7 +25,6 @@ import {
   QUEUE_ADD,
   QUEUE_REMOVE,
   QUEUE_REORDER,
-  JUMP,
   UPDATE_PLAYBACK,
   SET_VOLUME
 } from "helpers/socket_events.js";
@@ -197,6 +195,7 @@ class App extends React.Component {
               {device.name} {device.is_active ? "(Active)" : ""}
             </button>
           ))}
+          {this.props.guest ? null: <button onClick={() => this.props.refreshDevices(this.props.userID)}>Refresh Devices</button>}
         </div>
         {/* Displays when either member or host */}
         {(this.props.member || this.props.host) && this.props.playback ? (

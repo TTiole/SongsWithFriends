@@ -28,3 +28,13 @@
     flex: 10;
     padding: 1px 5px 0 15px;
 }
+
+
+#player-control > .MuiSvgIcon-root {
+    fill: rgb(130, 130, 130);
+    cursor: pointer;
+}
+
+#player-control > .MuiSvgIcon-root:hover {
+    fill: rgb(182, 182, 182);
+}

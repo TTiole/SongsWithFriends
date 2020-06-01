@@ -20,7 +20,7 @@ const Main = (props) => {
     // Always hide the playlist when the button is clicked
     // But only hide/show the library if the playlist is not showing
     // so that the library and selected playlist never show up at the same time
-    if (showPlaylist != true) setShowLibrary(!showLibrary);
+    if (!showPlaylist) setShowLibrary(!showLibrary);
     setShowPlaylist(false)
   };
 

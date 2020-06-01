@@ -1,8 +1,6 @@
 import React from "react";
 import { connect } from 'react-redux';
 
-import { refreshDevices } from '../../Redux/Actions/userAction'
-
 import "./PlayerBar.css"
 
 import Typography from '../Typography/Typography'
@@ -62,10 +60,10 @@ const PlayerBar = (props) => {
 
           <div className="player-status">
             <div id="player-control">
-              {props.guest ? null : (props.muted ? <VolumeUpRoundedIcon style={{ fill: "#535353" }} onClick={unmute}>Unmute</VolumeUpRoundedIcon> : <VolumeOffRoundedIcon style={{ fill: "#535353" }} onClick={mute}>Mute</VolumeOffRoundedIcon>)}
-              <SkipPreviousRoundedIcon style={{ fill: "#535353" }} onClick={previous}>Previous</SkipPreviousRoundedIcon>
-              {props.playback.playing ? (<PauseRoundedIcon style={{ fill: "#535353" }} onClick={pause}>Pause</PauseRoundedIcon>) : (<PlayArrowRoundedIcon style={{ fill: "#535353" }} onClick={resume}>Resume</PlayArrowRoundedIcon>)}
-              <SkipNextRoundedIcon style={{ fill: "#535353" }} onClick={skip}>Skip</SkipNextRoundedIcon>
+              {props.guest ? null : (props.muted ? <VolumeUpRoundedIcon onClick={unmute}>Unmute</VolumeUpRoundedIcon> : <VolumeOffRoundedIcon onClick={mute}>Mute</VolumeOffRoundedIcon>)}
+              <SkipPreviousRoundedIcon onClick={previous}>Previous</SkipPreviousRoundedIcon>
+              {props.playback.playing ? (<PauseRoundedIcon onClick={pause}>Pause</PauseRoundedIcon>) : (<PlayArrowRoundedIcon onClick={resume}>Resume</PlayArrowRoundedIcon>)}
+              <SkipNextRoundedIcon onClick={skip}>Skip</SkipNextRoundedIcon>
             </div>
             <div id="player-slide-bar">
               <Slider max={props.playback.currentSongDuration} maxCallback={songFinished}
@@ -73,12 +71,6 @@ const PlayerBar = (props) => {
                 stop={!props.playback.playing} autoincrement callback={jumpTo} instanceID={props.playback.currentSong} />
             </div>
           </div>
-
-          <button onClick={() => props.refreshDevices(props.userID)}>Refresh Devices</button>
-
-
-          <button onClick={jumpTo}>Jump To</button>
-          {/* <input type="text" ref={this.newInputRef}/> */}
         </React.Fragment>
       ) : null}
     </div>
@@ -89,8 +81,7 @@ const mapStateToProps = (state) => {
   return {
     member: state.userReducer.member,
     host: state.userReducer.host,
-    guset: state.userReducer.guest,
-    userID: state.userReducer.userID,
+    guest: state.userReducer.guest,
 
     playback: state.playbackReducer.playback,
     muted: state.playbackReducer.muted,
@@ -99,13 +90,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    refreshDevices: (userID) => dispatch(refreshDevices(userID))
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PlayerBar);
+export default connect(mapStateToProps, null)(PlayerBar);
 
 
 
