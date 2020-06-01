@@ -9,6 +9,7 @@ import "./App.css";
 import io from "socket.io-client";
 
 import Main from "../Layout/Main/Main";
+import Loader from '../Loader/Loader'
 
 import {
   CONNECT,
@@ -151,8 +152,7 @@ class App extends React.Component {
     this.props.connectUser(socket);
     this.setupSocketListeners(socket)
   }
-
-  render() {
+  renderLoggedIn() {
     // Display if not logged in
     if (!this.props.loggedIn)
       return (
@@ -206,6 +206,14 @@ class App extends React.Component {
       </div>
     );
   }
+  render() {
+    return (
+      <div>
+        {this.renderLoggedIn()}
+        <Loader active={this.props.loading} />
+      </div>
+    )
+  }
 }
 
 const mapStateToProps = (state) => {
@@ -218,7 +226,8 @@ const mapStateToProps = (state) => {
     user: state.userReducer.user,
     playback: state.playbackReducer.playback,
     guest: state.userReducer.guest,
-    muted: state.playbackReducer.muted
+    muted: state.playbackReducer.muted,
+    loading: state.loadingReducer.loading
   }
 }
 
