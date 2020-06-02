@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { connect } from 'react-redux';
 
 import "./PlayerBar.css"
@@ -24,6 +24,38 @@ import {
 } from "helpers/socket_events.js";
 
 const PlayerBar = (props) => {
+  let [value, setValue] = useState(props.playback.initialPosition);
+  const max = props.playback.currentSongDuration;
+  const stop = !props.playback.playing;
+  useEffect(() => {
+    const songFinished = () => {
+      if (props.host)
+        props.socket.emit(UPDATE_PLAYBACK)
+    }
+    let interval = null;
+    if (stop) {
+      clearInterval(interval);
+    } else {
+      interval = setInterval(() => {
+        if (value + 1 > max) {
+          clearInterval(interval);
+          songFinished();
+        } else {
+          setValue(value + 1);
+        }
+      }, 1000);
+    }
+    return () => {
+      clearInterval(interval);
+    }
+  }, [stop, max, props.host, props.socket, value])
+
+  useEffect(() => {
+    setValue(0);
+  }, [props.playback.currentSong])
+  useEffect(() => {
+    setValue(props.playback.initialPosition);
+  }, [props.playback.initialPosition])
   // Sends play event
   const resume = () => props.socket.emit(PLAY);
 
@@ -37,16 +69,14 @@ const PlayerBar = (props) => {
   const previous = () => props.socket.emit(PREVIOUS);
 
   // Jump to point in song
-  const jumpTo = (e) => { props.socket.emit(JUMP, e.target.value * 1000) };
+  const jumpTo = (e) => { 
+    setValue(parseInt(e.target.value));
+    props.socket.emit(JUMP, e.target.value * 1000) 
+  };
 
   const mute = () => props.socket.emit(SET_VOLUME, 0)
 
   const unmute = () => props.socket.emit(SET_VOLUME, 50);
-
-  const songFinished = () => {
-    if (props.host)
-      props.socket.emit(UPDATE_PLAYBACK)
-  }
 
   //  Convert ms to mm:ss formate
   const sec2time = (sec) => {
@@ -75,13 +105,13 @@ const PlayerBar = (props) => {
               <SkipNextRoundedIcon onClick={skip}>Skip</SkipNextRoundedIcon>
             </div>
             <div id="player-slide-bar">
-              {props.playback.initialPosition === 0 ? (<div>0:00</div>) : (<div>{sec2time(props.playback.initialPosition)}</div>)}
+              <Typography color="rgb(179, 179, 179)">{sec2time(value)}</Typography>
 
-              <Slider max={props.playback.currentSongDuration} maxCallback={songFinished}
-                initialValue={props.playback.initialPosition} position={props.playback.initialPosition}
-                stop={!props.playback.playing} autoincrement callback={jumpTo} instanceID={props.playback.currentSong} />
+              <Slider max={props.playback.currentSongDuration} handleChange={e => setValue(parseInt(e.target.value))}
+                initialValue={props.playback.initialPosition} position={value}
+                callback={jumpTo}  />
 
-              {props.playback.currentSongDuration === 0 ? (<div>0:00</div>) : (<div>{sec2time(props.playback.currentSongDuration)}</div>)}
+              <Typography color="rgb(179, 179, 179)">{sec2time(props.playback.currentSongDuration)}</Typography>
             </div>
 
           </div>
