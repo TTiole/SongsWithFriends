@@ -205,7 +205,7 @@ module.exports = (io) => (socket) => {
         room.currentArtists = playback.item.artists.map((artist) => " " + artist.name).toString().slice(1);
         room.playing = true;
         room.currentSongDuration = playback.item.duration_ms / 1000;
-        io.to(room.id).emit(events.SKIP, room.getPlayback());
+        io.to(room.id).emit(events.PREVIOUS, room.getPlayback());
       });
     });
   });

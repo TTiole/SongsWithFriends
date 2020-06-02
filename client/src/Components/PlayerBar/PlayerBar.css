@@ -39,6 +39,7 @@
     display: flex;
     padding: 1px 5px 0 15px;
     /* background-color: hotpink; */
+    align-items: center;
 }
 
 #player-slide-bar div{
