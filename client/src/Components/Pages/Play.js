@@ -4,11 +4,6 @@ import "./Play.css";
 
 import { get } from '../../Fetch'
 
-import {
-  LEAVE,
-  DESTROY,
-} from "helpers/socket_events.js";
-
 import Playlist from "../Playlist/Playlist.jsx";
 import UserLibrary from "../Playlist/UserLibrary.jsx";
 import PlayerBar from "../PlayerBar/PlayerBar.jsx";
@@ -41,26 +36,8 @@ const Play = (props) => {
     //eslint-disable-next-line
   }, [selectedPlaylist, props.guest]);
 
-  // Sends LEAVE event
-  const leaveRoom = () => props.socket.emit(LEAVE);
-
-  // Sends DESTROY event
-  const destroyRoom = () => props.socket.emit(DESTROY);
-
   return (
     <div>
-      {/* Displays if host */}
-      {props.host ? (
-        <button onClick={destroyRoom}>Destroy room</button>
-      ) : null}
-
-      <button>Invite</button>
-
-      {/* Displays if member */}
-      {props.member ? (
-        <button onClick={leaveRoom}>Leave room</button>
-      ) : null}
-
       <div className="container-top">
         {props.playback.playlist ? <Playlist
           user={props.user}
@@ -105,7 +82,6 @@ const mapStateToProps = (state) => {
     host: state.userReducer.host,
     member: state.userReducer.member,
     userID: state.userReducer.userID,
-    socket: state.userReducer.socket
   }
 }
 
