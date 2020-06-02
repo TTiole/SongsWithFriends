@@ -44,7 +44,7 @@
 
 #player-slide-bar div{
     display: flex;
-    margin: 5px;
+    margin: 10px;
     color: #b3b3b3;
     /* background-color: khaki; */
 }

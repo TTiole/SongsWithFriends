@@ -25,6 +25,8 @@ const Header = (props) => {
         <Typography color="#02bb4f" fontSize="35px" additionalStyles={{ fontFamily: "Architects Daughter" }}>SWF</Typography>
       </div>
       <div id='header-actions'>
+        {props.loggedIn ? <button>Invite</button> : null}
+
         {props.loggedIn && props.user !== null ? <React.Fragment>
           {props.guest ? null : <button onClick={() => setDevicesPopup(true)}>Devices</button>}
           <Popup open={devicesPopup} handleClose={() => setDevicesPopup(false)}>
@@ -36,13 +38,13 @@ const Header = (props) => {
             <button onClick={() => props.refreshDevices(props.userID)}>Refresh Devices</button>
           </Popup>
         </React.Fragment> : null}
+
+
         {props.loggedIn ? <button onClick={props.logout}>Log Out</button> : null}
 
         {props.host ? (
           <button onClick={destroyRoom}>Destroy room</button>
         ) : null}
-
-        {props.loggedIn ? <button>Invite</button> : null}
 
         {/* Displays if member */}
         {props.member ? (
