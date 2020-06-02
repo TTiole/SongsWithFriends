@@ -1,0 +1,20 @@
+#room-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1;
+
+    flex-direction: column;
+    /* background-color: khaki; */
+}
+
+#room-container > button{
+    width: 120px;
+}
+
+input{
+    max-width: 115px;
+    border: none;
+    border-radius: 3px;
+    background-color: #b2b2b2;
+}

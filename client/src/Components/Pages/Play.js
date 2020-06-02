@@ -14,6 +14,8 @@ import UserLibrary from "../Playlist/UserLibrary.jsx";
 import PlayerBar from "../PlayerBar/PlayerBar.jsx";
 import SearchOverlay from '../SearchOverlay/SearchOverlay'
 
+import PlaylistAddRoundedIcon from '@material-ui/icons/PlaylistAddRounded';
+
 const Play = (props) => {
   const [tracks, setTracks] = useState([]);
   const [selectedPlaylist, setSelectedPlaylist] = useState(1);
@@ -39,18 +41,21 @@ const Play = (props) => {
     //eslint-disable-next-line
   }, [selectedPlaylist, props.guest]);
 
-    // Sends LEAVE event
+  // Sends LEAVE event
   const leaveRoom = () => props.socket.emit(LEAVE);
-  
-    // Sends DESTROY event
+
+  // Sends DESTROY event
   const destroyRoom = () => props.socket.emit(DESTROY);
 
   return (
-      <div>
-          {/* Displays if host */}
+    <div>
+      {/* Displays if host */}
       {props.host ? (
         <button onClick={destroyRoom}>Destroy room</button>
       ) : null}
+
+      <button>Invite</button>
+
       {/* Displays if member */}
       {props.member ? (
         <button onClick={leaveRoom}>Leave room</button>
@@ -77,11 +82,12 @@ const Play = (props) => {
         /> : null}
 
         {showLibrary ? <UserLibrary userName={props.user.name} playlists={props.user.playlists} setSelectedPlaylist={setSelectedPlaylist} setShowLibrary={setShowLibrary} setShowPlaylist={setShowPlaylist} /> : null}
-        <button id="inviteBtn">Invite</button>
-        <button id="inviteBtn" onClick={handleLibrary}>Library</button>
+        <button id="libraryBtn" onClick={handleLibrary}>Library</button>
         <SearchOverlay user={props.user} open={searchOpen} handleClose={() => setSearchOpen(false)} />
       </div>
-      <button id="searchBtn" onClick={() => setSearchOpen(true)}>+</button>
+
+      <PlaylistAddRoundedIcon id="addBtn" onClick={() => setSearchOpen(true)}>+</PlaylistAddRoundedIcon>
+
       <PlayerBar
         track="Attention"
         artist="Charlie Puth · Voicenotes"

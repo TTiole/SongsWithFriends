@@ -3,19 +3,22 @@
     justify-content: space-between
 }
 
-#inviteBtn{
-    padding: 0px 20px;
-    border-radius: 10px;
+#libraryBtn{
+    padding: 5px 20px;
     align-self: flex-start;
-    font-size: 20px;
-    font-weight: 700;
 }
 
 #searchBtn{
-    padding: 0;
-    min-height: 60px;
-    width: 60px;
-    font-weight: 700;
-    font-size: 40px;
-    background-color: blue;
+    margin: 15px;
+    /* padding: 0; */
+    max-height: 20px;
+    max-width: 20px;
+    /* font-weight: 700;
+    font-size: 40px; */
+    /* background-color: blue; */
+}
+
+#addBtn{
+    margin-left: 15px;
+    fill: white;
 }

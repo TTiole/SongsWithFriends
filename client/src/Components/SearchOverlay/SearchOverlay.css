@@ -13,10 +13,13 @@
   flex: 1 1;
   margin: 0;
   padding: 0px 9px;
+  max-width: unset;
+  border-radius: 0;
   border-top-left-radius: 3px;
   border-bottom-left-radius: 3px;
   border: 1px solid #1db954;
   border-right: none;
+  background-color: transparent;
 }
 
 .searchBtn {
@@ -39,9 +42,11 @@
 
 .searchbar-wrapper {
   display: flex; 
+  justify-content: center;
   width: 90%; 
   margin: 10px 0;
   flex: 0 0 35px;
+  /* background-color: blue; */
 }
 
 .search-overlay-headers > * {
@@ -54,9 +59,12 @@
 
 #result-container {
   display: flex;
-  width: 90%;
   flex-direction: column;
-  overflow: scroll;
+
+  height: 90%;
+  width: 90%;
+  overflow: auto;
+  /* background-color: turquoise; */
 }
 
 .search-overlay-headers {
@@ -86,4 +94,14 @@
 
 .resultCell > * {
   flex: 1 1;
+}
+
+#noResult-container{
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  height: 90%;
+  justify-content: center;
+  align-items: center;
+  /* background-color: turquoise; */
 }

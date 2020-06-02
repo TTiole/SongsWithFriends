@@ -6,6 +6,8 @@ import { useState } from "react";
 import { get } from '../../Fetch'
 import Popup from "../Popup/Popup";
 
+import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
+
 import {
   QUEUE_ADD,
 } from "helpers/socket_events.js";
@@ -18,7 +20,7 @@ const SearchOverlay = (props) => {
   };
   return (
     <Popup open={props.open} handleClose={props.handleClose}>
-      <Typography bold fontSize="20px" align="center">Add Songs to Queue</Typography>
+      <Typography bold fontSize="20px">Add Songs to Queue</Typography>
       <SearchBar user={props.user} setResult={setResult} />
       <div className="search-overlay-headers">
         <Typography bold fontSize="15px">Title</Typography>
@@ -26,9 +28,14 @@ const SearchOverlay = (props) => {
         <Typography bold fontSize="15px">Album</Typography>
         <p />
       </div>
-      <div id="result-container">
-        <ResultCell addSong={addSong} result={result} />
-      </div>
+      {result.length ?
+        <div id="result-container">
+          <ResultCell addSong={addSong} result={result} />
+        </div> :
+        <div id="noResult-container">
+          <SearchRoundedIcon></SearchRoundedIcon>
+          <Typography>No results to show...</Typography>
+        </div>}
     </Popup>
   );
 };
