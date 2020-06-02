@@ -1,24 +1,19 @@
 .container-top {
     display: flex;
-    justify-content: space-between
+    justify-content: space-between;
+    padding: 15px;
+    /* background-color: wheat; */
 }
 
 #libraryBtn{
-    padding: 5px 20px;
+    margin: unset;
+    margin-top: 10px;
     align-self: flex-start;
 }
 
 #searchBtn{
-    margin: 15px;
-    /* padding: 0; */
     max-height: 20px;
     max-width: 20px;
-    /* font-weight: 700;
-    font-size: 40px; */
-    /* background-color: blue; */
-}
-
-#addBtn{
     margin-left: 15px;
     fill: white;
 }

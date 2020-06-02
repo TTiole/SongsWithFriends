@@ -3,11 +3,9 @@
   flex-direction: column;
   justify-content: center;
   align-content: center;
-  margin: 15px;
-  margin-bottom: 0;
   width: 55%;
   height: 500px;
-  background-color: pink;
+  /* background-color: pink; */
 }
 
 .top-container{
@@ -21,3 +19,4 @@
   height: 90%;
   overflow: auto;
 }
+

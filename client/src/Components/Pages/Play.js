@@ -63,7 +63,7 @@ const Play = (props) => {
         <SearchOverlay user={props.user} open={searchOpen} handleClose={() => setSearchOpen(false)} />
       </div>
 
-      <PlaylistAddRoundedIcon id="addBtn" onClick={() => setSearchOpen(true)}>+</PlaylistAddRoundedIcon>
+      <PlaylistAddRoundedIcon id="searchBtn" onClick={() => setSearchOpen(true)}>+</PlaylistAddRoundedIcon>
 
       <PlayerBar
         track="Attention"
