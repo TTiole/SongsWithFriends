@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #000;
 }
 
 code {
@@ -31,4 +32,21 @@ button {
   border: none;
   /* max-width: 60px;  */
   /* Doesn't make sense to set both to the same value */
+}
+
+html, body, #root, #app {
+  min-height: 100vh;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  flex: 0 0 45px;
+}
+
+main {
+  flex: 1 1;
 }

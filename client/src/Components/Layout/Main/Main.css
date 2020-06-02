@@ -3,25 +3,3 @@
     flex-direction: column;
     background-color: black
 }
-
-.container-top {
-    display: flex;
-    justify-content: space-between
-}
-
-#inviteBtn{
-    padding: 0px 20px;
-    border-radius: 10px;
-    align-self: flex-start;
-    font-size: 20px;
-    font-weight: 700;
-}
-
-#searchBtn{
-    padding: 0;
-    min-height: 60px;
-    width: 60px;
-    font-weight: 700;
-    font-size: 40px;
-    background-color: blue;
-}
