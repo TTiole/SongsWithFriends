@@ -4,6 +4,7 @@ import "./Playlist.css";
 
 import Typography from "../Typography/Typography";
 
+//  Convert ms to mm:ss formate
 const ms2time = (ms) => {
   return new Date(ms).toISOString().slice(14, 19);
 };

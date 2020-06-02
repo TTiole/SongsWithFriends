@@ -1,5 +1,6 @@
 .slider-container {
-    max-width: 500px;
+    align-items: center;
+    max-width: 1200px;
     width: 100%;
 }
 

@@ -22,13 +22,8 @@
     display: flex;
     padding: 5px;
     justify-content: space-between;
+    /* background-color: indianred; */
 }
-
-#player-slide-bar {
-    flex: 10;
-    padding: 1px 5px 0 15px;
-}
-
 
 #player-control > .MuiSvgIcon-root {
     fill: rgb(130, 130, 130);
@@ -37,4 +32,18 @@
 
 #player-control > .MuiSvgIcon-root:hover {
     fill: rgb(182, 182, 182);
+}
+
+#player-slide-bar {
+    flex: 10;
+    display: flex;
+    padding: 1px 5px 0 15px;
+    /* background-color: hotpink; */
+}
+
+#player-slide-bar div{
+    display: flex;
+    margin: 5px;
+    color: #b3b3b3;
+    /* background-color: khaki; */
 }

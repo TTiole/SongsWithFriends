@@ -48,14 +48,23 @@ const PlayerBar = (props) => {
       props.socket.emit(UPDATE_PLAYBACK)
   }
 
+  //  Convert ms to mm:ss formate
+  const sec2time = (sec) => {
+    if (sec === undefined)
+      return "0:00";
+    return new Date(sec * 1000).toISOString().slice(14, 19);
+  };
+
   return (
     <div className="player-container">
       {(props.member || props.host) && props.playback ? (
         <React.Fragment>
           <div className="track-info">
             <Typography color="#b3b3b3" bold>Currently Playing:</Typography>
-            <Typography margin="0 15px" color="white" bold>{props.playback.currentSong}</Typography>
-            <Typography color="#b3b3b3"> {props.playback.currentAlbum} · {props.playback.currentArtists} </Typography>
+            {props.playback.currentSong === "" ? null : (
+              <React.Fragment>
+                <Typography margin="0 15px" color="white" bold>{props.playback.currentSong}</Typography>
+                <Typography color="#b3b3b3"> {props.playback.currentAlbum} · {props.playback.currentArtists} </Typography></React.Fragment>)}
           </div>
 
           <div className="player-status">
@@ -66,10 +75,15 @@ const PlayerBar = (props) => {
               <SkipNextRoundedIcon onClick={skip}>Skip</SkipNextRoundedIcon>
             </div>
             <div id="player-slide-bar">
+              {props.playback.initialPosition === 0 ? (<div>0:00</div>) : (<div>{sec2time(props.playback.initialPosition)}</div>)}
+
               <Slider max={props.playback.currentSongDuration} maxCallback={songFinished}
                 initialValue={props.playback.initialPosition} position={props.playback.initialPosition}
                 stop={!props.playback.playing} autoincrement callback={jumpTo} instanceID={props.playback.currentSong} />
+
+              {props.playback.currentSongDuration === 0 ? (<div>0:00</div>) : (<div>{sec2time(props.playback.currentSongDuration)}</div>)}
             </div>
+
           </div>
         </React.Fragment>
       ) : null}
