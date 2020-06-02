@@ -9,7 +9,7 @@ import React from 'react';
  * @param {String} color Color of the text. Default: "#333"
  * @param {Object} additionalStyles Additional non-conventional styles. Default: {}
  */
-const Typography = ({ bold = false, margin = "0", Variant = "p", fontSize = "1rem", color = "#fff", align = "left", additionalStyles = {}, children }) => {
+const Typography = ({ bold = false, margin = "0", Variant = "p", fontSize = "1rem", color = "#333", align = "left", additionalStyles = {}, children }) => {
   const styles = {
     fontWeight: bold ? 700 : 400,
     margin, fontSize, color,

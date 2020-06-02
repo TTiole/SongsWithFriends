@@ -8,8 +8,8 @@ const Login = (props) => {
   return (
     <div id='login'>
       <div>
-        <Typography component="h2" fontSize="30px" align="center">Welcome To Songs With Friends</Typography>
-        <Typography component="h6" fontSize="20px" align="center">Whether at a party or across the globe, SWF allows you to enjoy your music <font color="#4af95b">together</font></Typography>
+        <Typography component="h2" color="#fff" fontSize="30px" align="center">Welcome To Songs With Friends</Typography>
+        <Typography component="h6" color="#fff" fontSize="20px" align="center">Whether at a party or across the globe, SWF allows you to enjoy your music <font color="#4af95b">together</font></Typography>
       </div>
       <div id='login-actions'>
         <a href={`http://localhost:8000/login?userID=${props.userID}`} className="button outlined">
