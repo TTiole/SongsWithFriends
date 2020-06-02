@@ -9,10 +9,11 @@
 }
 
 .slider-container > input {
+    max-width: unset;
     width: 100%;
     appearance: none;
     outline: none;
-    height: 5px;
+    height: 1px;
     border-radius: 5px;
     background: #999;
     cursor: pointer;
