@@ -17,21 +17,26 @@ code {
   font-family: "Open Sans";
 }
 
-button {
+button, .button {
+  display: inline-block;
   border-radius: 6px;
-  background-color: "#1db945";
-  justify-content: "center";
-  align-content: "center";
   margin: 5px;
-  padding: 1px 11px;
-  min-height: 30px;
+  padding: 7px 11px;
   border-radius: 3px;
+  font-size: 14px;
+  text-decoration: none;
   color: white;
   background-color: #1db954;
   cursor: pointer;
   border: none;
+  text-align: center;
   /* max-width: 60px;  */
   /* Doesn't make sense to set both to the same value */
+}
+
+button.outlined, .button.outlined {
+  background-color: transparent;
+  border: 1px solid #1db954;
 }
 
 html, body, #root, #app {

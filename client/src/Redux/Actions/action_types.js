@@ -15,6 +15,7 @@ export const MODIFY_USER = "modify_user";
 export const REFRESH_DEVICES = "refresh_devices";
 export const SET_DEVICE = "set_device";
 export const TOGGLE_MUTE = "toggle_mute";
+export const LOGOUT = "logout";
 
 
 export const MODIFY_PLAYBACK = "modify_playback"

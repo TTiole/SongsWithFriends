@@ -1,4 +1,4 @@
-import {AUTHENTICATE_USER, CREATE_ROOM, CONNECT, LEAVE_ROOM, DESTROYED_ROOM, DESTROY_ROOM, MODIFY_USER, GUEST_LOGIN} from './action_types'
+import {AUTHENTICATE_USER, CREATE_ROOM, CONNECT, LEAVE_ROOM, DESTROYED_ROOM, DESTROY_ROOM, MODIFY_USER, GUEST_LOGIN, LOGOUT} from './action_types'
 
 export const connectUser = (socket) => {
   return {
@@ -71,4 +71,9 @@ export const modifyUser = user => {
   }
 }
 
-
+export const logout = () => {
+  return {
+    type: LOGOUT,
+    payload: null
+  }
+}

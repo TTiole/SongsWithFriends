@@ -2,14 +2,21 @@ import React from 'react';
 import './Login.css'
 
 import {connect} from 'react-redux'
+import Typography from '../Typography/Typography'
 
 const Login = (props) => {
   return (
-    <div>
-      <a href={`http://localhost:8000/login?userID=${props.userID}`}>
-        Try sign in
-      </a>
-      <button onClick={props.guestLogin}>Guest login</button>
+    <div id='login'>
+      <div>
+        <Typography component="h2" fontSize="30px" align="center">Welcome To Songs With Friends</Typography>
+        <Typography component="h6" fontSize="20px" align="center">Whether at a party or across the globe, SWF allows you to enjoy your music <font color="#4af95b">together</font></Typography>
+      </div>
+      <div id='login-actions'>
+        <a href={`http://localhost:8000/login?userID=${props.userID}`} className="button outlined">
+          Sign in
+        </a>
+        <button onClick={props.guestLogin} className="outlined">Guest login</button>
+      </div>
     </div>
   );
 }

@@ -1,0 +1,23 @@
+#login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1;
+    flex-direction: column;
+}
+
+#login-actions {
+    margin-top: 15px;
+}
+
+#login-actions > * {
+    margin: 5px 20px;
+}
+
+#login-actions > button {
+    width: 115px;
+}
+
+#login-actions > a {
+    width: 90px;
+}

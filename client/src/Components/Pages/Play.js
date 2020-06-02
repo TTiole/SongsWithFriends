@@ -9,8 +9,6 @@ import {
   DESTROY,
 } from "helpers/socket_events.js";
 
-import { refreshDevices, setDevice } from '../../Redux/Actions/userAction'
-
 import Playlist from "../Playlist/Playlist.jsx";
 import UserLibrary from "../Playlist/UserLibrary.jsx";
 import PlayerBar from "../PlayerBar/PlayerBar.jsx";
@@ -57,21 +55,7 @@ const Play = (props) => {
       {props.member ? (
         <button onClick={leaveRoom}>Leave room</button>
       ) : null}
-      {/* List the playback devices and onclick, set them */}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-start",
-        }}
-      >
-        {props.guest ? null : props.user.playbackDevices.map((device) => (
-          <button key={device.id} onClick={() => props.setDevice(device.id, props.userID)}>
-            {device.name} {device.is_active ? "(Active)" : ""}
-          </button>
-        ))}
-        {props.guest ? null: <button onClick={() => props.refreshDevices(props.userID)}>Refresh Devices</button>}
-      </div>
+
       <div className="container-top">
         {props.playback.playlist ? <Playlist
           user={props.user}
@@ -119,11 +103,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    refreshDevices: (userID) => dispatch(refreshDevices(userID)),
-    setDevice: (deviceID, userID) => dispatch(setDevice(deviceID, userID)),
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Play);
+export default connect(mapStateToProps, null)(Play);
