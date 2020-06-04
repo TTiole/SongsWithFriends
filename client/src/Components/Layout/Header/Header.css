@@ -13,3 +13,31 @@ header {
     background-color: transparent;
     border: none;
 }
+
+.devices-popup .popup {
+    align-items: flex-start;
+}
+
+#device-popup-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.devices-popup .device-container {
+    display: flex;
+    padding: 10px 20px;
+    align-items: center;
+    transition: background 500ms;
+    background-color: #ffffff;
+    cursor: pointer;
+}
+
+.devices-popup .device-container:hover {
+    background-color: #eee;
+}
+
+.devices-popup .device-container svg {
+    margin-right: 10px;
+    font-size: 30px;
+}

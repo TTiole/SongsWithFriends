@@ -1,13 +1,13 @@
 import React from 'react';
 import './Popup.css'
 
-const Popup = (props) => {
+const Popup = ({open = false, children, handleClose, className="", ...rest}) => {
 
   return (
-    <div className={"popup-wrapper"} style={{ display: props.open ? "flex" : "none" }} onClick={props.handleClose}>
+    <div className={"popup-wrapper " + className} style={{ display: open ? "flex" : "none" }} onClick={handleClose}>
       <div className="popup" onClick={(e) => e.stopPropagation()}>
-        {props.children}
-        <button className="popup-close" onClick={props.handleClose}>&#10005;</button>
+        {children}
+        <button className="popup-close" onClick={handleClose}>&#10005;</button>
       </div>
     </div>
   );

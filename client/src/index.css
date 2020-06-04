@@ -64,3 +64,7 @@ input{
   border-radius: 3px;
   background-color: #b2b2b2;
 }
+
+svg.MuiSvgIcon-root {
+  cursor: pointer;
+}
