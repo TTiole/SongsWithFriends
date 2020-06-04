@@ -8,7 +8,7 @@ const Error = (props) => {
     <Snackbar className="swf-error" anchorOrigin={{
       vertical: "top",
       horizontal: "center"
-    }} autoHideDuration={2000} onClose={props.handleClose} message={props.message} open={props.open} />
+    }} autoHideDuration={5000} onClose={props.handleClose} message={props.message} open={props.open} />
   );
 }
 

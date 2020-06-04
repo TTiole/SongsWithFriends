@@ -42,6 +42,8 @@ const requestSpotify = (
         if (resp.status === 204 || expectEmptyBody)
           // No content, returned by POST and PUT requests
           return resp.text();
+        if(resp.status === 404 || resp.status === 403 )
+          return resp.json();
         if (resp.status >= 300)
           resp.text().then((text) => {
             console.error(text);

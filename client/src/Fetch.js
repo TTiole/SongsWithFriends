@@ -48,6 +48,7 @@ import {deactivateLoading, activateLoading, triggerResponseModal} from './Redux/
 export const post = (url, queryParamObj = null, body = {}, callback, props, additionalText = null, errorCallback = null) => {
   store.dispatch(activateLoading());
   let path = server+url;
+  let error = false;
   // Adds query parameters to url
   if(queryParamObj !== null) {
     path = path + '?';
@@ -66,14 +67,17 @@ export const post = (url, queryParamObj = null, body = {}, callback, props, addi
     ...props
   }).then(resp => {
     if(resp.status >= 400) {
-      requestError(resp);
-      if(errorCallback)
-        errorCallback();
-      return Promise.reject("Response error");
+      error = resp.status;
+      return resp.text();
     } else {
       return resp.json();
     }
   }).then(data => {
+    if(error) {
+      requestError(error, data);
+      if(errorCallback)
+        errorCallback();
+    }
     if(additionalText != null)
       store.dispatch(triggerResponseModal(additionalText));
     callback(data);
@@ -82,15 +86,15 @@ export const post = (url, queryParamObj = null, body = {}, callback, props, addi
   })
 }
 
-const requestError = (resp) => {
+const requestError = (code, text) => {
   // Server returned response with an error code that's not success
   // Such an error will be defined by us, so display the modal with the error text
-  if(resp.status === 400) {
-    store.dispatch(triggerResponseModal(resp.statusText));
-  } else if(resp.status === 500) {
-    store.dispatch(triggerResponseModal('There was a server error. Try again later or contact support'))
+  if(code === 400) {
+    store.dispatch(triggerResponseModal(text));
+  } else if(code === 500) {
+    store.dispatch(triggerResponseModal('There was a server error. Try again later'))
   } else {
-    console.log(resp);
+    console.log(text);
   }
 } 
 

@@ -104,10 +104,22 @@ module.exports = (app) => {
     pauseDevice(user)
       .then((data) => assignDevice(user, device_id)) // Set the device
       .then((data) => {
+        if(data.error && data.error.reason === "UNKNOWN") {
+          res.status(400).send("There was an error setting your device. It's likely asleep, please restart spotify on said device")
+          return;
+        }
         // Update the user's device information without doing another request
         let devices = user.playback_devices;
-        devices.find((device) => device.is_active).is_active = false;
-        devices.find((device) => device.id === device_id).is_active = true;
+        let oldDevice = devices.find((device) => device.is_active)
+        if(oldDevice !== undefined) {
+          oldDevice.is_active = false;
+        }
+        let newDevice = devices.find((device) => device.id === device_id)
+        if( data.error && data.error.status === 404 ) {
+          res.status(400).send("Your device has been disconnected from Spotify. Ensure the device is connected to the internet with Spotify open")
+          return;
+        }
+        newDevice.is_active = true;
         user.setDevices(devices);
         // Send the client info
         res.json(user.clientInfo());

@@ -39,7 +39,10 @@ module.exports = (io) => (socket) => {
         ({ id, name, uri, owner, tracks }) => {
           room.playlist = { id, name, uri, owner, tracks };
           playContext(user, uri).then(data => { // Begin the queue context for the host
-            pauseDevice(user);
+            if(data.error && data.error.reason === "NO_ACTIVE_DEVICE")
+              io.to(socket.id).emit(events.ERROR, "Warning: No active device found. Please click on devices set your device")
+            else
+              pauseDevice(user);
             socket.emit(events.CREATE, room.getPlayback(), room.id); // Emit the event back if success
           })
         }
@@ -78,7 +81,9 @@ module.exports = (io) => (socket) => {
               playback.context.uri,
               playback.item.uri,
               playback.progress_ms
-            ).then(() => {
+            ).then(data => {
+              if(data.error && data.error.reason === "NO_ACTIVE_DEVICE")
+                io.to(socket.id).emit(events.ERROR, "Warning: No active device found. Please click on devices set your device")
               if (!room.is_playing)
                 pauseDevice(user);
               socket.emit(events.JOIN, room.getPlayback()); // Success
@@ -155,7 +160,10 @@ module.exports = (io) => (socket) => {
     const user = getUser(socket.id);
     let room = getRoom(user.room);
     room.playing = true;
-    room.members.forEach((user) => resumeSong(user));
+    room.members.forEach((user) => resumeSong(user).then(data => {
+      if(data.error && data.error.reason === "NO_ACTIVE_DEVICE")
+        io.to(socket.id).emit(events.ERROR, "Warning: No active device found. Please click on devices set your device")
+    }));
     io.to(room.id).emit(events.PLAY, room.getPlayback());
   });
 
@@ -164,7 +172,10 @@ module.exports = (io) => (socket) => {
     const user = getUser(socket.id);
     let room = getRoom(user.room);
     room.playing = false;
-    room.members.forEach((user) => pauseDevice(user));
+    room.members.forEach((user) => pauseDevice(user)).then(data => {
+      if(data.error && data.error.reason === "NO_ACTIVE_DEVICE")
+        io.to(socket.id).emit(events.ERROR, "Warning: No active device found. Please click on devices set your device")
+    });
     io.to(room.id).emit(events.PAUSE, room.getPlayback());
   });
 

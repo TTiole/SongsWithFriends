@@ -28,7 +28,7 @@ const Header = (props) => {
   const [devicesPopup, setDevicesPopup] = useState(false);
 
   let devices = [];
-  if(props.user)
+  if(props.user && props.user.playbackDevices)
     devices = props.user.playbackDevices.filter(device => !device.is_restricted && !device.is_private_session);
   return (
     <header>
