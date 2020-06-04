@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import Typography from '../../Typography/Typography';
+import Typography from '../Typography/Typography';
 import "./Chat.css";
 
 const Chat = () => {
@@ -12,9 +12,9 @@ const Chat = () => {
                 <p>X</p>
             </div>
             <div>
-                {messages.map((msg) => {
+                {messages.map((msg) =>
                     <ChatCell msg={msg}></ChatCell>
-                })}
+                )}
             </div>
         </div>
     );

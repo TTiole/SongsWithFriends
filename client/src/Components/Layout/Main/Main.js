@@ -17,8 +17,8 @@ const Main = (props) => {
     Page = Play;
   return (
     <main id="main-container">
-      <Chat></Chat>
       <Page guestLogin={props.guestLogin} />
+      <Chat></Chat>
     </main>
   );
 };
