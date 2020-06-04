@@ -57,10 +57,10 @@ const completeAuthenticateUser = user => {
   }
 }
 
-export const createRoomUserSuccess = (roomID) => {
+export const createRoomUserSuccess = (playback, roomID) => {
   return {
     type: CREATE_ROOM,
-    payload: roomID
+    payload: {playback, roomID}
   }
 }
 

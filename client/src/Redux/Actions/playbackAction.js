@@ -1,12 +1,10 @@
-import {JOIN_ROOM, CREATE_ROOM, MODIFY_PLAYBACK, TOGGLE_MUTE} from './action_types'
+import {JOIN_ROOM, MODIFY_PLAYBACK, TOGGLE_MUTE} from './action_types'
 
 const playbackActionGenerator = (type) => (playback) => ({
   type, payload: playback
 })
 
 export const joinRoomPlaybackSuccess = playbackActionGenerator(JOIN_ROOM)
-
-export const createRoomSuccess = playbackActionGenerator(CREATE_ROOM)
 export const modifyPlayback = playbackActionGenerator(MODIFY_PLAYBACK)
 
 export const toggleMute = mute => ({

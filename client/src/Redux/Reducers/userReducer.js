@@ -12,7 +12,7 @@ export default  (state = initialState, action) => {
     case GUEST_LOGIN:
       return {...state, loggedIn: true, guest: true, userID: state.socket.id}
     case CREATE_ROOM:
-      return {...state, host: true, roomID: action.payload}
+      return {...state, host: true, roomID: action.payload.roomID}
     case JOIN_ROOM:
       return {...state, member: true}
     case DESTROYED_ROOM:

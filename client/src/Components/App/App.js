@@ -3,7 +3,7 @@ import React from "react";
 import { connect } from 'react-redux'
 
 import { connectUser, authenticateUser, createRoomUserSuccess, leaveRoom, destroyRoom, destroyedRoom, guestLogin } from '../../Redux/Actions/userAction'
-import { joinRoomPlaybackSuccess, createRoomSuccess, modifyPlayback, toggleMute } from '../../Redux/Actions/playbackAction'
+import { joinRoomPlaybackSuccess, modifyPlayback, toggleMute } from '../../Redux/Actions/playbackAction'
 
 import "./App.css";
 import io from "socket.io-client";
@@ -74,8 +74,7 @@ class App extends React.Component {
     socket.on(ERROR, (msg) => console.error(msg));
     // On create, let the client know that the user is a host
     socket.on(CREATE, (playback, roomID) => {
-      this.props.createRoom(roomID);
-      this.props.createRoomSuccess(playback);
+      this.props.createRoomSuccess(playback, roomID);
       console.log(`Successfully created room ${roomID}`);
     });
     // On join, let the client know that the user is a member
@@ -166,12 +165,11 @@ const mapDispatchToProps = dispatch => {
   return {
     connectUser: (socket) => dispatch(connectUser(socket)),
     leaveRoom: () => dispatch(leaveRoom()),
-    createRoom: (roomID) => dispatch(createRoomUserSuccess(roomID)),
     destroyRoom: () => dispatch(destroyRoom()),
     destroyedRoom: () => dispatch(destroyedRoom()),
     authenticateUser: (code, userID) => dispatch(authenticateUser(code, userID)),
     joinRoomPlaybackSuccess: (playback) => dispatch(joinRoomPlaybackSuccess(playback)),
-    createRoomSuccess: (playback) => dispatch(createRoomSuccess(playback)),
+    createRoomSuccess: (playback, roomID) => dispatch(createRoomUserSuccess(playback, roomID)),
     modifyPlayback: (playback) => dispatch(modifyPlayback(playback)),
     guestLogin: () => dispatch(guestLogin()),
     toggleMute: mute => dispatch(toggleMute(mute))
