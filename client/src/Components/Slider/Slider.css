@@ -17,6 +17,7 @@
     border-radius: 5px;
     background: #999;
     cursor: pointer;
+    padding: 2px;
 }
 
 .slider-container > input::-ms-thumb {
