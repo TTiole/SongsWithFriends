@@ -18,14 +18,22 @@ const Header = (props) => {
   // Sends DESTROY event
   const destroyRoom = () => props.socket.emit(DESTROY);
 
+  const [inviteOpen, setInviteOpen] = useState(false);
+
   const [devicesPopup, setDevicesPopup] = useState(false);
+  console.log("ROOM ID CHANGES: " + props.roomID);
   return (
     <header>
       <div id='header-logo'>
         <Typography color="#02bb4f" fontSize="35px" additionalStyles={{ fontFamily: "Architects Daughter" }}>SWF</Typography>
       </div>
       <div id='header-actions'>
-        {props.loggedIn ? <button>Invite</button> : null}
+        {props.loggedIn ? <button onClick={() => setInviteOpen(true)}>Invite</button> : null}
+
+        <Popup open={inviteOpen} handleClose={() => setInviteOpen(false)}>
+          <Typography>Your room ID is: {props.roomID !== null ? props.roomID : "XXXX"}</Typography>
+        </Popup>
+
 
         {props.loggedIn && props.user !== null ? <React.Fragment>
           {props.guest ? null : <button onClick={() => setDevicesPopup(true)}>Devices</button>}
@@ -61,7 +69,8 @@ const mapStateToProps = (state) => {
     guest: state.userReducer.guest,
     host: state.userReducer.host,
     user: state.userReducer.user,
-    socket: state.userReducer.socket
+    socket: state.userReducer.socket,
+    roomID: state.userReducer.roomID
   }
 }
 

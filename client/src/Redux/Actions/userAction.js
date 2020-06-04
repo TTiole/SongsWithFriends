@@ -1,4 +1,4 @@
-import {AUTHENTICATE_USER, CREATE_ROOM, CONNECT, LEAVE_ROOM, DESTROYED_ROOM, DESTROY_ROOM, MODIFY_USER, GUEST_LOGIN, LOGOUT} from './action_types'
+import { AUTHENTICATE_USER, CREATE_ROOM, CONNECT, LEAVE_ROOM, DESTROYED_ROOM, DESTROY_ROOM, MODIFY_USER, GUEST_LOGIN, LOGOUT } from './action_types'
 
 export const connectUser = (socket) => {
   return {
@@ -15,19 +15,19 @@ export const guestLogin = () => {
 }
 
 export const authenticateUser = (code, userID) => (dispatch, getState, api) => {
-  return api.get(`/authSuccess`, {userID, code}, (data) => {
+  return api.get(`/authSuccess`, { userID, code }, (data) => {
     dispatch(completeAuthenticateUser(data))
   })
 }
 
 export const setDevice = (deviceID, userID) => (dispatch, getState, api) => {
-  return api.post('/setDevice', {userID}, {device_id: deviceID}, data => {
+  return api.post('/setDevice', { userID }, { device_id: deviceID }, data => {
     dispatch(modifyUser(data));
   })
 }
 
 export const refreshDevices = (userID) => (dispatch, getState, api) => {
-  return api.get('/refreshDevices', {userID}, data => {
+  return api.get('/refreshDevices', { userID }, data => {
     dispatch(modifyUser(data));
   })
 }
