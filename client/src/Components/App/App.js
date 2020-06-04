@@ -68,7 +68,7 @@ class App extends React.Component {
 
   setupSocketListeners = (socket, code = null) => {
     // On connection established, authenticate user
-    console.log(`Server: ${server}`);
+    console.log(server);
     socket.on(CONNECT, code !== null ? this.socketEstablished(socket, code) : this.props.guestLogin)
     // On error, console.error the msg
     socket.on(ERROR, (msg) => this.props.openResponse(msg));
