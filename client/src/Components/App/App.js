@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 
 import { connectUser, authenticateUser, createRoomUserSuccess, leaveRoom, destroyRoom, destroyedRoom, guestLogin } from '../../Redux/Actions/userAction'
 import { joinRoomPlaybackSuccess, modifyPlayback, toggleMute } from '../../Redux/Actions/playbackAction'
+import { closeResponseModal, triggerResponseModal } from '../../Redux/Actions/loadingAction'
 
 import "./App.css";
 import io from "socket.io-client";
@@ -11,12 +12,11 @@ import io from "socket.io-client";
 import Main from "../Layout/Main/Main";
 import Header from "../Layout/Header/Header"
 import Loader from '../Loader/Loader'
-
-
+import Error from '../Error/Error'
 
 import {
   CONNECT,
-  CREATE,
+  CREATE, 
   ERROR,
   JOIN,
   LEAVE,
@@ -71,7 +71,7 @@ class App extends React.Component {
     console.log(`Server: ${server}`);
     socket.on(CONNECT, code !== null ? this.socketEstablished(socket, code) : this.props.guestLogin)
     // On error, console.error the msg
-    socket.on(ERROR, (msg) => console.error(msg));
+    socket.on(ERROR, (msg) => this.props.openResponse(msg));
     // On create, let the client know that the user is a host
     socket.on(CREATE, (playback, roomID) => {
       this.props.createRoomSuccess(playback, roomID);
@@ -147,6 +147,7 @@ class App extends React.Component {
   render() {
     return (
       <div id="app">
+        <Error message={this.props.text} open={this.props.open} handleClose={this.props.closeResponse} />
         <Header />
         <Main guestLogin={this.guestLogin} />
         <Loader active={this.props.loading} />
@@ -157,7 +158,9 @@ class App extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    loading: state.loadingReducer.loading
+    loading: state.loadingReducer.loading,
+    open: state.loadingReducer.modalOpen,
+    text: state.loadingReducer.modalText
   }
 }
 
@@ -172,7 +175,9 @@ const mapDispatchToProps = dispatch => {
     createRoomSuccess: (playback, roomID) => dispatch(createRoomUserSuccess(playback, roomID)),
     modifyPlayback: (playback) => dispatch(modifyPlayback(playback)),
     guestLogin: () => dispatch(guestLogin()),
-    toggleMute: mute => dispatch(toggleMute(mute))
+    toggleMute: mute => dispatch(toggleMute(mute)),
+    closeResponse: () => dispatch(closeResponseModal()),
+    openResponse: text => dispatch(triggerResponseModal(text))
   }
 }
 

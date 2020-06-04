@@ -10,9 +10,12 @@ export default (state = initialState, action) => {
         ...state, loading: action.payload
       }
     case CLOSE_RESPONSE_MODAL:
+      return {
+        ...state, modalOpen: false
+      }
     case OPEN_RESPONSE_MODAL:
       return {
-        ...state, modalOpen: action.payload.open, modalText: action.payload.text
+        ...state, modalOpen: true, modalText: action.payload.text
       }
     default:
       return state;
