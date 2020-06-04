@@ -58,7 +58,7 @@ class App extends React.Component {
   }
 
   // Socket connection has been established
-  socketEstablished = (socket,code) => () => {
+  socketEstablished = (socket, code) => () => {
     // Get the user id from the socket
     console.log("Socket established")
     const userID = socket.id;
@@ -68,8 +68,8 @@ class App extends React.Component {
 
   setupSocketListeners = (socket, code = null) => {
     // On connection established, authenticate user
-    console.log(server);
-    socket.on(CONNECT, code !== null ? this.socketEstablished(socket,code) : this.props.guestLogin)
+    console.log(`Server: ${server}`);
+    socket.on(CONNECT, code !== null ? this.socketEstablished(socket, code) : this.props.guestLogin)
     // On error, console.error the msg
     socket.on(ERROR, (msg) => console.error(msg));
     // On create, let the client know that the user is a host
@@ -147,7 +147,7 @@ class App extends React.Component {
   render() {
     return (
       <div id="app">
-        <Header/>
+        <Header />
         <Main guestLogin={this.guestLogin} />
         <Loader active={this.props.loading} />
       </div>

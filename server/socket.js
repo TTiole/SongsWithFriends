@@ -32,6 +32,7 @@ module.exports = (io) => (socket) => {
     } else {
       const room = addRoom(user); // Create the room in the rooms object
       socket.join(room.id); // Join the socket room
+      console.log(`roomId: ${room.id}`);
       user.room = room.id; // Update the room property of user
       user.host = true; // Set the user as host
       createTempPlaylist(user, makeid(16)).then(
