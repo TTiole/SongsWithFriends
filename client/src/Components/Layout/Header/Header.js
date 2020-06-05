@@ -74,7 +74,7 @@ const Header = (props) => {
           <Typography fontSize="20px">Your room ID is:  {props.roomID !== null ? props.roomID : "XXXX"}</Typography>
         </div>
       </Popup>
-      {props.loggedIn && props.user !== null ? null:
+      {props.loggedIn && props.user !== null ?
         <Popup open={devicesPopup} className="devices-popup" handleClose={() => setDevicesPopup(false)}>
           <div id="device-popup-header">
             <Typography fontSize="20px" margin="0 30px 0 0">Select the device you want to play music from</Typography>
@@ -86,7 +86,7 @@ const Header = (props) => {
             <Device key={device.id} {...device} handleClick={() => props.setDevice(device.id, props.userID)} />
           ))}
           {devices.length === 0 ? <Typography fontSize="12px" color="#999">No items to show. Please ensure your devices are connected to the internet. If they are, restart Spotify on them.</Typography> : null}
-        </Popup>
+        </Popup>:null
       }
     </header>
   );
