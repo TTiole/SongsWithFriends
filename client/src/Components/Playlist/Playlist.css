@@ -48,8 +48,12 @@
     flex-direction: column;
     align-items: flex-start;
     margin: 5px;
+  }
+
+  .playlist-container {
     width: unset;
   }
+
    .queue-button.MuiSvgIcon-root.smaller {
     padding: 8px;
   }
