@@ -22,9 +22,15 @@
   overflow: auto;
 }
 
-#searchBtn{
+.queue-button.MuiSvgIcon-root {
   height: 40px;
   width: 40px;
   margin-left: 15px;
   fill: white;
+}
+
+.queue-button.MuiSvgIcon-root.smaller {
+  height: 27px;
+  width: 27px;
+  padding: 5px;
 }

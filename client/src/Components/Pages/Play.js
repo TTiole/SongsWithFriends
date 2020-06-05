@@ -47,7 +47,7 @@ const Play = (props) => {
           removeSong={props.removeSong}
           setSearchOpen={setSearchOpen}
         /> : null}
-        {showPlaylist && !props.guest && tracks.length !== 0 ? <Playlist
+        {showPlaylist && !props.guest ? <Playlist
           user={props.user}
           tracks={tracks}
           playlistName={props.user.playlists[selectedPlaylist].name}

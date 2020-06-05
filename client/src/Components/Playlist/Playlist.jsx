@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import TrackCell from "../TrackCell/TrackCell.jsx";
 import "./Playlist.css";
 
+import Tooltip from '@material-ui/core/Tooltip'
 import Typography from "../Typography/Typography";
 import EditRoundedIcon from '@material-ui/icons/EditRounded';
 import PlaylistAddRoundedIcon from '@material-ui/icons/PlaylistAddRounded';
@@ -26,10 +27,17 @@ const Playlist = (props) => {
           {props.playlistName}
         </Typography>
         <div style={{ display: "flex", justifyContent: "center", alignContent: "center" }}>
-          {props.queue ? <EditRoundedIcon className="editBtn" style={{ fill: "white" }} onClick={handleEdit}>Edit Playlist</EditRoundedIcon> :
-            <button className="editBtn" onClick={handleBack}>Back</button>}
-
-          {props.queue ? <PlaylistAddRoundedIcon id="searchBtn" onClick={() => props.setSearchOpen(true)}>+</PlaylistAddRoundedIcon> : null}
+          {props.queue ? <React.Fragment>
+            <Tooltip arrow title="Edit Playlist">
+              <EditRoundedIcon className="queue-button smaller" onClick={handleEdit}/>
+            </Tooltip>
+            <Tooltip arrow title="Search for Song">
+              <PlaylistAddRoundedIcon className="queue-button" onClick={() => props.setSearchOpen(true)}/>
+            </Tooltip>
+          </React.Fragment>:
+          <button className="editBtn" onClick={handleBack}>Back</button>
+          }
+          
         </div>
       </div>
       <div className="tracks">
@@ -42,6 +50,7 @@ const Playlist = (props) => {
             queue={props.queue}
           />
         ))}
+        {props.tracks.length === 0 ? <Typography fontSize="12px" color="#999">No items to show</Typography>:null}
       </div>
     </div>
   );
