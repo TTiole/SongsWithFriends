@@ -2,8 +2,10 @@ import React, { useState, useRef, useEffect } from "react"
 import Typography from '../Typography/Typography';
 import "./Chat.css";
 
-import CloseIcon from '@material-ui/icons/Close';
+import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded';
+import Collapse from '@material-ui/core/Collapse'
 import SendRoundedIcon from '@material-ui/icons/SendRounded';
+import ExpandLessRoundedIcon from '@material-ui/icons/ExpandLessRounded';
 
 const Chat = () => {
     const [messages, setMessage] = useState([
@@ -38,6 +40,7 @@ const Chat = () => {
         }
 
     ]);
+    const [open, setOpen] = useState(false);
 
     
     const inputRef = useRef();
@@ -58,7 +61,10 @@ const Chat = () => {
         // Send socket
     }
 
-
+    const toggleOpen  = e => {
+        setOpen(!open)
+        containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
 
     const submitEnter = e => {
         if(e.key === "Enter")
@@ -69,17 +75,19 @@ const Chat = () => {
         <div id="chat-container">
             <div id="top-container">
                 <Typography bold fontSize="20" color="white">Chat</Typography>
-                <CloseIcon style={{ fill: "white", fontSize: "20px" }}></CloseIcon>
+                {open ?<ExpandMoreRoundedIcon onClick={toggleOpen}/>:<ExpandLessRoundedIcon onClick={toggleOpen}/>}
+                
             </div>
+            <Collapse in={open} ref={containerRef}>
+                <div id="msgs-container">
+                    {messages.map((msg) => <ChatCell {...msg}></ChatCell>)}
+                </div>
 
-            <div id="msgs-container" ref={containerRef}>
-                {messages.map((msg) => <ChatCell {...msg}></ChatCell>)}
-            </div>
-
-            <div id="chat-input-wrapper">
-                <input id="chat-input" ref={inputRef} onKeyUp={submitEnter} placeholder="Send Message"/>
-                <SendRoundedIcon onClick={submitMsg}/>
-            </div>
+                <div id="chat-input-wrapper">
+                    <input id="chat-input" ref={inputRef} onKeyUp={submitEnter} placeholder="Send Message"/>
+                    <SendRoundedIcon onClick={submitMsg}/>
+                </div>
+            </Collapse>
         </div>
     );
 }
