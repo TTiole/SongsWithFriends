@@ -33,12 +33,17 @@ const ERROR = "swf-error";
 
 const UPDATE_PLAYBACK = "update_playback"
 
-const SET_VOLUME = "set_volume"
+const SET_VOLUME = "set_volume";
+
+const MESSAGE = "swf-msg";
+
+const CHAT_CONNECT = "chat_connect";
 
 module.exports = {
   QUEUE_ADD, QUEUE_REMOVE, QUEUE_REORDER,
   PLAY, PAUSE, SKIP, PREVIOUS, JUMP, UPDATE_PLAYBACK, SET_VOLUME,
   DISCONNECT, CONNECT,
   JOIN, LEAVE, CREATE, DESTROY, DESTROYED,
+  MESSAGE, CHAT_CONNECT,
   ERROR
 }

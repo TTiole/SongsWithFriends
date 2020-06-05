@@ -8,6 +8,7 @@ import Playlist from "../Playlist/Playlist.jsx";
 import UserLibrary from "../Playlist/UserLibrary.jsx";
 import PlayerBar from "../PlayerBar/PlayerBar.jsx";
 import SearchOverlay from '../SearchOverlay/SearchOverlay'
+import Chat from "../Chat/Chat"
 
 const Play = (props) => {
   const [tracks, setTracks] = useState([]);
@@ -57,11 +58,12 @@ const Play = (props) => {
           removeSong={props.removeSong}
         /> : null}
 
-        {showLibrary ? <UserLibrary userName={props.user.name} playlists={props.user.playlists} setSelectedPlaylist={setSelectedPlaylist} setShowLibrary={setShowLibrary} setShowPlaylist={setShowPlaylist} /> : null}
+        {showLibrary && !props.guest ? <UserLibrary userName={props.user.name} playlists={props.user.playlists} setSelectedPlaylist={setSelectedPlaylist} setShowLibrary={setShowLibrary} setShowPlaylist={setShowPlaylist} /> : null}
         {/* <button id="libraryBtn" onClick={handleLibrary}>Library</button> */}
         <SearchOverlay user={props.user} open={searchOpen} handleClose={() => setSearchOpen(false)} />
       </div>
       <PlayerBar />
+      <Chat/>
     </div>
   );
 }

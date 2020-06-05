@@ -1,45 +1,18 @@
 import React, { useState, useRef, useEffect } from "react"
 import Typography from '../Typography/Typography';
 import "./Chat.css";
+import {connect} from 'react-redux'
 
 import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded';
 import Collapse from '@material-ui/core/Collapse'
 import SendRoundedIcon from '@material-ui/icons/SendRounded';
 import ExpandLessRoundedIcon from '@material-ui/icons/ExpandLessRounded';
+import {
+    MESSAGE, CHAT_CONNECT
+} from "helpers/socket_events.js";
 
-const Chat = () => {
-    const [messages, setMessage] = useState([
-        {
-            msg: "Ahhhhh I love this song :D",
-            type: "external",
-            author: "Eli"
-        },
-        {
-            msg: "Me too, it's soooooooo good",
-            type: "broadcast",
-            author: "David"
-        },
-        {
-            msg: "Hey, can I add a few song?",
-            type: "internal"
-        },
-        {
-            msg: "Yeah for sure?",
-            type: "external",
-            author: "Eli"
-        },
-        {
-            msg: "yeahhhh",
-            type: "external",
-            author: "David"
-        },
-        {
-            msg: "ADjiksmal;jFOPR'AKSDLNFIJOEKLSJKGNAKLSFOPr'w;nfokelwaforjni3fklaem/owjitoal;kem;o'klmREFN;JKEA;LNKMLAE",
-            type: "external",
-            author: "Sry had a seizure"
-        }
-
-    ]);
+const Chat = props => {
+    const [messages, setMessage] = useState([]);
     const [open, setOpen] = useState(false);
 
     
@@ -51,14 +24,23 @@ const Chat = () => {
         containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }, [messages])
 
+    useEffect(() => {
+        if(props.socket !== null) {
+            props.socket.on(MESSAGE, (msgObj) => {
+                setMessage(prevMessages => [...prevMessages, msgObj])
+            })
+            props.socket.emit(CHAT_CONNECT)
+        }
+    }, [props.socket])
+
     const submitMsg = () => {
         const text = inputRef.current.value;
         inputRef.current.value = "";
-        setMessage([...messages, {
+        setMessage(prevMessages => [...prevMessages, {
             msg: text,
             type: "internal"
         }]);
-        // Send socket
+        props.socket.emit(MESSAGE, text);
     }
 
     const toggleOpen  = e => {
@@ -80,7 +62,7 @@ const Chat = () => {
             </div>
             <Collapse in={open} ref={containerRef}>
                 <div id="msgs-container">
-                    {messages.map((msg) => <ChatCell {...msg}></ChatCell>)}
+                    {messages.map((msg, i) => <ChatCell key={i + " "+ msg.author} {...msg}></ChatCell>)}
                 </div>
 
                 <div id="chat-input-wrapper">
@@ -125,4 +107,10 @@ const ChatCell = (props) => {
     }
 }
 
-export default Chat;
+const mapStateToProps = state => {
+    return {
+        socket: state.userReducer.socket
+    }
+}
+
+export default connect(mapStateToProps, null)(Chat);

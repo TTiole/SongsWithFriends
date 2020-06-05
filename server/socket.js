@@ -76,13 +76,16 @@ module.exports = (io) => (socket) => {
             room.addGuest(user);
           } else {
             room.addMember(user);
+            let uri = ""
+            if(playback.item != null)
+              uri = playback.item.uri;
             playContext(
               user,
               playback.context.uri,
-              playback.item.uri,
+              uri,
               playback.progress_ms
             ).then(data => {
-              if(data.error && data.error.reason === "NO_ACTIVE_DEVICE")
+              if(data && data.error && data.error.reason === "NO_ACTIVE_DEVICE")
                 io.to(socket.id).emit(events.ERROR, "Warning: No active device found. Please click on devices set your device")
               if (!room.is_playing)
                 pauseDevice(user);
@@ -234,6 +237,28 @@ module.exports = (io) => (socket) => {
     })
   })
 
+  socket.on(events.MESSAGE, (text) => {
+    const user = getUser(socket.id);
+    socket.broadcast.to(user.room).emit(events.MESSAGE, {
+      type: "external",
+      msg: text,
+      author: user.name
+    })
+  })
+
+  socket.on(events.CHAT_CONNECT, () => {
+    const user = getUser(socket.id);
+    socket.emit(events.MESSAGE, {
+      type: "broadcast",
+      msg: "You have joined the room"
+    })
+    socket.broadcast.to(user.room).emit(events.MESSAGE, {
+      type: "broadcast",
+      msg: `${user.name} has joined the room`
+    })
+  })
+
+
   // On disconnect remove the user
   socket.on(events.DISCONNECT, () => {
     const user = getUser(socket.id);
@@ -262,6 +287,10 @@ module.exports = (io) => (socket) => {
         room.removeMember(user); // Remove the user from the room object
         pauseDevice(user); // Pause the user's playback
       }
+      socket.broadcast.to(room.id).emit(events.MESSAGE, {
+        type: "broadcast",
+        msg: `${user.name} has left the room`
+      })
     }
   };
 

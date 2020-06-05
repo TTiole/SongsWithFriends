@@ -46,7 +46,7 @@ const Header = (props) => {
               </Tooltip>
             </div>
             {devices.map((device) => (
-              <Device {...device} handleClick={() => props.setDevice(device.id, props.userID)} />
+              <Device key={device.id} {...device} handleClick={() => props.setDevice(device.id, props.userID)} />
             ))}
             {devices.length === 0 ? <Typography fontSize="12px" color="#999">No items to show. Please ensure your devices are connected to the internet. If they are, restart Spotify on them.</Typography> : null}
           </Popup>
