@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from 'react-redux';
 
 import "./PlayerBar.css"
@@ -53,9 +53,11 @@ const PlayerBar = (props) => {
   useEffect(() => {
     setValue(0);
   }, [props.playback.currentSong])
+
   useEffect(() => {
     setValue(props.playback.initialPosition);
   }, [props.playback.initialPosition])
+
   // Sends play event
   const resume = () => props.socket.emit(PLAY);
 
@@ -69,9 +71,9 @@ const PlayerBar = (props) => {
   const previous = () => props.socket.emit(PREVIOUS);
 
   // Jump to point in song
-  const jumpTo = (e) => { 
+  const jumpTo = (e) => {
     setValue(parseInt(e.target.value));
-    props.socket.emit(JUMP, e.target.value * 1000) 
+    props.socket.emit(JUMP, e.target.value * 1000)
   };
 
   const mute = () => props.socket.emit(SET_VOLUME, 0)
@@ -109,7 +111,7 @@ const PlayerBar = (props) => {
 
               <Slider max={props.playback.currentSongDuration} handleChange={e => setValue(parseInt(e.target.value))}
                 initialValue={props.playback.initialPosition} position={value}
-                callback={jumpTo}  />
+                callback={jumpTo} />
 
               <Typography color="rgb(179, 179, 179)">{sec2time(props.playback.currentSongDuration)}</Typography>
             </div>
