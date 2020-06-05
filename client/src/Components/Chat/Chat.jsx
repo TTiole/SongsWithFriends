@@ -10,8 +10,7 @@ const Chat = () => {
         {
             msg: "Ahhhhh I love this song :D",
             type: "external"
-        }
-        ,
+        },
         {
             msg: "Me too, it's soooooooo good",
             type: "external"
@@ -19,6 +18,14 @@ const Chat = () => {
         {
             msg: "Hey, can I add a few song?",
             type: "internal"
+        },
+        {
+            msg: "Yeah for sure?",
+            type: "external"
+        },
+        {
+            msg: "yeahhhh",
+            type: "external"
         }
 
     ]);

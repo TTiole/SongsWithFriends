@@ -15,16 +15,16 @@ const Play = (props) => {
   const [tracks, setTracks] = useState([]);
   const [selectedPlaylist, setSelectedPlaylist] = useState(1);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [showLibrary, setShowLibrary] = useState(false);
+  const [showLibrary, setShowLibrary] = useState(true);
   const [showPlaylist, setShowPlaylist] = useState(false);
 
-  const handleLibrary = () => {
-    // Always hide the playlist when the button is clicked
-    // But only hide/show the library if the playlist is not showing
-    // so that the library and selected playlist never show up at the same time
-    if (!showPlaylist) setShowLibrary(!showLibrary);
-    setShowPlaylist(false)
-  };
+  // const handleLibrary = () => {
+  //   // Always hide the playlist when the button is clicked
+  //   // But only hide/show the library if the playlist is not showing
+  //   // so that the library and selected playlist never show up at the same time
+  //   if (!showPlaylist) setShowLibrary(!showLibrary);
+  //   setShowPlaylist(false)
+  // };
 
   useEffect(() => {
     if (!props.guest) {
@@ -59,17 +59,13 @@ const Play = (props) => {
         /> : null}
 
         {showLibrary ? <UserLibrary userName={props.user.name} playlists={props.user.playlists} setSelectedPlaylist={setSelectedPlaylist} setShowLibrary={setShowLibrary} setShowPlaylist={setShowPlaylist} /> : null}
-        <button id="libraryBtn" onClick={handleLibrary}>Library</button>
+        {/* <button id="libraryBtn" onClick={handleLibrary}>Library</button> */}
         <SearchOverlay user={props.user} open={searchOpen} handleClose={() => setSearchOpen(false)} />
       </div>
 
       <PlaylistAddRoundedIcon id="searchBtn" onClick={() => setSearchOpen(true)}>+</PlaylistAddRoundedIcon>
 
-      <PlayerBar
-        track="Attention"
-        artist="Charlie Puth · Voicenotes"
-        duration="3:31"
-      />
+      <PlayerBar />
     </div>
   );
 }
