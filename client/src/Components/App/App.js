@@ -92,6 +92,7 @@ class App extends React.Component {
     // On room destroyed, let the client know you're no longer a member of that room
     socket.on(DESTROYED, (id) => {
       this.props.destroyedRoom();
+      this.props.openResponse("Your room has been destroyed", "note")
     });
 
     socket.on(PLAY, (playback) => {
@@ -139,7 +140,7 @@ class App extends React.Component {
   render() {
     return (
       <div id="app">
-        <Error message={this.props.text} open={this.props.open} handleClose={this.props.closeResponse} />
+        <Error message={this.props.text} severity={this.props.severity} open={this.props.open} handleClose={this.props.closeResponse} />
         <Header />
         <Main guestLogin={this.guestLogin} />
         <Loader active={this.props.loading} />
@@ -152,7 +153,8 @@ const mapStateToProps = (state) => {
   return {
     loading: state.loadingReducer.loading,
     open: state.loadingReducer.modalOpen,
-    text: state.loadingReducer.modalText
+    text: state.loadingReducer.modalText,
+    severity: state.loadingReducer.severity
   }
 }
 
@@ -169,7 +171,7 @@ const mapDispatchToProps = dispatch => {
     guestLogin: () => dispatch(guestLogin()),
     toggleMute: mute => dispatch(toggleMute(mute)),
     closeResponse: () => dispatch(closeResponseModal()),
-    openResponse: text => dispatch(triggerResponseModal(text))
+    openResponse: (text, severity) => dispatch(triggerResponseModal(text, severity))
   }
 }
 

@@ -5,6 +5,7 @@
     /* background-color: wheat; */
     max-height: calc(100vh - 167px);
     min-height: 333px;
+    height: 100%;
 }
 
 #libraryBtn{
@@ -12,5 +13,4 @@
     margin-top: 10px;
     align-self: flex-start;
 }
-
 

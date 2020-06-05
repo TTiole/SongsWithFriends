@@ -42,6 +42,7 @@ button.outlined, .button.outlined {
 html, body, #root, #app {
   min-height: 500px;
   max-height: 100vh;
+  height: 100%;
 }
 
 #app {

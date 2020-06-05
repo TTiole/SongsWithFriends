@@ -14,10 +14,10 @@ export const activateLoading = () => {
   }
 }
 
-export const triggerResponseModal = (text) => {
+export const triggerResponseModal = (text, severity = 'error') => {
   return {
     type: OPEN_RESPONSE_MODAL,
-    payload: {open: true, text}
+    payload: {open: true, text, severity}
   }
 }
 
