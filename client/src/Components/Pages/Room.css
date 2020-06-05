@@ -1,13 +1,12 @@
-#main-container > #room-container{
+#room-container{
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     flex: 1 1;
-    /* background-color: khaki; */
 }
 
-#room-container > * {
+#room-container {
     font-size: 1.1rem;
 }
 
@@ -18,15 +17,20 @@ button.input-button {
     border-top-left-radius: 0;
 }
 
-#room-container input {
+.room-join input {
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;
     margin-left: 30px;
-    padding: 0.6em 1em;
+    padding: 0.57em 1em 0.55em;
     max-width: 200px;
     height: auto;
 }
 
-#room-container button {
-    padding: 0.6em 1em;
+@media only screen and (max-width: 500px){
+    #room-container{
+        flex-direction: column;
+    }
+    .room-join input {
+        margin-left: 0;
+    }
 }
