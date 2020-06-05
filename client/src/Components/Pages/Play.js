@@ -41,7 +41,7 @@ const Play = (props) => {
         {props.playback.playlist ? <Playlist
           user={props.user}
           tracks={props.playback.playlist.tracks.items}
-          playlistName={props.playback.playlist.name}
+          playlistName={"Queue"}
           queue={true}
           addSong={props.addSong}
           removeSong={props.removeSong}

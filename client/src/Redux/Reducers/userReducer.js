@@ -14,7 +14,7 @@ export default (state = initialState, action) => {
     case CREATE_ROOM:
       return {...state, host: true, roomID: action.payload.roomID}
     case JOIN_ROOM:
-      return { ...state, member: true }
+      return { ...state, member: true, roomID: action.payload.roomID }
     case DESTROYED_ROOM:
     case LEAVE_ROOM:
       return { ...state, member: false }

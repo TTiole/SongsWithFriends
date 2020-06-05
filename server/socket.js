@@ -71,7 +71,7 @@ module.exports = (io) => (socket) => {
           room.playing = playback.is_playing;
           room.initialPosition = playback.progress_ms / 1000;
           if (user.isGuest()) { // Guest
-            socket.emit(events.JOIN, room.getPlayback()); // Success
+            socket.emit(events.JOIN, room.getPlayback(), room.id); // Success
             room.addGuest(user);
           } else {
             room.addMember(user);
@@ -88,7 +88,7 @@ module.exports = (io) => (socket) => {
                 io.to(socket.id).emit(events.ERROR, "Warning: No active device found. Please click on devices set your device")
               if (!room.is_playing)
                 pauseDevice(user);
-              socket.emit(events.JOIN, room.getPlayback()); // Success
+              socket.emit(events.JOIN, room.getPlayback(), room.id); // Success
             });
           }
         });

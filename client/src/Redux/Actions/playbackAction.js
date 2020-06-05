@@ -4,7 +4,11 @@ const playbackActionGenerator = (type) => (playback) => ({
   type, payload: playback
 })
 
-export const joinRoomPlaybackSuccess = playbackActionGenerator(JOIN_ROOM)
+export const joinRoomPlaybackSuccess = (roomID, playback) => {
+  return {
+    type: JOIN_ROOM, payload: {roomID, playback}
+  }
+}
 export const modifyPlayback = playbackActionGenerator(MODIFY_PLAYBACK)
 
 export const toggleMute = mute => ({

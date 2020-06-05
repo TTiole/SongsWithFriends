@@ -4,9 +4,9 @@ const initialState = {playback: null, muted: false}
 
 export default  (state = initialState, action) => {
   switch(action.type) {
-    case JOIN_ROOM:
     case MODIFY_PLAYBACK:
-      return {...state, playback: action.payload}
+    return {...state, playback: action.payload}
+    case JOIN_ROOM:
     case CREATE_ROOM:
       return {...state, playback: action.payload.playback}
     case TOGGLE_MUTE:

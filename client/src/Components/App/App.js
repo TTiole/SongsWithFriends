@@ -75,8 +75,8 @@ class App extends React.Component {
       this.props.createRoomSuccess(playback, roomID);
     });
     // On join, let the client know that the user is a member
-    socket.on(JOIN, (playback) => {
-      this.props.joinRoomPlaybackSuccess(playback)
+    socket.on(JOIN, (playback, roomID) => {
+      this.props.joinRoomPlaybackSuccess(playback, roomID)
     });
 
     // On leave, let the client know that the user is no longer a member
@@ -165,7 +165,7 @@ const mapDispatchToProps = dispatch => {
     destroyRoom: () => dispatch(destroyRoom()),
     destroyedRoom: () => dispatch(destroyedRoom()),
     authenticateUser: (code, userID) => dispatch(authenticateUser(code, userID)),
-    joinRoomPlaybackSuccess: (playback) => dispatch(joinRoomPlaybackSuccess(playback)),
+    joinRoomPlaybackSuccess: (playback, roomID) => dispatch(joinRoomPlaybackSuccess(roomID,playback)),
     createRoomSuccess: (playback, roomID) => dispatch(createRoomUserSuccess(playback, roomID)),
     modifyPlayback: (playback) => dispatch(modifyPlayback(playback)),
     guestLogin: () => dispatch(guestLogin()),

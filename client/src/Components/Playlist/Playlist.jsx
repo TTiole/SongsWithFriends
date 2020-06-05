@@ -21,7 +21,7 @@ const Playlist = (props) => {
     props.setShowLibrary(true);
   }
   return (
-    <div className="playlist-container">
+    <div className={`playlist-container ${props.queue ? "queue":""}`}>
       <div className="top-container">
         <Typography margin="5px" fontSize={25} bold color="#eee">
           {props.playlistName}
