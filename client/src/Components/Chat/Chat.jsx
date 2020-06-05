@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import Typography from '../Typography/Typography';
 import "./Chat.css";
 
@@ -38,6 +38,33 @@ const Chat = () => {
         }
 
     ]);
+
+    
+    const inputRef = useRef();
+    const containerRef = useRef();
+    
+    useEffect(() => {
+        // Scroll to bottom
+        containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }, [messages])
+
+    const submitMsg = () => {
+        const text = inputRef.current.value;
+        inputRef.current.value = "";
+        setMessage([...messages, {
+            msg: text,
+            type: "internal"
+        }]);
+        // Send socket
+    }
+
+
+
+    const submitEnter = e => {
+        if(e.key === "Enter")
+            submitMsg();
+    }
+
     return (
         <div id="chat-container">
             <div id="top-container">
@@ -45,13 +72,13 @@ const Chat = () => {
                 <CloseIcon style={{ fill: "white", fontSize: "20px" }}></CloseIcon>
             </div>
 
-            <div id="msgs-container">
+            <div id="msgs-container" ref={containerRef}>
                 {messages.map((msg) => <ChatCell {...msg}></ChatCell>)}
             </div>
 
             <div id="chat-input-wrapper">
-                <input id="chat-input"/>
-                <SendRoundedIcon/>
+                <input id="chat-input" ref={inputRef} onKeyUp={submitEnter} placeholder="Send Message"/>
+                <SendRoundedIcon onClick={submitMsg}/>
             </div>
         </div>
     );

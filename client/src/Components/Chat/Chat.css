@@ -67,4 +67,6 @@
     max-height: 15px;
     max-width: unset;
     border-radius: 15px;
+    padding: 5px 10px;
+    flex: 1 1;
 }
