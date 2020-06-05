@@ -9,8 +9,6 @@ import UserLibrary from "../Playlist/UserLibrary.jsx";
 import PlayerBar from "../PlayerBar/PlayerBar.jsx";
 import SearchOverlay from '../SearchOverlay/SearchOverlay'
 
-import PlaylistAddRoundedIcon from '@material-ui/icons/PlaylistAddRounded';
-
 const Play = (props) => {
   const [tracks, setTracks] = useState([]);
   const [selectedPlaylist, setSelectedPlaylist] = useState(1);
@@ -46,6 +44,7 @@ const Play = (props) => {
           queue={true}
           addSong={props.addSong}
           removeSong={props.removeSong}
+          setSearchOpen={setSearchOpen}
         /> : null}
         {showPlaylist && !props.guest && tracks.length !== 0 ? <Playlist
           user={props.user}
@@ -62,9 +61,6 @@ const Play = (props) => {
         {/* <button id="libraryBtn" onClick={handleLibrary}>Library</button> */}
         <SearchOverlay user={props.user} open={searchOpen} handleClose={() => setSearchOpen(false)} />
       </div>
-
-      <PlaylistAddRoundedIcon id="searchBtn" onClick={() => setSearchOpen(true)}>+</PlaylistAddRoundedIcon>
-
       <PlayerBar />
     </div>
   );

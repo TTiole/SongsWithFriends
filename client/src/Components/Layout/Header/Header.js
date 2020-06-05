@@ -28,7 +28,7 @@ const Header = (props) => {
   const [devicesPopup, setDevicesPopup] = useState(false);
 
   let devices = [];
-  if(props.user && props.user.playbackDevices)
+  if (props.user)
     devices = props.user.playbackDevices.filter(device => !device.is_restricted && !device.is_private_session);
   return (
     <header>
@@ -48,13 +48,15 @@ const Header = (props) => {
             {devices.map((device) => (
               <Device {...device} handleClick={() => props.setDevice(device.id, props.userID)} />
             ))}
-            {devices.length === 0 ? <Typography fontSize="12px" color="#999">No items to show. Please ensure your devices are connected to the internet. If they are, restart Spotify on them.</Typography>:null}
+            {devices.length === 0 ? <Typography fontSize="12px" color="#999">No items to show. Please ensure your devices are connected to the internet. If they are, restart Spotify on them.</Typography> : null}
           </Popup>
         </React.Fragment> : null}
         {props.member || props.host ? <button onClick={() => setInviteOpen(true)}>Invite</button> : null}
 
         <Popup open={inviteOpen} handleClose={() => setInviteOpen(false)}>
-          <Typography>Your room ID is: {props.roomID !== null ? props.roomID : "XXXX"}</Typography>
+          <div style={{ display: "flex", height: "100%", justifyContent: "center", alignItems: "center" }}>
+            <Typography fontSize="20px">Your room ID is:  {props.roomID !== null ? props.roomID : "XXXX"}</Typography>
+          </div>
         </Popup>
 
         {props.host ? (
@@ -73,7 +75,7 @@ const Header = (props) => {
   );
 }
 
-const Device = ({name, type, handleClick}) => {
+const Device = ({ name, type, handleClick }) => {
   let Icon = DevicesOtherRoundedIcon;
   if (type === "Computer") {
     Icon = LaptopChromebookRoundedIcon
@@ -82,7 +84,7 @@ const Device = ({name, type, handleClick}) => {
   }
 
   return <div className="device-container" onClick={handleClick}>
-    <Icon/><Typography fontSize="16px">{name}</Typography>
+    <Icon /><Typography fontSize="16px">{name}</Typography>
   </div>
 }
 
