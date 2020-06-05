@@ -4,6 +4,7 @@
     justify-content: center;
     flex: 1 1;
     flex-direction: column;
+    padding: 15px;
 }
 
 #login-actions {
@@ -20,4 +21,13 @@
 
 #login-actions > a {
     width: 90px;
+}
+
+@media only screen and (max-width: 400px){
+    #login-actions {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
 }

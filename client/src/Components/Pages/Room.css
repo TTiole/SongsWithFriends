@@ -6,11 +6,6 @@
     flex: 1 1;
 }
 
-#room-container {
-    font-size: 1.1rem;
-}
-
-
 button.input-button {
     margin-left: 0;
     border-bottom-left-radius: 0;
@@ -21,7 +16,7 @@ button.input-button {
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;
     margin-left: 30px;
-    padding: 0.57em 1em 0.55em;
+    padding: 8px 0 7px 8px;
     max-width: 200px;
     height: auto;
 }
@@ -31,6 +26,7 @@ button.input-button {
         flex-direction: column;
     }
     .room-join input {
+        padding: 0.57em 1em 0.55em;
         margin-left: 0;
     }
 }
