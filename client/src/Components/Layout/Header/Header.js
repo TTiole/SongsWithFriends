@@ -19,7 +19,7 @@ import {
   DESTROY,
 } from "helpers/socket_events.js";
 
-import {mobileWidth} from "helpers/constants"
+import {mobileWidth, tabletWidth} from "helpers/constants"
 
 const Header = (props) => {
   // Sends LEAVE event
@@ -38,7 +38,7 @@ const Header = (props) => {
 
   const renderHeaderItems = () => 
   <React.Fragment>
-    {props.guest && props.loggedIn && props.user !== null  ? null : <button onClick={() => setDevicesPopup(true)}>Devices</button>}
+    {!props.guest && props.loggedIn && props.user !== null ? <button onClick={() => setDevicesPopup(true)}>Devices</button>:null}
     {props.member || props.host ? <button onClick={() => setInviteOpen(true)}>Invite</button> : null}
     {props.host ? (
       <button onClick={destroyRoom}>Destroy room</button>
@@ -57,11 +57,11 @@ const Header = (props) => {
       <div id='header-logo'>
         <Typography color="#02bb4f" fontSize="35px" additionalStyles={{ fontFamily: "Architects Daughter" }}>SWF</Typography>
       </div>
-      {size.width < mobileWidth ? 
+      {size.width < tabletWidth ? 
       <div id='header-actions'>
         {props.member || props.host ? <ChatBubbleOutlineRoundedIcon onClick={props.openChat}/>:null}
         <MenuRoundedIcon onClick={() => setDrawerOpen(true)}/>
-        <Drawer anchor='top' id="header-actions-drawer" onClose={() => setDrawerOpen(false)} open={drawerOpen}>
+        <Drawer anchor={size.width < mobileWidth ? "top":"right"} id="header-actions-drawer" onClose={() => setDrawerOpen(false)} open={drawerOpen}>
           {renderHeaderItems()}
         </Drawer>
       </div>:

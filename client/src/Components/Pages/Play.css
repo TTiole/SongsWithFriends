@@ -1,6 +1,5 @@
 .container-top {
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
     padding: 15px;
     /* background-color: wheat; */
@@ -15,3 +14,9 @@
     align-self: flex-start;
 }
 
+@media only screen and (max-width: 500px) {
+    .container-top {
+        max-height: unset;
+        flex-direction: column;
+    }
+}

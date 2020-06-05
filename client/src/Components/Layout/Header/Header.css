@@ -30,6 +30,7 @@ header {
 
 #header-actions-drawer .MuiDrawer-paper {
     background: #404040;
+    min-width: 150px;
 }
 
 #header-actions > svg {

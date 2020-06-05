@@ -3,7 +3,7 @@
     flex-direction: column;
     justify-content: center;
     align-content: center;
-    /* width: 55%; */
+    width: 55%;
     /* background-color: pink; */
   }
 
@@ -27,5 +27,11 @@
     width: 100%;
     justify-content: space-between;
     background-color: transparent;
+  }
+
+  @media only screen and (max-width: 500) {
+    .library-container {
+      width: unset;
+    }
   }
   

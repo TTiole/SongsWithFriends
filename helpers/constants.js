@@ -1,1 +1,1 @@
-module.exports = {server: "http://localhost:8000", mobileWidth: 500}
+module.exports = {server: "http://localhost:8000", mobileWidth: 500, tabletWidth: 1000}

@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     position: fixed;
-    left: 76%;
+    left: 65%;
     bottom: 0;
     right: 0;
     padding: 8px;
@@ -86,7 +86,12 @@
         max-height: calc(100vh - 16px);
         height: 100%;
     }
+}
 
+@media only screen and (max-width: 1000px) {
+    #chat-container {
+        left: 50%;
+    }
     #chat-container.false {
         display: none;
     }
