@@ -3,7 +3,7 @@
   flex-direction: column;
   justify-content: center;
   align-content: center;
-  width: 55%;
+  /* width: 55%; */
   /* background-color: pink; */
 }
 
@@ -12,7 +12,12 @@
   justify-content: space-between;
   padding-right: 15px;
   margin: 5px;
-  /* background-color: turquoise; */
+}
+
+.playlist-btns{
+ display: "flex";
+ justify-content: "center"; 
+ align-content: "center";
 }
 
 .tracks {
@@ -24,12 +29,28 @@
 .queue-button.MuiSvgIcon-root {
   height: 40px;
   width: 40px;
-  margin-left: 15px;
+ 
   fill: white;
+}
+
+.queue-button.MuiSvgIcon-root:last-of-type{
+  margin-left: 15px;
 }
 
 .queue-button.MuiSvgIcon-root.smaller {
   height: 27px;
   width: 27px;
   padding: 5px;
+}
+
+@media only screen and (max-width: 500px){
+  .top-container{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 5px;
+  }
+   .queue-button.MuiSvgIcon-root.smaller {
+    padding: 8px;
+  }
 }

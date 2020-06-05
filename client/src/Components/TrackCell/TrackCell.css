@@ -1,40 +1,61 @@
 .entry-wrapper{
-  display: flex;
   align-items: center;
-
   margin: 3px 0px;
-  background-color: gray;
+}
+
+.entry-btns{
+  display: flex;
+  justify-content: space-between;
 }
 
 .Btn{
-  justify-content: center;
-  align-content: center;
   min-width: 25px;
   max-width: 25px;
   min-height: 25px;
   max-height: 25px;
   
   border: none;
-  margin: 5px;
+  margin: 3px;
   padding: 0 0 1px 1px;
-
-  border-radius: 50%;
-  font-size: 15px;
   
   color: white;
-  background-color: transparent;
 }
+
+.remove-btn{
+  min-width: 25px;
+  max-width: 25px;
+  min-height: 25px;
+  max-height: 25px;
+  
+  border: none;
+  margin: 3px;
+  padding: 1px 0 0 0;
+  
+  color: white;
+}
+
 
 .track-container {
   display: flex;
   width: 100%;
   justify-content: space-between;
-  background-color: #1db954;
 }
 
 .track-container-info {
   display: flex;
   flex-direction: column;
   margin: 5px;
-  background-color: black;
+}
+
+
+@media only screen and (max-width: 500px){
+  .entry-btns{
+    display: flex;
+    flex-direction: column;
+  }
+  .entry-btns >*:first-of-type{
+    padding: 2px 0 0 0;
+    order: 1;
+  } 
+  
 }

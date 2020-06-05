@@ -26,18 +26,17 @@ const Playlist = (props) => {
         <Typography margin="5px" fontSize={25} bold color="#eee">
           {props.playlistName}
         </Typography>
-        <div style={{ display: "flex", justifyContent: "center", alignContent: "center" }}>
+        <div className="playlist-btns">
           {props.queue ? <React.Fragment>
             <Tooltip arrow title="Edit Playlist">
-              <EditRoundedIcon className="queue-button smaller" onClick={handleEdit}/>
+              <EditRoundedIcon className="queue-button smaller" onClick={handleEdit} />
             </Tooltip>
             <Tooltip arrow title="Search for Song">
-              <PlaylistAddRoundedIcon className="queue-button" onClick={() => props.setSearchOpen(true)}/>
+              <PlaylistAddRoundedIcon className="queue-button" onClick={() => props.setSearchOpen(true)} />
             </Tooltip>
-          </React.Fragment>:
-          <button className="editBtn" onClick={handleBack}>Back</button>
+          </React.Fragment> :
+            <button className="editBtn" onClick={handleBack}>Back</button>
           }
-          
         </div>
       </div>
       <div className="tracks">
@@ -50,9 +49,9 @@ const Playlist = (props) => {
             queue={props.queue}
           />
         ))}
-        {props.tracks.length === 0 ? <Typography fontSize="12px" color="#999">No items to show</Typography>:null}
+        {props.tracks.length === 0 ? <Typography fontSize="12px" color="#999" additionalStyles={{ paddingLeft: "5px" }}>No items to show</Typography> : null}
       </div>
-    </div>
+    </div >
   );
 };
 

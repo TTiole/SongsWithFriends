@@ -18,9 +18,11 @@ const TrackCell = (props) => {
   const reorderSong = (track, offset) => () => props.socket.emit(QUEUE_REORDER, track, offset);
   return (
     <div className="entry-wrapper">
-      {props.showDelete ? <ArrowDropDownCircleOutlinedIcon className="Btn" onClick={reorderSong(props.track, -1)}></ArrowDropDownCircleOutlinedIcon> : null}
-      {props.showDelete ? <ArrowDropDownCircleOutlinedIcon className="Btn" style={{ transform: "rotate(0deg)" }} onClick={reorderSong(props.track, 1)}></ArrowDropDownCircleOutlinedIcon> : null}
-      {props.showDelete ? <RemoveCircleOutlineRoundedIcon className="Btn" onClick={removeSong(props.track)}></RemoveCircleOutlineRoundedIcon> : null}
+      <div className="entry-btns">
+        {props.showDelete ? <ArrowDropDownCircleOutlinedIcon className="Btn" onClick={reorderSong(props.track, -1)}></ArrowDropDownCircleOutlinedIcon> : null}
+        {props.showDelete ? <ArrowDropDownCircleOutlinedIcon className="Btn" style={{ transform: "rotate(180deg)" }} onClick={reorderSong(props.track, 1)}></ArrowDropDownCircleOutlinedIcon> : null}
+        {props.showDelete ? <RemoveCircleOutlineRoundedIcon className="remove-btn" onClick={removeSong(props.track)}></RemoveCircleOutlineRoundedIcon> : null}
+      </div>
       <div className="track-container" onClick={!props.queue ? addSong(props.track) : null}>
         <div className="track-container-info">
           <Typography bold color="white">{props.track.name}</Typography>
