@@ -60,7 +60,6 @@ class App extends React.Component {
   // Socket connection has been established
   socketEstablished = (socket, code) => () => {
     // Get the user id from the socket
-    console.log("Socket established")
     const userID = socket.id;
     this.props.authenticateUser(code, userID);
     window.history.replaceState(null, "", window.location.href.split("?")[0]);
@@ -68,38 +67,31 @@ class App extends React.Component {
 
   setupSocketListeners = (socket, code = null) => {
     // On connection established, authenticate user
-    console.log(server);
     socket.on(CONNECT, code !== null ? this.socketEstablished(socket, code) : this.props.guestLogin)
     // On error, console.error the msg
     socket.on(ERROR, (msg) => this.props.openResponse(msg));
     // On create, let the client know that the user is a host
     socket.on(CREATE, (playback, roomID) => {
       this.props.createRoomSuccess(playback, roomID);
-      console.log(`Successfully created room ${roomID}`);
     });
     // On join, let the client know that the user is a member
     socket.on(JOIN, (playback) => {
-      console.log(playback);
       this.props.joinRoomPlaybackSuccess(playback)
-      console.log(`Successfully joined room`);
     });
 
     // On leave, let the client know that the user is no longer a member
     socket.on(LEAVE, (id) => {
       this.props.leaveRoom();
-      console.log(`Successfully left ${id}`);
     });
 
     // On destroy room, let the client know you're no longer host
     socket.on(DESTROY, (id) => {
       this.props.destroyRoom();
-      console.log(`Successfully destroyed ${id}`);
     });
 
     // On room destroyed, let the client know you're no longer a member of that room
     socket.on(DESTROYED, (id) => {
       this.props.destroyedRoom();
-      console.log(`Room ${id} has been destroyed`);
     });
 
     socket.on(PLAY, (playback) => {

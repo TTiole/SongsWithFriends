@@ -88,7 +88,6 @@ const requestTracks = (user, trackID) =>
 
 // Search for songs, albums, etc.
 const requestSearch = (user, itemName, searchType) => {
-  // console.log(`searching: /search?q=name:${itemName}&type=${searchType}`);
   return requestSpotify(`/search?q=${itemName}&type=${searchType}`, user);
 };
 

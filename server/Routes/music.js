@@ -19,7 +19,6 @@ module.exports = (app) => {
 
   app.get("/playlists", function (req, res) {
     let userID = req.query.userID;
-    // console.log(userID);
     requestPlaylists(getUser(userID))
       .then((data) => {
         // Items is an array of "playlist objects"
@@ -36,7 +35,6 @@ module.exports = (app) => {
           };
           addSinglePlaylist(userID, simplifiedPlaylist);
         });
-        console.log(getAllPlaylists(userID));
         res.json(getUser(userID).clientInfo());
       })
       .catch((err) => {
@@ -49,7 +47,6 @@ module.exports = (app) => {
     let userID = req.query.userID;
     let playlistID = req.query.playlistID;
     // let playlistName = "home🏠";
-    console.log(playlistID);
     let playlist = getSinglePlaylist(userID, playlistID);
     let tracks = [];
 
@@ -61,11 +58,9 @@ module.exports = (app) => {
         //  playlist track object that has: added_at, added_by, is_local, and the actual track object
         pages.items.forEach((playlistTrackObj) => {
           tracks.push(simplifyTrack(playlistTrackObj.track));
-          // console.log(simplifyTrack(playlistTrackObj.track));
         });
         //  Update the selected playlist
         playlist.tracks = tracks;
-        // console.log("In music\n" + getUser(userID).playlists[3].tracks);
         res.json(playlist);
       })
       .catch((err) => {
@@ -152,17 +147,13 @@ const getNextPage = (user, pages, pageLimit, searchResult) => {
   if (pages.error != undefined) {
     throw pages.error.status;
   }
-  // console.log(searchResult);
   Object.entries(pages).forEach(([key, value]) => {
     value.items.forEach((trackObj) => {
       track = simplifyTrack(trackObj);
       searchResult.push(track);
-      // console.log(track);
     });
     //  Recursively invoke getNextPage to get all the search results
     if (value.next != null && pageLimit > 0) {
-      // console.log(pageLimit);
-      // console.log(value.total);
       pageLimit--;
       //  Parsed next page's url and call getNextPage recursively
       let nextItemName = value.next.split("query=")[1].split("&")[0];

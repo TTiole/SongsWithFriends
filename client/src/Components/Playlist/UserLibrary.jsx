@@ -6,7 +6,6 @@ import Typography from "../Typography/Typography";
 const UserLibrary = (props) => {
     const handleLibrary = (name) => () => {
         let trackIndex = props.playlists.findIndex(item => item.name === name);
-        console.log(trackIndex)
         props.setSelectedPlaylist(trackIndex);
         props.setShowLibrary(false);
         props.setShowPlaylist(true);
