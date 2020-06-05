@@ -49,9 +49,9 @@ const Playlist = (props) => {
             queue={props.queue}
           />
         ))}
-        {props.tracks.length === 0 ? <Typography fontSize="12px" color="#999">No items to show</Typography> : null}
+        {props.tracks.length === 0 ? <Typography fontSize="12px" color="#999" additionalStyles={{ paddingLeft: "5px" }}>No items to show</Typography> : null}
       </div>
-    </div>
+    </div >
   );
 };
 
