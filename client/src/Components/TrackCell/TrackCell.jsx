@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 
 import Typography from "../Typography/Typography";
 import "./TrackCell.css";
+import RemoveCircleOutlineRoundedIcon from '@material-ui/icons/RemoveCircleOutlineRounded';
+import ArrowDropDownCircleOutlinedIcon from '@material-ui/icons/ArrowDropDownCircleOutlined';
 
 import {
   QUEUE_ADD,
@@ -16,10 +18,10 @@ const TrackCell = (props) => {
   const reorderSong = (track, offset) => () => props.socket.emit(QUEUE_REORDER, track, offset);
   return (
     <div className="entry-wrapper">
-      {props.showDelete ? <button id="removeBtn" onClick={reorderSong(props.track, -1)}>&#8593;</button> : null}
-      {props.showDelete ? <button id="removeBtn" onClick={reorderSong(props.track, 1)}>&#8595;</button> : null}
-      {props.showDelete ? <button id="removeBtn" onClick={removeSong(props.track)}>-</button> : null}
-      <div className="track-container" onClick={!props.queue ? addSong(props.track):null}>
+      {props.showDelete ? <ArrowDropDownCircleOutlinedIcon className="Btn" onClick={reorderSong(props.track, -1)}></ArrowDropDownCircleOutlinedIcon> : null}
+      {props.showDelete ? <ArrowDropDownCircleOutlinedIcon className="Btn" style={{ transform: "rotate(0deg)" }} onClick={reorderSong(props.track, 1)}></ArrowDropDownCircleOutlinedIcon> : null}
+      {props.showDelete ? <RemoveCircleOutlineRoundedIcon className="Btn" onClick={removeSong(props.track)}></RemoveCircleOutlineRoundedIcon> : null}
+      <div className="track-container" onClick={!props.queue ? addSong(props.track) : null}>
         <div className="track-container-info">
           <Typography bold color="white">{props.track.name}</Typography>
           <Typography color="#b3b3b3">{props.track.artists}</Typography>
