@@ -9,11 +9,13 @@ const Chat = () => {
     const [messages, setMessage] = useState([
         {
             msg: "Ahhhhh I love this song :D",
-            type: "external"
+            type: "external",
+            author: "Eli"
         },
         {
             msg: "Me too, it's soooooooo good",
-            type: "external"
+            type: "broadcast",
+            author: "David"
         },
         {
             msg: "Hey, can I add a few song?",
@@ -21,11 +23,18 @@ const Chat = () => {
         },
         {
             msg: "Yeah for sure?",
-            type: "external"
+            type: "external",
+            author: "Eli"
         },
         {
             msg: "yeahhhh",
-            type: "external"
+            type: "external",
+            author: "David"
+        },
+        {
+            msg: "ADjiksmal;jFOPR'AKSDLNFIJOEKLSJKGNAKLSFOPr'w;nfokelwaforjni3fklaem/owjitoal;kem;o'klmREFN;JKEA;LNKMLAE",
+            type: "external",
+            author: "Sry had a seizure"
         }
 
     ]);
@@ -37,37 +46,48 @@ const Chat = () => {
             </div>
 
             <div id="msgs-container">
-                {messages.map((msg) => <ChatCell msg={msg.msg} type={msg.type}></ChatCell>)}
+                {messages.map((msg) => <ChatCell {...msg}></ChatCell>)}
             </div>
 
-            <div id="input-wrapper">
-                <input id="input"></input>
-                <SendRoundedIcon></SendRoundedIcon>
+            <div id="chat-input-wrapper">
+                <input id="chat-input"/>
+                <SendRoundedIcon/>
             </div>
         </div>
     );
 }
 
 const ChatCell = (props) => {
-    let showAvatar = true;
     let style = {
         justifyContent: "flex-start"
     }
     if (props.type === "internal") {
-        showAvatar = false;
         style = {
             justifyContent: "flex-end"
         }
     }
-
-    return (
-        <div className="cell" style={style}>
-            {showAvatar ? <div className="avatar"></div> : null}
-            <div className="text-container">
-                <Typography fontSize="12px">{props.msg}</Typography>
+    if(props.type !== "broadcast") {
+        return (
+            <div className="chat-cell" style={style}>
+                <div className="chat-text-container">
+                    <Typography fontSize="13px">{props.type === "internal" ? "You":props.author}:</Typography>
+                    <Typography fontSize="12px">{props.msg}</Typography>
+                </div>
             </div>
-        </div>
-    );
+        );
+    } else {
+        return (
+            <div className="chat-cell">
+                <Typography align="center" 
+                        additionalStyles={{fontStyle: "italic", display: "block", width: "100%"}} 
+                        fontSize="12px" 
+                        color="#999" 
+                        padding="0 10px">
+                    {props.msg}
+                </Typography>
+            </div>
+        )
+    }
 }
 
 export default Chat;

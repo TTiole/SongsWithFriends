@@ -4,9 +4,8 @@
     position: fixed;
     left: 76%;
     bottom: 0;
-    
+    right: 0;
     padding: 8px;
-    width: 230px;
     min-width: 150px;
     max-height: 300px;
     background-color: #282828;
@@ -25,17 +24,21 @@
     overflow: auto;
 }
 
-.cell{
+.chat-cell{
     display: flex;
     align-items: flex-end;
     margin: 5px 0;
 }
 
-.text-container{
+.chat-text-container{
     padding: 10px;
-    max-width: 100px;
+    max-width: 60%;
     border-radius: 15px;
     background-color:#b3b3b3;
+}
+
+.chat-text-container p {
+    word-break: break-all;
 }
 
 .avatar{
@@ -49,7 +52,7 @@
     background-color: pink;
 }
 
-#input-wrapper{
+#chat-input-wrapper{
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -60,7 +63,7 @@
     background-color: #b3b3b3;
 }
 
-#input{
+#chat-input{
     max-height: 15px;
     max-width: unset;
     border-radius: 15px;
