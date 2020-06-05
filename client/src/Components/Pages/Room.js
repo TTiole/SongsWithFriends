@@ -15,7 +15,7 @@ const Room = (props) => {
   const createRoom = () => props.socket.emit(CREATE);
 
   // Sends JOIN event
-  const joinRoom = () => props.socket.emit(JOIN, joinRef.current.value);
+  const joinRoom = () => props.socket.emit(JOIN, joinRef.current.value.trim());
   return (
     <div id="room-container">
       {props.guest ? null : <button onClick={createRoom}>Create room</button>}

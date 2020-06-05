@@ -13,9 +13,28 @@ header {
     user-select: none;
 }
 
-#header-actions > button{
+#header-actions > button, #header-actions-drawer .MuiDrawer-paper > button{
     background-color: transparent;
     border: none;
+}
+
+#header-actions-drawer .MuiDrawer-paper > button {
+    text-align: end;
+    border-bottom: 1px solid #333;
+    margin: 0;
+}
+
+#header-actions-drawer .MuiDrawer-paper > button:hover {
+    background-color: #3a3a3a;
+}
+
+#header-actions-drawer .MuiDrawer-paper {
+    background: #404040;
+}
+
+#header-actions > svg {
+    fill: #eee;
+    margin-left: 10px;
 }
 
 .devices-popup .popup {

@@ -1,7 +1,7 @@
-import { AUTHENTICATE_USER, CREATE_ROOM, JOIN_ROOM, DESTROY_ROOM, DESTROYED_ROOM, LEAVE_ROOM, CONNECT, GUEST_LOGIN, MODIFY_USER, LOGOUT } from '../Actions/action_types'
+import { AUTHENTICATE_USER, CREATE_ROOM, JOIN_ROOM, DESTROY_ROOM, DESTROYED_ROOM, LEAVE_ROOM, CONNECT, GUEST_LOGIN, MODIFY_USER, LOGOUT, TOGGLE_CHAT } from '../Actions/action_types'
 
 
-const initialState = { socket: null, userID: "", user: null, loggedIn: false, member: false, host: false, roomID: "", guest: false }
+const initialState = { socket: null, userID: "", user: null, loggedIn: false, member: false, host: false, roomID: "", guest: false, chatOpen: false }
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -25,6 +25,8 @@ export default (state = initialState, action) => {
     case LOGOUT:
       state.socket.disconnect(true);
       return initialState
+    case TOGGLE_CHAT:
+      return {...state, chatOpen: action.payload}
     default: return state;
   }
 

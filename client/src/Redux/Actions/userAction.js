@@ -1,4 +1,4 @@
-import { AUTHENTICATE_USER, CREATE_ROOM, CONNECT, LEAVE_ROOM, DESTROYED_ROOM, DESTROY_ROOM, MODIFY_USER, GUEST_LOGIN, LOGOUT } from './action_types'
+import { AUTHENTICATE_USER, CREATE_ROOM, CONNECT, LEAVE_ROOM, DESTROYED_ROOM, DESTROY_ROOM, MODIFY_USER, GUEST_LOGIN, LOGOUT, TOGGLE_CHAT } from './action_types'
 
 export const connectUser = (socket) => {
   return {
@@ -75,5 +75,12 @@ export const logout = () => {
   return {
     type: LOGOUT,
     payload: null
+  }
+}
+
+export const toggleChat = state => {
+  return {
+    type: TOGGLE_CHAT,
+    payload: state
   }
 }

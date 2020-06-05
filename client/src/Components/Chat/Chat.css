@@ -79,3 +79,15 @@
     fill: #eee;
     font-size: 20px;
 }
+
+@media only screen and (max-width: 500px) {
+    #chat-container {
+        left: 0;
+        max-height: calc(100vh - 16px);
+        height: 100%;
+    }
+
+    #chat-container.false {
+        display: none;
+    }
+}
