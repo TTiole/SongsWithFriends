@@ -9,6 +9,10 @@ header {
     margin: 0 5px;
 }
 
+#header-logo p {
+    user-select: none;
+}
+
 #header-actions > button{
     background-color: transparent;
     border: none;

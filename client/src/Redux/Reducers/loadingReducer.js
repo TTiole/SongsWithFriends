@@ -1,6 +1,6 @@
 import {DEACTIVATE_LOADING, ACTIVATE_LOADING, CLOSE_RESPONSE_MODAL, OPEN_RESPONSE_MODAL} from '../Actions/action_types.js'
 
-const initialState = {loading: false, modalOpen: false, modalText: ''};
+const initialState = {loading: false, modalOpen: false, modalText: '', severity: "error"};
 
 export default (state = initialState, action) => {
   switch(action.type) {
@@ -15,7 +15,7 @@ export default (state = initialState, action) => {
       }
     case OPEN_RESPONSE_MODAL:
       return {
-        ...state, modalOpen: true, modalText: action.payload.text
+        ...state, modalOpen: true, modalText: action.payload.text, severity: action.payload.severity
       }
     default:
       return state;

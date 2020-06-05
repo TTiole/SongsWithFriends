@@ -5,7 +5,7 @@ import Snackbar from '@material-ui/core/Snackbar'
 
 const Error = (props) => {
   return (
-    <Snackbar className="swf-error" anchorOrigin={{
+    <Snackbar className={`swf-error ${props.severity}`} anchorOrigin={{
       vertical: "top",
       horizontal: "center"
     }} autoHideDuration={5000} onClose={props.handleClose} message={props.message} open={props.open} />
