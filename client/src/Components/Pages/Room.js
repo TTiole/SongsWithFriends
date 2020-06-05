@@ -19,8 +19,10 @@ const Room = (props) => {
   return (
     <div id="room-container">
       {props.guest ? null : <button onClick={createRoom}>Create room</button>}
-      <input type="text" placeholder="Enter Room Code" ref={joinRef} />
-      <button className="input-button" onClick={joinRoom}> Join room</button>
+      <div class="room-join">
+        <input type="text" placeholder="Enter Room Code" ref={joinRef} />
+        <button className="input-button" onClick={joinRoom}> Join room</button>
+      </div>
     </div>
   );
 }
