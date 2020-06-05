@@ -19,7 +19,7 @@ const TrackCell = (props) => {
   return (
     <div className="entry-wrapper">
       {props.showDelete ? <ArrowDropDownCircleOutlinedIcon className="Btn" onClick={reorderSong(props.track, -1)}></ArrowDropDownCircleOutlinedIcon> : null}
-      {props.showDelete ? <ArrowDropDownCircleOutlinedIcon className="Btn" Style={{ transform: "rotate(0deg)" }} onClick={reorderSong(props.track, 1)}></ArrowDropDownCircleOutlinedIcon> : null}
+      {props.showDelete ? <ArrowDropDownCircleOutlinedIcon className="Btn" style={{ transform: "rotate(0deg)" }} onClick={reorderSong(props.track, 1)}></ArrowDropDownCircleOutlinedIcon> : null}
       {props.showDelete ? <RemoveCircleOutlineRoundedIcon className="Btn" onClick={removeSong(props.track)}></RemoveCircleOutlineRoundedIcon> : null}
       <div className="track-container" onClick={!props.queue ? addSong(props.track) : null}>
         <div className="track-container-info">
