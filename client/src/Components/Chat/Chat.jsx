@@ -2,22 +2,25 @@ import React, { useState, useRef, useEffect } from "react"
 import Typography from '../Typography/Typography';
 import "./Chat.css";
 import {connect} from 'react-redux'
+import {toggleChat} from '../../Redux/Actions/userAction'
 
 import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded';
 import Collapse from '@material-ui/core/Collapse'
 import SendRoundedIcon from '@material-ui/icons/SendRounded';
 import ExpandLessRoundedIcon from '@material-ui/icons/ExpandLessRounded';
+import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
+import useWindowSize from '../../useWindowSize'
+import {mobileWidth} from "helpers/constants"
 import {
     MESSAGE, CHAT_CONNECT
 } from "helpers/socket_events.js";
 
 const Chat = props => {
     const [messages, setMessage] = useState([]);
-    const [open, setOpen] = useState(false);
-
     
     const inputRef = useRef();
     const containerRef = useRef();
+    const size = useWindowSize();
     
     useEffect(() => {
         // Scroll to bottom
@@ -44,7 +47,7 @@ const Chat = props => {
     }
 
     const toggleOpen  = e => {
-        setOpen(!open)
+        props.toggleChat(!props.open)
         containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
 
@@ -54,13 +57,13 @@ const Chat = props => {
     }
 
     return (
-        <div id="chat-container">
+        <div id="chat-container" className={`${props.open}`}>
             <div id="top-container">
                 <Typography bold fontSize="20" color="white">Chat</Typography>
-                {open ?<ExpandMoreRoundedIcon onClick={toggleOpen}/>:<ExpandLessRoundedIcon onClick={toggleOpen}/>}
+                {props.open ? (size.width < mobileWidth ?<CloseRoundedIcon onClick={toggleOpen}/>:<ExpandMoreRoundedIcon onClick={toggleOpen}/>):<ExpandLessRoundedIcon onClick={toggleOpen}/>}
                 
             </div>
-            <Collapse in={open} ref={containerRef}>
+            <Collapse in={props.open} ref={containerRef}>
                 <div id="msgs-container">
                     {messages.map((msg, i) => <ChatCell key={i + " "+ msg.author} {...msg}></ChatCell>)}
                 </div>
@@ -109,8 +112,17 @@ const ChatCell = (props) => {
 
 const mapStateToProps = state => {
     return {
-        socket: state.userReducer.socket
+        socket: state.userReducer.socket,
+        open: state.userReducer.chatOpen
     }
 }
 
-export default connect(mapStateToProps, null)(Chat);
+const mapDispatchToProps = dispatch => {
+    return {
+        openChat: () => dispatch(toggleChat(true)),
+        closeChat: () => dispatch(toggleChat(false)),
+        toggleChat: state => dispatch(toggleChat(state))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Chat);
