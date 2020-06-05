@@ -6,6 +6,9 @@ const {
   getAllPlaylists,
 } = require("../users");
 const {
+  getRoom
+} = require("../rooms")
+const {
   requestPlaylists,
   requestTracks,
   requestSearch,
@@ -76,11 +79,11 @@ module.exports = (app) => {
     let itemName = req.query.searchWord;
     let searchType = "track"; //  Options: album,artist,playlist,show,episode
     let pageLimit = 5;
-
+    let user = getUser(userID)
     //! Also, where does the response end other than error?
-    requestSearch(getUser(userID), encodeURIComponent(itemName), searchType)
+    requestSearch(user.isGuest() ? getRoom(user.room).host:user, encodeURIComponent(itemName), searchType)
       .then((pages) => {
-        getNextPage(getUser(userID), pages, pageLimit, searchResult);
+        getNextPage(user.isGuest() ? getRoom(user.room).host:user, pages, pageLimit, searchResult);
       })
       .then(() => {
         res.json(searchResult);

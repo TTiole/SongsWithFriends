@@ -21,7 +21,7 @@ const SearchOverlay = (props) => {
   return (
     <Popup open={props.open} handleClose={props.handleClose}>
       <Typography bold fontSize="20px">Add Songs to Queue</Typography>
-      <SearchBar user={props.user} setResult={setResult} />
+      <SearchBar userID={props.userID} setResult={setResult} />
       <div className="search-overlay-headers">
         <Typography bold fontSize="15px">Title</Typography>
         <Typography bold fontSize="15px">Artist</Typography>
@@ -48,7 +48,7 @@ export const SearchBar = (props) => {
   }
 
   const handleSearch = () => {
-    get('/search', { userID: props.user.id, searchWord: searchWord }, (data) => {
+    get('/search', { userID: props.userID, searchWord: searchWord }, (data) => {
       props.setResult(data);
     });
     setSearchWord("");
@@ -79,5 +79,5 @@ export const ResultCell = ((props) => {
   );
 });
 
-const mapStateToProps = state => ({ socket: state.userReducer.socket })
+const mapStateToProps = state => ({ socket: state.userReducer.socket, userID: state.userReducer.userID })
 export default connect(mapStateToProps, null)(SearchOverlay);

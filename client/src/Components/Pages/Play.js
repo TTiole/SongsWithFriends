@@ -60,7 +60,7 @@ const Play = (props) => {
 
         {showLibrary && !props.guest ? <UserLibrary userName={props.user.name} playlists={props.user.playlists} setSelectedPlaylist={setSelectedPlaylist} setShowLibrary={setShowLibrary} setShowPlaylist={setShowPlaylist} /> : null}
         {/* <button id="libraryBtn" onClick={handleLibrary}>Library</button> */}
-        <SearchOverlay user={props.user} open={searchOpen} handleClose={() => setSearchOpen(false)} />
+        <SearchOverlay open={searchOpen} handleClose={() => setSearchOpen(false)} />
       </div>
       <PlayerBar />
       <Chat/>
