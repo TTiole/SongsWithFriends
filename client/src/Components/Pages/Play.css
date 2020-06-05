@@ -3,7 +3,8 @@
     justify-content: space-between;
     padding: 15px;
     /* background-color: wheat; */
-    flex: 1 1;
+    max-height: calc(100vh - 167px);
+    min-height: 333px;
 }
 
 #libraryBtn{

@@ -40,20 +40,13 @@ button.outlined, .button.outlined {
 }
 
 html, body, #root, #app {
-  min-height: 100vh;
+  min-height: 500px;
+  max-height: 100vh;
 }
 
 #app {
   display: flex;
   flex-direction: column;
-}
-
-header {
-  flex: 0 0 45px;
-}
-
-main {
-  flex: 1 1;
 }
 
 input{

@@ -1,3 +1,7 @@
-.swf-error > .MuiPaper-root {
+.swf-error.error > .MuiPaper-root {
     background-color: rgb(87, 29, 29)
+}
+
+.swf-error.warning > .MuiPaper-root {
+    background-color: rgb(214, 176, 72)
 }
