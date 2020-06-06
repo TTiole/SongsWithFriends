@@ -17,6 +17,7 @@ import {
 
 const Chat = props => {
     const [messages, setMessage] = useState([]);
+    const [authors, setAuthors] = useState({});
     
     const inputRef = useRef();
     const containerRef = useRef();
@@ -30,10 +31,16 @@ const Chat = props => {
     useEffect(() => {
         if(props.socket !== null) {
             props.socket.on(MESSAGE, (msgObj) => {
+                if(msgObj.type === "external" && !Object.keys(authors).includes(msgObj.author)) {
+                    setAuthors(prevAuthors => ({...prevAuthors, 
+                        [msgObj.author]: Math.floor(Math.random()*361) // Map author to a random number between 0 and 360
+                    }))
+                }
                 setMessage(prevMessages => [...prevMessages, msgObj])
             })
             props.socket.emit(CHAT_CONNECT)
         }
+        // eslint-disable-next-line
     }, [props.socket])
 
     const submitMsg = () => {
@@ -65,7 +72,7 @@ const Chat = props => {
             </div>
             <Collapse in={props.open} ref={containerRef}>
                 <div id="msgs-container">
-                    {messages.map((msg, i) => <ChatCell key={i + " "+ msg.author} {...msg}></ChatCell>)}
+                    {messages.map((msg, i) => <ChatCell key={i + " "+ msg.author} {...msg} authors={authors}></ChatCell>)}
                 </div>
 
                 <div id="chat-input-wrapper">
@@ -79,17 +86,17 @@ const Chat = props => {
 
 const ChatCell = (props) => {
     let style = {
-        justifyContent: "flex-start"
+        justifyContent: "flex-end"
     }
-    if (props.type === "internal") {
+    if (props.type === "external") {
         style = {
-            justifyContent: "flex-end"
+            justifyContent: "flex-start",
         }
     }
     if(props.type !== "broadcast") {
         return (
             <div className="chat-cell" style={style}>
-                <div className="chat-text-container">
+                <div className="chat-text-container" style={props.type === "external" ? {backgroundColor: `hsl(${props.authors[props.author]}, 100%, 88%)`}:{}}>
                     <Typography fontSize="13px">{props.type === "internal" ? "You":props.author}:</Typography>
                     <Typography fontSize="12px">{props.msg}</Typography>
                 </div>

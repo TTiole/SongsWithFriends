@@ -238,22 +238,24 @@ module.exports = (io) => (socket) => {
 
   socket.on(events.MESSAGE, (text) => {
     const user = getUser(socket.id);
+    const room = getRoom(user.room);
     socket.broadcast.to(user.room).emit(events.MESSAGE, {
       type: "external",
       msg: text,
-      author: user.name
+      author: user.isGuest() ? user.name + " " + (room.guests.findIndex(guest => guest.id === user.id)+1):user.name
     })
   })
 
   socket.on(events.CHAT_CONNECT, () => {
     const user = getUser(socket.id);
+    const room = getRoom(user.room);
     socket.emit(events.MESSAGE, {
       type: "broadcast",
       msg: "You have joined the room"
     })
     socket.broadcast.to(user.room).emit(events.MESSAGE, {
       type: "broadcast",
-      msg: `${user.name} has joined the room`
+      msg: `${user.isGuest() ? user.name + " " + (room.guests.findIndex(guest => guest.id === user.id)+1):user.name} has joined the room`
     })
   })
 
@@ -288,7 +290,7 @@ module.exports = (io) => (socket) => {
       }
       socket.broadcast.to(room.id).emit(events.MESSAGE, {
         type: "broadcast",
-        msg: `${user.name} has left the room`
+        msg: `${user.isGuest() ? user.name + " " + (room.guests.findIndex(guest => guest.id === user.id)+1):user.name} has left the room`
       })
     }
   };

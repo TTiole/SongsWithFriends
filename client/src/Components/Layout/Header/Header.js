@@ -92,7 +92,7 @@ const Header = (props) => {
   );
 }
 
-const Device = ({ name, type, handleClick }) => {
+const Device = ({ name, type, handleClick, is_active }) => {
   let Icon = DevicesOtherRoundedIcon;
   if (type === "Computer") {
     Icon = LaptopChromebookRoundedIcon
@@ -101,7 +101,7 @@ const Device = ({ name, type, handleClick }) => {
   }
 
   return <div className="device-container" onClick={handleClick}>
-    <Icon /><Typography fontSize="16px">{name}</Typography>
+    <Icon /><Typography fontSize="16px">{name} {is_active ? " (Active)":""}</Typography>
   </div>
 }
 

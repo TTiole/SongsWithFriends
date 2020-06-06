@@ -29,6 +29,10 @@
     background-color: transparent;
   }
 
+  .track-container-info > p:first-of-type {
+    cursor: pointer;
+  }
+
   @media only screen and (max-width: 500px) {
     .library-container {
       width: unset;

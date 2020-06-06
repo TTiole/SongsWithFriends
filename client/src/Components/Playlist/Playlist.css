@@ -13,6 +13,10 @@ align-content: center;
   flex: unset;
 }
 
+.playlist-container.queue .track-container-info > * {
+  cursor: initial;
+}
+
 .top-container{
   display: flex;
   justify-content: space-between;

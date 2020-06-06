@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import { connect } from 'react-redux'
 import './Room.css'
-import Popup from "../Popup/Popup"
 
 import {
   CREATE,
