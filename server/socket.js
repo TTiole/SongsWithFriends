@@ -149,7 +149,6 @@ module.exports = (io) => (socket) => {
       //  Save the reordered track and delete it from queue
       if(offset === 2)
         newOffset = trackIndex + 1;
-      console.log(trackIndex, newOffset);
       let tmpTrack = room.playlist.tracks.items[trackIndex];
       room.playlist.tracks.items.splice(trackIndex, 1);
       //  Add the reordered track back to the new offset

@@ -60,7 +60,7 @@ align-content: center;
     margin: 5px;
   }
 
-  .playlist-container {
+  #main-container .playlist-container {
     width: unset;
   }
 
