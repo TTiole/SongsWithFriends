@@ -138,17 +138,18 @@ module.exports = (io) => (socket) => {
 
     //  Find the selected song's index in queue
     let trackIndex = room.playlist.tracks.items.findIndex(item => item.name === track.name);
-    //  The new offset is always either current index +1 or -1
+    //  The new offset is always either current index +2 or -1
     let newOffset = trackIndex + offset;
-
     //  Don't reorder songs that on very top or very buttom
     if (newOffset < 0)
       newOffset = 0;
-    if (newOffset >= room.playlist.tracks.items.length)
-      newOffset = room.playlist.tracks.items.length - 1;
-
+    if (newOffset >= room.playlist.tracks.items.length+1)
+      newOffset = room.playlist.tracks.items.length;
     requestReorderQueue(user.isGuest() ? room.host : user, room.playlist.id, trackIndex, newOffset).then(() => {
       //  Save the reordered track and delete it from queue
+      if(offset === 2)
+        newOffset = trackIndex + 1;
+      console.log(trackIndex, newOffset);
       let tmpTrack = room.playlist.tracks.items[trackIndex];
       room.playlist.tracks.items.splice(trackIndex, 1);
       //  Add the reordered track back to the new offset
@@ -174,10 +175,10 @@ module.exports = (io) => (socket) => {
     const user = getUser(socket.id);
     let room = getRoom(user.room);
     room.playing = false;
-    room.members.forEach((user) => pauseDevice(user)).then(data => {
+    room.members.forEach((user) => pauseDevice(user).then(data => {
       if(data.error && data.error.reason === "NO_ACTIVE_DEVICE")
         io.to(socket.id).emit(events.ERROR, "Warning: No active device found. Please click on devices set your device")
-    });
+    }));
     io.to(room.id).emit(events.PAUSE, room.getPlayback());
   });
 
@@ -232,6 +233,7 @@ module.exports = (io) => (socket) => {
       room.currentAlbum = playback.item.album.name;
       room.currentArtists = playback.item.artists.map((artist) => " " + artist.name).toString().slice(1);
       room.currentSongDuration = playback.item.duration_ms / 1000;
+      room.initialPosition = playback.progress_ms / 1000;
       io.to(room.id).emit(events.UPDATE_PLAYBACK, room.getPlayback());
     })
   })

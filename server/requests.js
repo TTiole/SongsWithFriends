@@ -157,6 +157,7 @@ const requestDeleteQueue = (user, playlist_id, trackObj) => {
 };
 
 const requestReorderQueue = (user, playlist_id, itemOffset, newOffset) => {
+  console.log(itemOffset, newOffset)
   let reqBody = {
     range_start: itemOffset,
     insert_before: newOffset,
