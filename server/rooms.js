@@ -14,22 +14,38 @@ class Room {
   }
 
   // Adds a member to the room
-  addMember = user => {
+  addMember(user) {
     this.members.push(user);
   }
 
-  addGuest = user => this.guests.push(user);
+  addGuest(user) { 
+    this.guests.push(user);
+  }
 
-  getUsers = () => [...this.members, ...this.guests]
+  getUsers() { 
+    return [...this.members, ...this.guests]
+  }
 
   // Removes a member from a room
-  removeMember = user => {
+  removeMember(user){
     this.members = this.members.filter(member => member.id !== user.id);
   }
 
-  removeGuest = user => this.guests.filter(guest => guest.id !== user.id);
+  removeGuest(user) {
+    return this.guests.filter(guest => guest.id !== user.id);
+  }
 
-  getPlayback = () => ({ playing: this.playing, playlist: this.playlist, currentSong: this.currentSong, currentAlbum: this.currentAlbum, currentArtists: this.currentArtists, currentSongDuration: this.currentSongDuration, initialPosition: this.initialPosition })
+  getPlayback(){ 
+    return { 
+      playing: this.playing,
+        playlist: this.playlist,
+        currentSong: this.currentSong,
+        currentAlbum: this.currentAlbum,
+        currentArtists: this.currentArtists,
+        currentSongDuration: this.currentSongDuration,
+        initialPosition: this.initialPosition 
+    }
+  }
 }
 
 /**

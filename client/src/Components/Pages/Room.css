@@ -1,9 +1,18 @@
 #room-container{
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: center;
     flex: 1 1;
+    flex-direction: column;
+}
+
+#room-container > p {
+    padding: 0 10px;
+}
+
+#room-container-buttons {
+    display: flex;
+    align-items: center;
 }
 
 button.input-button {
@@ -24,11 +33,10 @@ button.input-button {
 }
 
 @media only screen and (max-width: 500px){
-    #room-container{
+    #room-container-buttons{
         flex-direction: column;
     }
     .room-join input {
-        padding: 0.57em 1em 0.55em;
         margin-left: 0;
     }
 }

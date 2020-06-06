@@ -26,14 +26,16 @@ require("./Routes/music")(app);
 const server = http.createServer(app);
 const io = socketio(server);
 
+app.use(express.static('public'))
 // Root route, for testing to ensure server is working
-app.get("/", function (res) {
+app.get("/test", function (res) {
   console.log("Server is up");
 });
 
 // Handle socket.io stuff in socket.js
 const { CONNECT } = require("../helpers/socket_events");
 io.on(CONNECT, require("./socket")(io));
+
 
 // Start server
 const port = process.env.SERVER_PORT || 8000; // Default to 8000

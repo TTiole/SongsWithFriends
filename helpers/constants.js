@@ -1,1 +1,1 @@
-module.exports = {server: "http://localhost:8000", mobileWidth: 500, tabletWidth: 1000}
+module.exports = {server: process.env.NODE_ENV !== 'production' ? "http://localhost:8000":"http://54.90.34.135", mobileWidth: 500, tabletWidth: 1000}

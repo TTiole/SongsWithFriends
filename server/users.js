@@ -16,29 +16,33 @@ class User {
   }
 
   // Takes spotify token information and sets it to the user. Returns the user object
-  auth = (token, token_type) => {
+  auth(token, token_type){
     this.token = token;
     this.token_type = token_type;
     return this; // return the user object for chaining
   };
 
-  setDevices = (devices) => {
+  setDevices(devices) {
     this.playback_devices = devices;
     // Get the device that is active
     this.playback_device = devices.find((device) => device.is_active);
   };
 
   // Returns all the information that is OK for the client to have
-  clientInfo = () => ({
-    name: this.name,
-    id: this.id,
-    spotify_id: this.spotify_id,
-    playbackDevice: this.playback_device,
-    playbackDevices: this.playback_devices,
-    playlists: this.playlists
-  });
+  clientInfo(){
+    return {
+      name: this.name,
+      id: this.id,
+      spotify_id: this.spotify_id,
+      playbackDevice: this.playback_device,
+      playbackDevices: this.playback_devices,
+      playlists: this.playlists
+    }
+  };
 
-  isGuest = () => this.token === "" && this.token_type === ""
+  isGuest() {
+    return this.token === "" && this.token_type === ""
+  }
 }
 
 /**

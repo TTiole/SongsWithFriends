@@ -2,6 +2,7 @@ import React from 'react';
 import './Login.css'
 
 import {connect} from 'react-redux'
+import {server} from 'helpers/constants.js'
 import Typography from '../Typography/Typography'
 
 const Login = (props) => {
@@ -12,7 +13,7 @@ const Login = (props) => {
         <Typography component="h6" color="#fff" fontSize="20px" align="center">Whether at a party or across the globe, SWF allows you to enjoy your music <font color="#4af95b">together</font></Typography>
       </div>
       <div id='login-actions'>
-        <a href={`http://localhost:8000/login?userID=${props.userID}`} className="button outlined">
+        <a href={`${server}/login?userID=${props.userID}`} className="button outlined">
           Sign in
         </a>
         <button onClick={props.guestLogin} className="outlined">Guest login</button>

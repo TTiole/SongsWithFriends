@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { connect } from 'react-redux'
 import './Room.css'
+import Typography from '../Typography/Typography'
 
 import {
   CREATE,
@@ -17,10 +18,13 @@ const Room = (props) => {
   const joinRoom = () => props.socket.emit(JOIN, joinRef.current.value.trim());
   return (
     <div id="room-container">
-      {props.guest ? null : <button onClick={createRoom}>Create room</button>}
-      <div className="room-join">
-        <input type="text" placeholder="Enter Room Code" ref={joinRef} />
-        <button className="input-button" onClick={joinRoom}> Join room</button>
+      <Typography fontSize="20px" color="#eee" margin="10px 0" align="center">Make sure you have an active device connected to the internet</Typography>
+      <div id="room-container-buttons">
+        {props.guest ? null : <button onClick={createRoom}>Create room</button>}
+        <div className="room-join">
+          <input type="text" placeholder="Enter Room Code" ref={joinRef} />
+          <button className="input-button" onClick={joinRoom}> Join room</button>
+        </div>
       </div>
     </div>
   );
