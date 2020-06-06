@@ -18,7 +18,7 @@ const UserLibrary = (props) => {
             </Typography>
 
             <div className="playlists">
-                {props.playlists.slice(1).map((playlist) => (
+                {props.playlists.map((playlist) => (
                     <div className="entry-wrapper" onClick={handleLibrary(playlist.name)} key={playlist.id}>
                         <div className="track-container-info">
                             <Typography bold color="white">{playlist.name}</Typography>

@@ -61,16 +61,14 @@ module.exports = function (app) {
         let playlists = data.items;
 
         // Get rid of unnecessary info for each playlist
-        playlists.forEach((playlist) => {
-          let simplifiedPlaylist = {
+        user.playlists = playlists.map((playlist) => ({
             name: playlist.name,
             id: playlist.id,
             owner: playlist.owner.display_name,
             numTracks: playlist.tracks.total,
             tracks: null,
-          };
-          user.playlists.push(simplifiedPlaylist)
-        });
+          })
+        );
         res.json(user.clientInfo());
       })
       .catch((err) => {

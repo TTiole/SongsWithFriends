@@ -80,7 +80,7 @@ const requestUserInfo = (user) => requestSpotify("/me", user);
 
 // Get user playlists
 const requestPlaylists = (user) =>
-  requestSpotify(`/users/${user.name}/playlists`, user);
+  requestSpotify(`/users/${user.name}/playlists?limit=50`, user);
 
 // Get all the tracks within the specified playlist
 const requestTracks = (user, trackID) =>
