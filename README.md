@@ -3,17 +3,33 @@
 ## How to use
 
 1. Login <br />
-	There are two kinds of login, one for user who have valid Spotify account and one for user who doesn't have a Spotify account. <br / >
+	There are two kinds of login, one for user who have valid Spotify account and one for user who doesn't have a Spotify account. <br />
 	* Spotify Login: <br />
-		User will be redirect to spotify to sign in and authorize so that the app can grab user's library and get the auth token to preform action on user's behalf. <br / >
-	* Guest Login: <br / >
-		User will not need to actually login to Spotify but will still be able to serach for song and add songs to the queue. Note that in this mode the user will not be able to host a room and can only join other existing room. <br / >
+		User will be redirect to spotify to sign in and authorize so that the app can grab user's library and get the auth token to preform action on user's behalf. <br />
+	* Guest Login: <br />
+		User will not need to actually login to Spotify but will still be able to serach for song and add songs to the queue. Note that in this mode the user will not be able to host a room and can only join other existing room. <br />
 
-2. Create / Join Room <br / >
-	After successful login, user will be redirected to a page where the user could either choose to create a new room and be the host, or join other exsiting room. Guest will only be able to join exisitng room. <br / >
-	One thing to be aware of is that <h4>plase make sure you check the "device" button on the top right and make sure you have a active device presenting.<h4> To identify a active device, you device name will have a `(active)` postfix. If no device were showing, please click the refresh button until your device pops up and is active. <br / >
-	One way to make sure your device is active is to close and reopen Spotify app on your device and start playing a song. After that just click the refresh button in the popup and you should be able to see your device. <br / >
-	Also, currently the Spotify Web API does not support its own web player well enough, so we do not recommand user using Spotify web player to be the main playback device for SongWithFriends. <br / >
+2. Create / Join Room <br />
+	After successful login, user will be redirected to a page where the user could either choose to create a new room and be the host, or join other exsiting room. Guest will only be able to join exisitng room. <br />
+	One thing to be aware of is that **plase make sure you check the `Devices` button on the top right and make sure you have a active device presenting.** To identify a active device, you device name will have a `(Active)` postfix. If no device were showing, please click the refresh button until your device pops up and is active. <br />
+	One way to make sure your device is active is to close and reopen Spotify app on your device and start playing a song. After that just click the refresh button in the popup and you should be able to see your device. <br />
+	Also, currently the Spotify Web API does not support its own web player well enough, so we do not recommand user using Spotify web player to be the main playback device for SongWithFriends. <br />
+
+3. Room Actions * Destroy Room <br />
+	There are several room actions user can preform: <br />
+	* Devices <br />
+		User can click on the `Devices` button to check which user device is active and is used as the current playback device. <br />
+	* Invite <br />
+		User can click on the `Invite` button to get the room ID and share it to friends so other user can use that code to join this room, either as a logged in user or as a guest.
+	* Destroy Room <br />
+		Only host of this room will have this option. If the host decides to destory the room, the queue will be destroy and everyone in the room will be logged out. <br />
+	* Leave Room <br />
+		Only guest will have this option. If the guest decides to leave the room, he/she will simply leave the room and nothing will happen to the room. But the user will be able to join again or join another room.
+	* Log Out <br />
+		User can click on the `Log Out` button to log out. If host decides to log out, the room will be destroy. If a guest logs out, he/she will simply be logged out, nothing will happen to the room. <br />
+
+4. Add Songs to Queue <br />
+
 
 
 
