@@ -2,6 +2,21 @@
 
 ## How to use
 
+1. Login <br />
+	There are two kinds of login, one for user who have valid Spotify account and one for user who doesn't have a Spotify account. <br / >
+	* Spotify Login: <br />
+		User will be redirect to spotify to sign in and authorize so that the app can grab user's library and get the auth token to preform action on user's behalf. <br / >
+	* Guest Login: <br / >
+		User will not need to actually login to Spotify but will still be able to serach for song and add songs to the queue. Note that in this mode the user will not be able to host a room and can only join other existing room. <br / >
+
+2. Create / Join Room <br / >
+	After successful login, user will be redirected to a page where the user could either choose to create a new room and be the host, or join other exsiting room. Guest will only be able to join exisitng room. <br / >
+	One thing to be aware of is that <h4>plase make sure you check the "device" button on the top right and make sure you have a active device presenting.<h4> To identify a active device, you device name will have a `(active)` postfix. If no device were showing, please click the refresh button until your device pops up and is active. <br / >
+	One way to make sure your device is active is to close and reopen Spotify app on your device and start playing a song. After that just click the refresh button in the popup and you should be able to see your device. <br / >
+	Also, currently the Spotify Web API does not support its own web player well enough, so we do not recommand user using Spotify web player to be the main playback device for SongWithFriends. <br / >
+
+
+
 
 ## Internal Details
 We have a React front-end and an express/socket.io backend. 
