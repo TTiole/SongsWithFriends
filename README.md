@@ -10,9 +10,9 @@
 		User will not need to actually login to Spotify but will still be able to serach for song and add songs to the queue. Note that in this mode the user will not be able to host a room and can only join other existing room. <br />
 
 2. **Create / Join Room** <br />
-	After successful login, user will be redirected to a page where the user could either choose to create a new room and be the host, or join other exsiting room. Guest will only be able to join exisitng room. <br /><br />
-	One thing to be aware of is that **plase make sure you check the `Devices` button on the top right and make sure you have a active device presenting.** To identify a active device, you device name will have a `(Active)` postfix. If no device were showing, please click the refresh button until your device pops up and is active. <br /><br />
-	One way to make sure your device is active is to close and reopen Spotify app on your device and start playing a song. After that just click the refresh button in the popup and you should be able to see your device. <br />
+	* After successful login, user will be redirected to a page where the user could either choose to create a new room and be the host, or join other exsiting room. Guest will only be able to join exisitng room. <br /><br />
+	* One thing to be aware of is that **plase make sure you check the `Devices` button on the top right and make sure you have a active device presenting.** To identify a active device, you device name will have a `(Active)` postfix. If no device were showing, please click the refresh button until your device pops up and is active. <br /><br />
+	* One way to make sure your device is active is to close and reopen Spotify app on your device and start playing a song. After that just click the refresh button in the popup and you should be able to see your device. <br />
 	Also, currently the Spotify Web API does not support its own web player well enough, so we **do not recommand user using Spotify web player** to be the main playback device for SongWithFriends. <br />
 
 3. **Room Actions / Destroy Room** <br />
@@ -34,15 +34,22 @@
 		Logged in users can access his/her Spotify library on the right side of the queue and simply click on the desire tracks to add them to the queue.
 	* Search <br />
 		Both logged in users and guests can search for songs on Spotify and add them to the queue. Simply click on the `add` icon on the top right of the queue, a search window will show up. Users can type in songs name and add the desire song by clicking the `add` button.
+
 5. **Edit the Queue** <br />
-	User can edit the queue in two wats: <br />
+	Users can edit the queue in two wats: <br />
 	* Remove a Song <br />
 		By clicking the `pen` icon on the top right corner of the queue, a remove button will show up on the left side of each track. Simply click the button and the song will be removed from the queue. **Note that right now if there are duplicate tracks in the queue, removing one track will remove all instances of that same track in that queue.** <br />
 	* Reorder a song <br />
 		Again by clicking the `pen` icon, the user will see two arrow buttons, one pointing up and one pointing down. Simply click on the appropriate button to reorder a song. <br />
 
-
-
+6. **Other Actions and Cautions** <br />
+	* Music player actions <br />
+		Users can play, pause, skip, mute, unmute, and seek to using the according buttons and slider. Note that these actions take time becasuse each action is a separate request to the Spoitfy API. ***Please be patient and avoid intensive seek and other player actions or else the music and status might not be sync in real time.***
+	* Chat room <br />
+		Users can also send chats to people in the same room. Only logged in user will have usernames. Guests will be numbered as "guest1/2/3...."
+	* Cautions <br />
+		***Please avoid refreshing the page when using the app. Refreshing will cause you to be kicked out of current room and proper clean up will not be preformed.*** <br />
+		***Please also remember to log out or destroy the room after you are done with your session so that proper clean up can be preformed.***
 
 ## Internal Details
 We have a React front-end and an express/socket.io backend. 
