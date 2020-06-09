@@ -1,5 +1,7 @@
 # SongsWithFriends
 
+Eli Gonzalez, David Guo
+
 ## How to use
 
 1. **Login** <br />
